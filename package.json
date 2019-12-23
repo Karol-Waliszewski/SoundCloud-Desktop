@@ -2,15 +2,36 @@
   "name": "soundcloud-desktop",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
+  "main": "src/electron.js",
+  "build": {
+    "appId": "12345678900",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "category": "music",
+      "iconUrl": "public/logo512.png"
+    },
+    "mac": {
+      "category": "music",
+      "iconUrl": "public/logo512.png"
+    }
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "electron": "^7.1.7",
+    "electron-is-dev": "^1.1.0",
+    "electron-reload": "^1.5.0",
+    "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.0"
   },
   "scripts": {
+    "electron": "electron .",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -30,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron-builder": "^21.2.0"
   }
 }
