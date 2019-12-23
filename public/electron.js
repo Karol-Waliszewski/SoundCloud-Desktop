@@ -20,7 +20,7 @@ function createWindow() {
   mainWindow.loadURL(
     isDev
       ? "http://localhost:3000"
-      : `file://${path.join(__dirname, "../public/index.html")}`
+      : `file://${path.join(__dirname, "../index.html")}`
   );
 
   mainWindow.on("closed", () => {

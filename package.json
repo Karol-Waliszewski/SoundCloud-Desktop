@@ -1,30 +1,33 @@
 {
   "name": "soundcloud-desktop",
+  "author": "Karol Waliszewski",
+  "description": "Soundcloud desktop application.",
+  "email": "karolwaliszewski@gmail.com",
   "version": "0.1.0",
   "private": true,
   "homepage": "./",
-  "main": "src/electron.js",
+  "main": "public/electron.js",
   "build": {
-    "appId": "12345678900",
+    "appId": "com.example.app",
     "directories": {
       "buildResources": "assets"
     },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
     "win": {
-      "category": "music",
-      "iconUrl": "public/logo512.png"
+      "icon": "public/logo512.png"
     },
     "mac": {
-      "category": "music",
-      "iconUrl": "public/logo512.png"
+      "icon": "public/logo512.png"
     }
+   
   },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "electron": "^7.1.7",
-    "electron-is-dev": "^1.1.0",
-    "electron-reload": "^1.5.0",
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -32,6 +35,7 @@
   },
   "scripts": {
     "electron": "electron .",
+    "electron-build": "electron-builder",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -53,6 +57,9 @@
     ]
   },
   "devDependencies": {
+    "electron": "^7.1.7",
+    "electron-is-dev": "^1.1.0",
+    "electron-reload": "^1.5.0",
     "electron-builder": "^21.2.0"
   }
 }
