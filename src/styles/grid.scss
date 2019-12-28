@@ -1,0 +1,83 @@
+$grid-columns: 12;
+$grid-margin: 0rem;
+$grid-breakpoints: xs 576px, sm 768px, md 992px, lg 1200px;
+
+.container {
+  max-width: 1100px;
+  @media only screen and (min-width: 1100px) {
+    width: 1100px;
+  }
+  margin: {
+    left: auto;
+    right: auto;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+
+  &--center {
+    @extend .row;
+    justify-content: center;
+    text-align: center;
+  }
+
+  &--middle {
+    @extend .row;
+    align-items: center;
+  }
+
+  &--around {
+    @extend .row;
+    justify-content: space-around;
+  }
+
+  &--between {
+    @extend .row;
+    justify-content: space-between;
+  }
+}
+
+.col {
+  flex: 1;
+  flex-basis: 100%;
+  margin: {
+    right: $grid-margin;
+    left: $grid-margin;
+    top: $grid-margin;
+  }
+  padding: {
+    right: $grid-margin;
+    left: $grid-margin;
+  }
+}
+@for $i from 1 through $grid-columns {
+  .col__#{$i} {
+    @extend .col;
+    flex: $i;
+    @media only screen and (min-width: nth(nth($grid-breakpoints,1),2)) {
+      flex: $i 0 calc(#{100%/ $grid-columns * $i} - #{2*$grid-margin});
+      max-width: calc(#{100%/ $grid-columns * $i} - #{2*$grid-margin});
+    }
+  }
+}
+@each $breakpoint in $grid-breakpoints {
+  $name: nth($breakpoint,1);
+  $gap: nth($breakpoint,2);
+  @for $i from 1 through $grid-columns {
+    .col__#{$name}--#{$i} {
+      @extend .col;
+
+      @if $name == 'xs' {
+        flex: $i 0 calc(#{100%/ $grid-columns * $i} - #{2*$grid-margin});
+        max-width: calc(#{100%/ $grid-columns * $i} - #{2*$grid-margin});
+      } @else {
+        @media only screen and (min-width: $gap) {
+          flex: $i 0 calc(#{100%/ $grid-columns * $i} - #{2*$grid-margin});
+          max-width: calc(#{100%/ $grid-columns * $i} - #{2*$grid-margin});
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+.sidebar {
+    @extend .col__3;
+    background: $lightGray;
+    border-right: 1px solid $gray;
+}

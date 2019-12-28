@@ -1,0 +1,33 @@
+.search {
+    height: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-left: 36px;
+}
+
+.search__input {
+    display: block;
+    width: 180px;
+    height: 100%;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    background: $lightGray;
+    padding: 5px;
+}
+
+.search__submit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 40px;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    background: transparent linear-gradient(180deg, $primaryColor 0%, $secondaryColor 100%);
+
+    cursor: pointer;
+}

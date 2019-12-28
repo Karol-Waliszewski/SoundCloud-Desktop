@@ -1,31 +1,21 @@
 import React from "react";
-import "./styles/App.scss";
+import Topbar from "./components/topbar";
+import Sidebar from "./components/sidebar";
+import Player from "./components/player";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          This is the first demo of Electron + React example.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          
-        >
-          Learn React
-        </a>
-        <a
-          className="App-link"
-          href="https://electronjs.org"
-          target="_blank"
-        >
-          Learn Electron
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <div className="app">
+        <Topbar></Topbar>
+        <div className="app__row">
+          <Sidebar></Sidebar>
+          <main className="app__main"></main>
+        </div>
+        <Player></Player>
+      </div>
+    );
+  }
 }
 
 export default App;
