@@ -2,13 +2,20 @@
     position: fixed;
     bottom: 0;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
 
     width: 100%;
     height: $navH;
 
     background: $lightGray;
     border-top: 1px solid $gray;
+}
+
+.player__row {
+    @extend .row--center;
+
+    width: 100%;
+    height: 100%;
 }

@@ -5,10 +5,10 @@ class Topbar extends Component {
   render() {
     return (
       <nav className="topbar">
-        <div className="topbar__left">
-          <h1 className="topbar__logo">
-            <img src="" alt="soundcloud logo" />
-          </h1>
+        <h1 className="topbar__logo">
+          <img src="" alt="soundcloud logo" />
+        </h1>
+        <div className="topbar__search">
           <Search></Search>
         </div>
         <a href="" className="topbar__account">

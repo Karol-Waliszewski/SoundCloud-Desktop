@@ -1,10 +1,8 @@
 .topbar {
+    @extend .row--middle;
+
     position: fixed;
     top: 0;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 
     width: 100%;
     height: $navH;
@@ -12,26 +10,29 @@
     background: $darkGray;
 }
 
-.topbar__left {
-    display: flex;
-    align-items: center;
-
-    height: 100%;
-}
-
 .topbar__logo {
+    @extend .col__2;
+
     display: flex;
     justify-content: center;
     align-items: center;
 
-    width: 15%;
-    max-width: 300px;
-    min-width: 100px;
     height: 100%;
 
     background: transparent linear-gradient(180deg, $primaryColor 0%, $secondaryColor 100%);
     color: #fff;
 
     font-size: 12px;
+}
 
+.topbar__search {
+    @extend .offset__1;
+    @extend .col__3;
+
+    height: 25px;
+}
+
+.topbar__account {
+    @extend .offset__5;
+    @extend .col__1;
 }
