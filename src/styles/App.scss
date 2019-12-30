@@ -2,6 +2,8 @@
 @import "variables";
 @import "normalize";
 @import "grid";
+@import "route";
+@import "section";
 @import "topbar";
 @import "sidebar";
 @import "player";
@@ -15,18 +17,21 @@ body {
 
 .app {
   padding-top: $navH;
-
+  padding-bottom: $playerH;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .app__row {
   @extend .row;
   flex: 1;
+  max-height: calc(100vh - (#{$navH} + #{$playerH}));
 }
 
 .app__main {
   @extend .col__9;
+  max-height: 100%;
+  overflow: auto;
 
 }

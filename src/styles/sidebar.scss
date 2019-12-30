@@ -1,5 +1,6 @@
 .sidebar {
     @extend .col__3;
+    max-height: 100%;
     background: $lightGray;
     border-right: 1px solid $gray;
 
