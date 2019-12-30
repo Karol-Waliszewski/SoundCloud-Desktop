@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 
+import search from "../assets/search.svg";
+
 class Search extends Component {
   render() {
     return (
       <form className="search">
-        <input type="text" className="search__input" placeholder="Search"/>
+        <input type="text" className="search__input" placeholder="Search" />
         <button className="search__submit">
-          <img src="" alt="search icon" />
+          <img src={search} alt="search icon" />
         </button>
       </form>
     );
