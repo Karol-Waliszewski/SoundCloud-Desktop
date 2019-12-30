@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 
 class Sidebar extends Component {
   render() {
@@ -6,62 +7,91 @@ class Sidebar extends Component {
       <nav className="sidebar">
         <ul className="sidebar__list">
           <li className="sidebar__item">
-            <a href="" className="sidebar__link active">
+            <NavLink
+              to="/"
+              className="sidebar__link"
+              activeClassName="active"
+              exact={true}
+            >
               Overview
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink
+              to="/likes"
+              className="sidebar__link"
+              activeClassName="active"
+            >
               Likes
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink
+              to="/playlists"
+              className="sidebar__link"
+              activeClassName="active"
+            >
               Playlists
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink
+              to="/stations"
+              className="sidebar__link"
+              activeClassName="active"
+            >
               Stations
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink
+              to="/albums"
+              className="sidebar__link"
+              activeClassName="active"
+            >
               Albums
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink
+              to="/followings"
+              className="sidebar__link"
+              activeClassName="active"
+            >
               Followings
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink
+              to="/history"
+              className="sidebar__link"
+              activeClassName="active"
+            >
               History
-            </a>
+            </NavLink>
           </li>
         </ul>
 
         <ul className="sidebar__list">
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink to="/about" className="sidebar__link">
               About
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink to="/support" className="sidebar__link">
               Support
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink to="/settings" className="sidebar__link">
               Settings
-            </a>
+            </NavLink>
           </li>
           <li className="sidebar__item">
-            <a href="" className="sidebar__link">
+            <NavLink to="/singout" className="sidebar__link">
               Sign out
-            </a>
+            </NavLink>
           </li>
         </ul>
       </nav>
