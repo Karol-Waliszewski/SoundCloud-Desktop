@@ -1,0 +1,33 @@
+.section {
+    margin: 8px 0;
+}
+
+.section__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2px;
+    padding: 0 3px;
+}
+
+.section__title {
+    font-size: 16px;
+    color: $darkGray;
+}
+
+.section__more {
+    font-size: 13px;
+    color: $primaryColor;
+    text-decoration: none;
+}
+
+.section__line {
+    border: {
+        bottom: 1px solid $gray;
+        top: none;
+        right: none;
+        left: none;
+    }
+
+    margin-bottom: 8px;
+}

@@ -1,0 +1,8 @@
+.route {
+    padding: 14px;
+
+    &--spacingless {
+        @extend .route;
+        padding: 0;
+    }
+}
