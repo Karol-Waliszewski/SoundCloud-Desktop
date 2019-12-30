@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import Search from "./search";
 
 import logo from "../assets/soundcloud.svg";
@@ -8,16 +9,16 @@ class Topbar extends Component {
     return (
       <nav className="topbar">
         <h1 className="topbar__logo">
-          <a href="/">
+          <Link to="/">
             <img src={logo} alt="soundcloud logo" />
-          </a>
+          </Link>
         </h1>
         <div className="topbar__search">
           <Search></Search>
         </div>
-        <a href="" className="topbar__account">
+        <Link to="/profile" className="topbar__account">
           <img src="" alt="user's avatar" />
-        </a>
+        </Link>
       </nav>
     );
   }
