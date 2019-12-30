@@ -4,14 +4,25 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+
+
 }
 
 .volume__button {
     @extend .player__button;
+
+    &:hover {
+        &~.volume__wrapper {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
 }
 
 .volume__icon {
     @extend .player__icon;
+
+
 }
 
 .volume__wrapper {
@@ -25,6 +36,15 @@
 
     background: $lightGray;
     border: 1px solid $gray;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: 300ms;
+
+    &:hover {
+        opacity: 1;
+        visibility: visible;
+    }
 
     &::after {
         content: "";
