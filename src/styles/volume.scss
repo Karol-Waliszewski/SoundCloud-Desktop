@@ -1,0 +1,143 @@
+.volume {
+    position: relative;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.volume__button {
+    @extend .player__button;
+}
+
+.volume__icon {
+    @extend .player__icon;
+}
+
+.volume__wrapper {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 30px;
+    height: 100px;
+
+    background: $lightGray;
+    border: 1px solid $gray;
+
+    &::after {
+        content: "";
+
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+
+        display: block;
+        width: 0;
+        height: 0;
+
+        border-style: solid;
+        border-width: 10px 10px 0 10px;
+        border-color: $gray transparent transparent transparent;
+    }
+
+    &::before {
+        content: "";
+
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -8px;
+        z-index: 3;
+
+        display: block;
+        width: 0;
+        height: 0;
+
+
+        border-style: solid;
+        border-width: 8px 8px 0 8px;
+        border-color: $lightGray transparent transparent transparent;
+    }
+}
+
+.volume__line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+
+    width: 100%;
+    height: 1px;
+    padding: 6px 0;
+
+    margin: 0px 0px;
+
+    background: transparent;
+    border: none;
+    border-radius: 2px;
+
+    -webkit-appearance: none;
+    pointer-events: all;
+    cursor: pointer;
+
+    &[orient=vertical] {
+        transform: rotate(270deg) translate(6px, -26px);
+        width: 80px;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &--current {
+        @extend .volume__line;
+        z-index: 55;
+
+        width: 0%;
+        padding: 0;
+
+        background: $primaryColor;
+
+        pointer-events: none;
+
+        &[orient=vertical] {
+            transform: translateX(-50%);
+            width: 1px;
+            height: 0%;
+
+            top: initial;
+            left: 50%;
+            bottom: 9px;
+
+        }
+    }
+}
+
+input[type=range].volume__line::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 1px;
+    cursor: pointer;
+    border-radius: 0px;
+    border: none;
+    background: $gray;
+}
+
+input[type=range].volume__line::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+
+    transform: translateY(calc(-50% + 0.5px));
+
+    background: $primaryColor;
+    border: none;
+    border-radius: 50%;
+
+    transition: 300ms;
+    //opacity: 0;
+
+    cursor: pointer;
+}

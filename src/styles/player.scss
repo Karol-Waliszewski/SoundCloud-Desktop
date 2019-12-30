@@ -2,12 +2,13 @@
     position: fixed;
     bottom: 0;
 
+
     // display: flex;
     // justify-content: center;
     // align-items: center;
 
     width: 100%;
-    height: $navH;
+    height: 50px;
 
     background: $lightGray;
     border-top: 1px solid $gray;
@@ -15,7 +16,119 @@
 
 .player__row {
     @extend .row--center;
+    @extend .row--middle;
+    @extend .container;
+
+    max-width: 90%;
 
     width: 100%;
     height: 100%;
+}
+
+.player__buttons {
+    @extend .col__3;
+    max-height: 100%;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    padding: 6px 12px;
+}
+
+.player__timeline {
+    @extend .col__4;
+    max-height: 100%;
+}
+
+.player__volume {
+    @extend .col__1;
+    max-height: 100%;
+}
+
+.player__track {
+    @extend .col__4;
+    max-height: 100%;
+    border-left: 1px solid $gray;
+
+}
+
+.player__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 19px;
+    height: 19px;
+
+    background: none;
+    border: none;
+
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.player__button--volume {
+    @extend .player__button;
+
+    position: relative;
+}
+
+.player__icon {
+    display: block;
+
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    fill: $darkGray;
+
+    &.active {
+        fill: $primaryColor;
+    }
+
+    &--small {
+        @extend .player__icon;
+        width: 90%;
+        height: 90%;
+    }
+}
+
+.player__track {
+    display: flex;
+    align-items: center;
+
+    padding: 4px 0;
+}
+
+.player__preview {
+    width: 32px;
+    height: 32px;
+    background: $gray;
+
+    margin-left: 10px;
+}
+
+.player__info {
+    margin-left: 12px;
+    margin-right: 6px;
+    text-align: left;
+}
+
+.player__title {
+    font-size: 14px;
+    color: $darkGray;
+}
+
+.player__author {
+    font-size: 11px;
+    color: lighten($darkGray, 20%);
+}
+
+.player__like {
+    @extend .player__button;
+
+    margin-left: auto;
 }

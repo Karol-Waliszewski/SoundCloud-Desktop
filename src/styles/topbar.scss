@@ -13,16 +13,30 @@
 .topbar__logo {
     @extend .col__2;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
     height: 100%;
 
     background: transparent linear-gradient(180deg, $primaryColor 0%, $secondaryColor 100%);
     color: #fff;
 
     font-size: 12px;
+
+    a {
+        display: block;
+        height: 100%;
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            height: 70%;
+            width: 80%;
+            object-fit: contain;
+        }
+    }
+
+
 }
 
 .topbar__search {
