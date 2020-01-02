@@ -22,6 +22,11 @@ lg 1200px;
   display: flex;
   flex-wrap: wrap;
 
+  &--start {
+    @extend .row;
+    align-items: start;
+  }
+
   &--center {
     @extend .row;
     justify-content: center;
