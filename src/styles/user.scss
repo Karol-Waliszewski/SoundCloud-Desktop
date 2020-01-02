@@ -1,0 +1,24 @@
+.user {
+    @extend .col__3;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 8px;
+}
+
+.user__image {
+    width: 130px;
+    height: 130px;
+    background: $gray;
+    border-radius: 50%;
+    margin-bottom: 4px;
+}
+
+.user__name {
+    width: 130px;
+    text-align: center;
+    color: $darkGray;
+}
