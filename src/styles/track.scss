@@ -18,12 +18,13 @@
 
 .track__title {
     width: 130px;
+    font-size: 14px;
     color: $darkGray;
-
+    margin-bottom: 3px;
 }
 
 .track__author {
     width: 130px;
-    font-size: 12px;
-    color: lighten($darkGray, 10%);
+    font-size: 11px;
+    color: lighten($darkGray, 20%);
 }
