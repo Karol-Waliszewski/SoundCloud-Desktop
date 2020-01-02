@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import Baner from "../components/baner";
 
 class Profile extends Component {
   render() {
-    return <div>Profile</div>;
+    return (
+      <Baner
+        username="lorem ipsum"
+        name="@ipsum"
+        description="hello world"
+      ></Baner>
+    );
   }
 }
 
