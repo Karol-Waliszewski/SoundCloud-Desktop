@@ -1,9 +1,15 @@
 import React, { Component } from "react";
 import { NavLink, Switch, Route } from "react-router-dom";
+
+// Components
 import Baner from "../components/baner";
 import Section from "../components/section";
 import Track from "../components/track";
 import User from "../components/user";
+
+// Assets
+import LinkIcon from "../assets/link.svg";
+import FollowIcon from "../assets/follow.svg";
 
 var Tracks = function(props) {
   let tracks = props.tracks.map(track => (
@@ -155,9 +161,9 @@ class Profile extends Component {
           description="hello world"
         ></Baner>
         <div className="route">
-          <nav className="profile__nav">
+          <nav className="profile-nav">
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               exact={true}
               to={"/profile/" + match.params.username}
@@ -165,42 +171,42 @@ class Profile extends Component {
               Overview
             </NavLink>
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               to={"/profile/" + match.params.username + "/tracks"}
             >
               Tracks
             </NavLink>
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               to={"/profile/" + match.params.username + "/playlists"}
             >
               Playlists
             </NavLink>
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               to={"/profile/" + match.params.username + "/albums"}
             >
               Albums
             </NavLink>
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               to={"/profile/" + match.params.username + "/reposts"}
             >
               Reposts
             </NavLink>
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               to={"/profile/" + match.params.username + "/followings"}
             >
               Followings
             </NavLink>
             <NavLink
-              className="profile__link"
+              className="profile-nav__link"
               activeClassName="active"
               to={"/profile/" + match.params.username + "/likes"}
             >
@@ -238,6 +244,44 @@ class Profile extends Component {
               path="/profile/:username"
               render={() => (
                 <>
+                  <section className="profile__about">
+                    <div className="profile__content">
+                      <h4 className="profile__heading">About</h4>
+                      <div className="profile__description">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Commodi quam beatae ullam officiis aliquid! Earum
+                        temporibus repellat vel accusamus, obcaecati ex!
+                        Nesciunt, voluptatem esse? Dignissimos iusto labore
+                        aliquid quaerat laborum.
+                      </div>
+                    </div>
+                    <div className="profile__info">
+                      <div className="profile__stats">
+                        <div className="stat">
+                          <p className="stat__title">Followers</p>
+                          <span className="stat__value">13</span>
+                        </div>
+                        <div className="stat">
+                          <p className="stat__title">Followings</p>
+                          <span className="stat__value">45</span>
+                        </div>
+                        <div className="stat">
+                          <p className="stat__title">Tracks</p>
+                          <span className="stat__value">3</span>
+                        </div>
+                      </div>
+                      <div className="profile__link">
+                        <div className="profile__icon">
+                          <img src={LinkIcon} alt="globe" />
+                        </div>
+                        <a href="">link text</a>
+                      </div>
+                      <button className="profile__follow">
+                        <img src={FollowIcon} alt="person with plus sign"/>
+                        <span>follow</span>
+                      </button>
+                    </div>
+                  </section>
                   <Section
                     title="Favourites"
                     link={"/profile/" + match.params.username + "/likes"}

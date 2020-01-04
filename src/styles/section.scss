@@ -11,8 +11,9 @@
 }
 
 .section__title {
-    font-size: 16px;
-    color: $darkGray;
+    font-size: 14px;
+    color: lighten($darkGray, 10%);
+    margin-bottom: 2px;
 }
 
 .section__more {
@@ -23,7 +24,7 @@
 
 .section__line {
     border: {
-        bottom: 1px solid $gray;
+        bottom: 1px solid lighten($gray,10%);
         top: none;
         right: none;
         left: none;
