@@ -1,0 +1,48 @@
+.profile__nav {
+    padding: 2px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.profile__link {
+    position: relative;
+
+    font-size: 18px;
+    color: $darkGray;
+    text-decoration: none;
+
+    transition: 300ms;
+
+    &.active {
+        color: $primaryColor;
+
+        &::after {
+            background: $primaryColor;
+        }
+    }
+
+    &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 1px;
+
+        position: absolute;
+        bottom: -7px;
+
+        transition: 300ms;
+    }
+}
+
+.profile__line {
+    border: {
+        bottom: 1px solid $gray;
+        top: none;
+        right: none;
+        left: none;
+    }
+
+    margin-bottom: 14px;
+}

@@ -16,7 +16,7 @@ class Topbar extends Component {
         <div className="topbar__search">
           <Search></Search>
         </div>
-        <Link to="/profile" className="topbar__account">
+        <Link to="/profile/someusername" className="topbar__account">
           <img src="" alt="user's avatar" />
         </Link>
       </nav>

@@ -18,7 +18,7 @@ class Track extends Component {
 }
 
 Track.propTypes = {
-  name: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   author: PropTypes.string.isRequired,
   image: PropTypes.string
 };

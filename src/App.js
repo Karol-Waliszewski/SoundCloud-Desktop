@@ -19,7 +19,7 @@ class App extends React.Component {
           <Sidebar></Sidebar>
           <main className="app__main">
             <Switch>
-              <Route path="/profile" component={Profile} />
+              <Route path="/profile/:username" component={Profile} />
               {/* Home has to be last path in switch */}
               <Route path="/" component={Home} />
             </Switch>
