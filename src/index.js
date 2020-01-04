@@ -1,14 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter as Router } from "react-router-dom";
-import "./styles/App.scss";
+import { Provider } from "react-redux";
+
+// Store
+import Store from "./store";
+
+// App
 import App from "./App";
+
+// Styles
+import "./styles/App.scss";
+
+// Service Worker (PWA)
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
+  <Provider store={Store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>,
   document.getElementById("root")
 );
 

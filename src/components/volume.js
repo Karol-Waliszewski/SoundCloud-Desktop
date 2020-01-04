@@ -1,5 +1,10 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
+// Actions
+import { CHANGE_VOLUME } from "../actions/playerActions";
+
+// Assets
 import sound from "../assets/sound.svg";
 
 class Volume extends Component {
@@ -12,11 +17,12 @@ class Volume extends Component {
   }
 
   handleVolumeChange(event) {
-    this.setState({ currentVolume: event.target.value });
+
+    this.props.changeVolume(event.target.value);
   }
 
   render() {
-    let { state } = this;
+    let { state, props } = this;
 
     return (
       <div className="volume">
@@ -28,16 +34,17 @@ class Volume extends Component {
             className="volume__line--current"
             orient="vertical"
             style={{
-              height: (state.currentVolume / state.maxVolume) *  80 + "px"
+              height: (props.currentVolume / props.maxVolume) * 80 + "px"
             }}
           ></div>
           <input
             type="range"
             orient="vertical"
             className="volume__line"
-            max={state.maxVolume}
+            max={props.maxVolume}
             min={0}
-            value={state.currentVolume}
+            step={props.maxVolume / 100}
+            value={props.currentVolume}
             onChange={this.handleVolumeChange.bind(this)}
           />
         </div>
@@ -45,5 +52,15 @@ class Volume extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  currentVolume: state.player.volume,
+  maxVolume: state.player.maxVolume
+});
 
-export default Volume;
+const mapDispatchToProps = dispatch => ({
+  changeVolume: volume => {
+    dispatch(CHANGE_VOLUME(volume));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Volume);

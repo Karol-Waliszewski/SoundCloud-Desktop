@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 // Components
 import Timeline from "./timeline";
@@ -81,4 +82,8 @@ class Player extends Component {
   }
 }
 
-export default Player;
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Player);

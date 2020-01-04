@@ -14,20 +14,18 @@ import Likes from "./routes/Likes";
 
 class App extends React.Component {
   render() {
-    let { location } = this.props;
-    console.log(location);
     return (
       <div className="app">
         <Topbar></Topbar>
         <div className="app__row">
           <Sidebar></Sidebar>
           <main className="app__main">
-                <Switch>
-                  <Route path="/profile/:username" component={Profile} />
-                  <Route path="/likes" component={Likes} />
-                  {/* Home has to be last path in switch */}
-                  <Route path="/" component={Home} />
-                </Switch>
+            <Switch>
+              <Route path="/profile/:username" component={Profile} />
+              <Route path="/likes" component={Likes} />
+              {/* Home has to be last path in switch */}
+              <Route path="/" component={Home} />
+            </Switch>
           </main>
         </div>
         <Player></Player>

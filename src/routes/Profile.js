@@ -274,7 +274,7 @@ class Profile extends Component {
                         <div className="profile__icon">
                           <img src={LinkIcon} alt="globe" />
                         </div>
-                        <a href="">link text</a>
+                        <a href="example.com">link text</a>
                       </div>
                       <button className="profile__follow">
                         <img src={FollowIcon} alt="person with plus sign" />

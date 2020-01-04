@@ -14,7 +14,7 @@ class Likes extends React.Component {
     console.log(
       Soundcloud.resolve(
         "https://soundcloud.com/peachyperidots/fujitsu-awaiting"
-      ).then(track=>track.id)
+      ).then(track=>track)
     );
 
     Soundcloud.get("/playlists", {
