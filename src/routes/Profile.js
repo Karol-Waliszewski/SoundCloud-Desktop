@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { NavLink, Switch, Route } from "react-router-dom";
+// import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 // Components
 import Baner from "../components/baner";
@@ -152,7 +153,7 @@ var Followings = function(props) {
 class Profile extends Component {
   render() {
     let { props } = this;
-    let { match } = props;
+    let { match, location } = props;
     return (
       <>
         <Baner
@@ -214,7 +215,6 @@ class Profile extends Component {
             </NavLink>
           </nav>
           <hr className="profile__line" />
-
           <Switch>
             <Route
               path="/profile/:username/playlists"
@@ -277,7 +277,7 @@ class Profile extends Component {
                         <a href="">link text</a>
                       </div>
                       <button className="profile__follow">
-                        <img src={FollowIcon} alt="person with plus sign"/>
+                        <img src={FollowIcon} alt="person with plus sign" />
                         <span>follow</span>
                       </button>
                     </div>
