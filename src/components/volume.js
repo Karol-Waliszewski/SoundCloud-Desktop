@@ -17,12 +17,11 @@ class Volume extends Component {
   }
 
   handleVolumeChange(event) {
-
     this.props.changeVolume(event.target.value);
   }
 
   render() {
-    let { state, props } = this;
+    let { props } = this;
 
     return (
       <div className="volume">

@@ -5,6 +5,9 @@ import { connect } from "react-redux";
 import Timeline from "./timeline";
 import Volume from "./volume";
 
+// Actions
+import { STOP, START } from "../actions/playerActions";
+
 // Assets
 import previous from "../assets/previous.svg";
 import play from "../assets/play.svg";
@@ -18,23 +21,24 @@ import { ReactComponent as RepeatIcon } from "../assets/repeat.svg";
 import { ReactComponent as LikeIcon } from "../assets/like.svg";
 
 class Player extends Component {
-  constructor() {
-    super();
-    this.state = {
-      isPlaying: false
-    };
-  }
-
   render() {
-    let playStopButton = this.state.isPlaying ? (
-      <button className="player__button">
-        <img src={play} alt="stop" className="player__icon--small" />
-      </button>
-    ) : (
-      <button className="player__button">
-        <img src={play} alt="play" className="player__icon--small" />
-      </button>
-    );
+    let playStopButton =
+      this.props.playerState == "playing" ? (
+        <button className="player__button" onClick={this.props.stop}>
+          <img
+            src={play}
+            alt="stop"
+            className="player__icon--small"
+            style={{ background: "black" }}
+          />
+        </button>
+      ) : (
+        <button className="player__button" onClick={this.props.start}>
+          <img src={play} alt="play" className="player__icon--small" />
+        </button>
+      );
+
+    console.log(this.props.playerState);
 
     return (
       <div className="player">
@@ -82,8 +86,15 @@ class Player extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({ playerState: state.player.playerState });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  start: () => {
+    dispatch(START());
+  },
+  stop: () => {
+    dispatch(STOP());
+  }
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Player);
