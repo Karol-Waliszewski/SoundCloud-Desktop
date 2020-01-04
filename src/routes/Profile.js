@@ -153,7 +153,7 @@ var Followings = function(props) {
 class Profile extends Component {
   render() {
     let { props } = this;
-    let { match, location } = props;
+    let { match } = props;
     return (
       <>
         <Baner
