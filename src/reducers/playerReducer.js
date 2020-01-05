@@ -65,7 +65,7 @@ var reducer = function(state = defaultState, action) {
     case "ADD_TO_QUEUE":
       return {
         ...state,
-        queue: [action.payload, ...state.queue]
+        queue: [...state.queue, action.payload]
       };
 
     default:

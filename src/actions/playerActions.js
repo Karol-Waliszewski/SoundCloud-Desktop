@@ -62,9 +62,10 @@ export const PLAY_TRACK = (id, play = false) => {
   return (dispatch, getState) => {
     // Killing previous track
     if (getState().player.player) {
+      dispatch(CHANGE_TIME(0));
       getState().player.player.kill();
     }
-    
+
     // Getting new track
     Soundcloud.stream(`/tracks/${id}`).then(function(player) {
       // Updating player
@@ -80,15 +81,18 @@ export const PLAY_TRACK = (id, play = false) => {
         dispatch(CHANGE_STATE(state));
         if (
           state === "ended" &&
-          getState().player.queue.length > getState().player.currentTrackIndex
+          getState().player.queue.length - 1 >
+            getState().player.currentTrackIndex
         ) {
-          //TODO: next song
           dispatch(
             PLAY_TRACK(
               getState().player.queue[getState().player.currentTrackIndex + 1],
               true
             )
           );
+        } else if (state === "ended" && getState().player.queue.length > 1) {
+          // TODO: LOOOOP
+          dispatch(PLAY_TRACK(getState().player.queue[0], false));
         }
       });
 
@@ -130,3 +134,5 @@ export const START = () => {
     }
   };
 };
+
+export default Soundcloud;

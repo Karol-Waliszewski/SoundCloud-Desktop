@@ -104,11 +104,17 @@
 }
 
 .player__preview {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: $gray;
 
     margin-left: 10px;
+
+    img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
 }
 
 .player__info {

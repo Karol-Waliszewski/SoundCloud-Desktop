@@ -6,7 +6,7 @@ import Timeline from "./timeline";
 import Volume from "./volume";
 
 // Actions
-import { STOP, START } from "../actions/playerActions";
+import Soundcloud, { STOP, START } from "../actions/playerActions";
 
 // Assets
 import previous from "../assets/previous.svg";
@@ -22,7 +22,27 @@ import { ReactComponent as RepeatIcon } from "../assets/repeat.svg";
 import { ReactComponent as LikeIcon } from "../assets/like.svg";
 
 class Player extends Component {
+  constructor() {
+    super();
+    this.state = { track: {} };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.trackID !== prevProps.trackID) {
+      this.fetchTrack(this.props.trackID);
+    }
+  }
+
+  fetchTrack(id) {
+    Soundcloud.get(`/tracks/${id}`).then(track => {
+      console.log(track);
+      this.setState({ track });
+    });
+  }
+
   render() {
+    let { state } = this;
+
     let playStopButton =
       this.props.playerState == "playing" ? (
         <button className="player__button" onClick={this.props.stop}>
@@ -62,13 +82,16 @@ class Player extends Component {
           <div className="player__volume">
             <Volume></Volume>
           </div>
+
           <div className="player__track">
             <div className="player__preview">
-              <img src="" alt="" />
+              <img src={state.track.artwork_url} alt="" />
             </div>
             <div className="player__info">
-              <h2 className="player__title">lorem ipsum lorem ipsum</h2>
-              <h3 className="player__author">author</h3>
+              <h2 className="player__title">{state.track.title}</h2>
+              {state.track.user && (
+                <h3 className="player__author">{state.track.user.username}</h3>
+              )}
             </div>
             <button className="player__like">
               <LikeIcon className="player__icon--small active"></LikeIcon>
@@ -80,7 +103,10 @@ class Player extends Component {
   }
 }
 
-const mapStateToProps = state => ({ playerState: state.player.playerState });
+const mapStateToProps = state => ({
+  playerState: state.player.playerState,
+  trackID: state.player.currentTrackID
+});
 
 const mapDispatchToProps = dispatch => ({
   start: () => {
