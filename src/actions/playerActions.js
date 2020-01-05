@@ -51,32 +51,35 @@ export const ADD_TO_QUEUE = id => ({
   payload: id
 });
 
-export const ADD_AND_PLAY_TRACK = (id, play = false) => {
-  return dispatch => {
-    dispatch(ADD_TO_QUEUE(id));
-    dispatch(PLAY_TRACK(id, play));
-  };
-};
+var fetching = false;
 
 export const PLAY_TRACK = (id, play = false) => {
-  return (dispatch, getState) => {
-    // Killing previous track
-    if (getState().player.player) {
-      dispatch(CHANGE_TIME(0));
-      getState().player.player.kill();
-    }
+  return async (dispatch, getState) => {
+    // Prevent multiple calls at once
+    if (!fetching) {
+      // Killing previous track
+      if (getState().player.player) {
+        dispatch(CHANGE_TIME(0));
+        getState().player.player.kill();
+      }
 
-    // Getting new track
-    Soundcloud.stream(`/tracks/${id}`).then(function(player) {
+      fetching = true;
+
+      // Getting new track
+      let player = await Soundcloud.stream(`/tracks/${id}`);
+
+      fetching = false;
+
       // Updating player
       dispatch(UPDATE_PLAYER(player));
 
       // Updating track info
       dispatch(UPDATE_TRACK(id));
 
-      // triggering 'play-start' event
+      // Triggering 'play-start' event
       player.play();
 
+      // Controlling state changes and music finishing
       player.on("state-change", state => {
         dispatch(CHANGE_STATE(state));
         if (
@@ -84,18 +87,17 @@ export const PLAY_TRACK = (id, play = false) => {
           getState().player.queue.length - 1 >
             getState().player.currentTrackIndex
         ) {
-          dispatch(
-            PLAY_TRACK(
-              getState().player.queue[getState().player.currentTrackIndex + 1],
-              true
-            )
-          );
-        } else if (state === "ended" && getState().player.queue.length > 1) {
-          // TODO: LOOOOP
-          dispatch(PLAY_TRACK(getState().player.queue[0], false));
+          dispatch(NEXT_TRACK());
+        } else if (
+          state === "ended" &&
+          getState().player.queue.length > 1 &&
+          getState().player.loop
+        ) {
+          dispatch(PLAY_TRACK(getState().player.queue[0], true));
         }
       });
 
+      // Loading initials for player
       player.on("play-start", () => {
         player.pause();
         player.seek(0);
@@ -107,30 +109,81 @@ export const PLAY_TRACK = (id, play = false) => {
         });
         dispatch(CHANGE_DURATION(player.getDuration()));
       });
-    });
+    }
+  };
+};
+
+export const NEXT_TRACK = () => {
+  return (dispatch, getState) => {
+    if (!fetching) {
+      let state = getState();
+      let play = state.player.playerState === "playing" ? true : false;
+      if (state.player.queue.length - 1 > state.player.currentTrackIndex) {
+        dispatch(
+          PLAY_TRACK(
+            state.player.queue[state.player.currentTrackIndex + 1],
+            play
+          )
+        );
+      } else if (state.player.loop) {
+        dispatch(PLAY_TRACK(state.player.queue[0], play));
+      }
+    }
+  };
+};
+
+export const PREVIOUS_TRACK = () => {
+  return (dispatch, getState) => {
+    if (!fetching) {
+      let state = getState();
+      let play = state.player.playerState === "playing" ? true : false;
+      if (0 < state.player.currentTrackIndex) {
+        dispatch(
+          PLAY_TRACK(
+            state.player.queue[state.player.currentTrackIndex - 1],
+            play
+          )
+        );
+      } else if (state.player.loop) {
+        dispatch(
+          PLAY_TRACK(state.player.queue[state.player.queue.length - 1], play)
+        );
+      }
+    }
+  };
+};
+
+export const ADD_AND_PLAY_TRACK = (id, play = false) => {
+  return dispatch => {
+    dispatch(ADD_TO_QUEUE(id));
+    dispatch(PLAY_TRACK(id, play));
   };
 };
 
 export const CHANGE_TIME = time => {
   return (dispatch, getState) => {
-    if (getState().player.player) {
-      getState().player.player.seek(time);
+    dispatch(UPDATE_TIME(time));
+    let state = getState();
+    if (state.player.player && state.player.playerState !== "dead") {
+      state.player.player.seek(time);
     }
   };
 };
 
 export const STOP = () => {
   return (dispatch, getState) => {
-    if (getState().player.player) {
-      getState().player.player.pause();
+    let state = getState();
+    if (state.player.player && state.player.playerState !== "dead") {
+      state.player.player.pause();
     }
   };
 };
 
 export const START = () => {
   return (dispatch, getState) => {
-    if (getState().player.player) {
-      getState().player.player.play();
+    let state = getState();
+    if (state.player.player && state.player.playerState !== "dead") {
+      state.player.player.play();
     }
   };
 };

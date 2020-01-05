@@ -7,6 +7,7 @@ const defaultState = {
   playerState: "paused",
   currentTrackID: null,
   currentTrackIndex: null,
+  loop: true,
   queue: []
 };
 

@@ -6,7 +6,12 @@ import Timeline from "./timeline";
 import Volume from "./volume";
 
 // Actions
-import Soundcloud, { STOP, START } from "../actions/playerActions";
+import Soundcloud, {
+  STOP,
+  START,
+  NEXT_TRACK,
+  PREVIOUS_TRACK
+} from "../actions/playerActions";
 
 // Assets
 import previous from "../assets/previous.svg";
@@ -41,10 +46,10 @@ class Player extends Component {
   }
 
   render() {
-    let { state } = this;
+    let { state, props } = this;
 
     let playStopButton =
-      this.props.playerState == "playing" ? (
+      this.props.playerState === "playing" ? (
         <button className="player__button" onClick={this.props.stop}>
           <img src={pause} alt="stop" className="player__icon--small" />
         </button>
@@ -58,7 +63,7 @@ class Player extends Component {
       <div className="player">
         <div className="player__row">
           <div className="player__buttons">
-            <button className="player__button">
+            <button className="player__button" onClick={props.previous}>
               <img
                 src={previous}
                 alt="previous"
@@ -66,7 +71,7 @@ class Player extends Component {
               />
             </button>
             {playStopButton}
-            <button className="player__button">
+            <button className="player__button" onClick={props.next}>
               <img src={next} alt="next" className="player__icon--small" />
             </button>
             <button className="player__button">
@@ -114,6 +119,12 @@ const mapDispatchToProps = dispatch => ({
   },
   stop: () => {
     dispatch(STOP());
+  },
+  next: () => {
+    dispatch(NEXT_TRACK());
+  },
+  previous: () => {
+    dispatch(PREVIOUS_TRACK());
   }
 });
 
