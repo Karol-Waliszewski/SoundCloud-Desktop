@@ -80,12 +80,29 @@ export const PLAY_TRACK = (id, play = false) => {
       // Updating track info
       dispatch(UPDATE_TRACK(id));
 
+      // Loading initials for player
+      player.on("play-start", () => {
+        if (play === false) {
+          player.pause();
+          player.seek(0);
+        } else {
+          dispatch(CHANGE_STATE("playing"));
+        }
+        player.on("time", time => {
+          dispatch(UPDATE_TIME(time));
+        });
+        dispatch(CHANGE_DURATION(player.getDuration()));
+      });
+
       // Triggering 'play-start' event
       player.play();
 
       // Controlling state changes and music finishing
       player.on("state-change", state => {
+        // Simply updates state
         dispatch(CHANGE_STATE(state));
+
+        // When the track is finished
         if (
           state === "ended" &&
           getState().player.queue.length - 1 >
@@ -99,19 +116,6 @@ export const PLAY_TRACK = (id, play = false) => {
         ) {
           dispatch(PLAY_TRACK(getState().player.queue[0], true));
         }
-      });
-
-      // Loading initials for player
-      player.on("play-start", () => {
-        player.pause();
-        player.seek(0);
-        if (play === true) {
-          player.play();
-        }
-        player.on("time", time => {
-          dispatch(UPDATE_TIME(time));
-        });
-        dispatch(CHANGE_DURATION(player.getDuration()));
       });
     }
   };
