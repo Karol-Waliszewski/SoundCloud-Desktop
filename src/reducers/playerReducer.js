@@ -69,6 +69,12 @@ var reducer = function(state = defaultState, action) {
         queue: [...state.queue, action.payload]
       };
 
+    case "TOGGLE_LOOP":
+      return {
+        ...state,
+        loop: !state.loop
+      };
+
     default:
       return { ...state };
   }

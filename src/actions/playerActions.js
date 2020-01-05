@@ -11,6 +11,10 @@ Soundcloud.initialize({
 //   )
 // );
 
+export const TOGGLE_LOOP = () => ({
+  type: "TOGGLE_LOOP"
+});
+
 export const CHANGE_VOLUME = volume => ({
   type: "CHANGE_VOLUME",
   payload: volume
@@ -87,7 +91,7 @@ export const PLAY_TRACK = (id, play = false) => {
           getState().player.queue.length - 1 >
             getState().player.currentTrackIndex
         ) {
-          dispatch(NEXT_TRACK());
+          dispatch(NEXT_TRACK(true));
         } else if (
           state === "ended" &&
           getState().player.queue.length > 1 &&
@@ -113,11 +117,12 @@ export const PLAY_TRACK = (id, play = false) => {
   };
 };
 
-export const NEXT_TRACK = () => {
+export const NEXT_TRACK = playing => {
   return (dispatch, getState) => {
     if (!fetching) {
       let state = getState();
-      let play = state.player.playerState === "playing" ? true : false;
+      let play =
+        state.player.playerState === "playing" || playing ? true : false;
       if (state.player.queue.length - 1 > state.player.currentTrackIndex) {
         dispatch(
           PLAY_TRACK(
@@ -132,11 +137,12 @@ export const NEXT_TRACK = () => {
   };
 };
 
-export const PREVIOUS_TRACK = () => {
+export const PREVIOUS_TRACK = playing => {
   return (dispatch, getState) => {
     if (!fetching) {
       let state = getState();
-      let play = state.player.playerState === "playing" ? true : false;
+      let play =
+        state.player.playerState === "playing" || playing ? true : false;
       if (0 < state.player.currentTrackIndex) {
         dispatch(
           PLAY_TRACK(

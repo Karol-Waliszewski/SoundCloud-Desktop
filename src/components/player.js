@@ -10,7 +10,8 @@ import Soundcloud, {
   STOP,
   START,
   NEXT_TRACK,
-  PREVIOUS_TRACK
+  PREVIOUS_TRACK,
+  TOGGLE_LOOP
 } from "../actions/playerActions";
 
 // Assets
@@ -77,8 +78,10 @@ class Player extends Component {
             <button className="player__button">
               <ShuffleIcon className="player__icon"></ShuffleIcon>
             </button>
-            <button className="player__button">
-              <RepeatIcon className="player__icon"></RepeatIcon>
+            <button className="player__button" onClick={props.toggleRepeat}>
+              <RepeatIcon
+                className={`player__icon ${props.loop ? "active" : ""}`}
+              ></RepeatIcon>
             </button>
           </div>
           <div className="player__timeline">
@@ -110,7 +113,8 @@ class Player extends Component {
 
 const mapStateToProps = state => ({
   playerState: state.player.playerState,
-  trackID: state.player.currentTrackID
+  trackID: state.player.currentTrackID,
+  loop: state.player.loop
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -125,6 +129,9 @@ const mapDispatchToProps = dispatch => ({
   },
   previous: () => {
     dispatch(PREVIOUS_TRACK());
+  },
+  toggleRepeat: () => {
+    dispatch(TOGGLE_LOOP());
   }
 });
 
