@@ -94,7 +94,7 @@ export const PLAY_TRACK = (id, play = false) => {
           dispatch(NEXT_TRACK(true));
         } else if (
           state === "ended" &&
-          getState().player.queue.length > 1 &&
+          getState().player.queue.length > 0 &&
           getState().player.loop
         ) {
           dispatch(PLAY_TRACK(getState().player.queue[0], true));
