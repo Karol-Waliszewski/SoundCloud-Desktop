@@ -4,7 +4,10 @@ const defaultState = {
   time: 0,
   duration: 0,
   player: null,
-  playerState: "paused"
+  playerState: "paused",
+  currentTrackID: null,
+  currentTrackIndex: null,
+  queue: []
 };
 
 var reducer = function(state = defaultState, action) {
@@ -37,12 +40,32 @@ var reducer = function(state = defaultState, action) {
         playerState: action.payload
       };
 
+    case "UPDATE_TRACK":
+      let index = state.queue.indexOf(action.payload);
+      return {
+        ...state,
+        currentTrackID: action.payload,
+        currentTrackIndex: index
+      };
+
     case "UPDATE_PLAYER":
       action.payload.setVolume(state.volume);
-      //action.payload.play();
+
       return {
         ...state,
         player: action.payload
+      };
+
+    case "UPDATE_QUEUE":
+      return {
+        ...state,
+        queue: action.payload
+      };
+
+    case "ADD_TO_QUEUE":
+      return {
+        ...state,
+        queue: [action.payload, ...state.queue]
       };
 
     default:

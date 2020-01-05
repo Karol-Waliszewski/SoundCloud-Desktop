@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // Actions
-import { CHANGE_TIME, PLAY_TRACK } from "../actions/playerActions";
+import { CHANGE_TIME, ADD_AND_PLAY_TRACK, ADD_TO_QUEUE } from "../actions/playerActions";
 
 class Timeline extends Component {
   componentDidMount() {
-    this.props.playTrack("337213956");
+    this.props.addToQueue("504437034");
+    this.props.playTrack("496922577");
   }
 
   handleTimeChange(event) {
@@ -60,8 +61,11 @@ const mapDispatchToProps = dispatch => ({
   changeTime: time => {
     dispatch(CHANGE_TIME(time));
   },
-  playTrack: id => {
-    dispatch(PLAY_TRACK(id));
+  playTrack: (id, play) => {
+    dispatch(ADD_AND_PLAY_TRACK(id, play));
+  },
+  addToQueue: id => {
+    dispatch(ADD_TO_QUEUE(id))
   }
 });
 

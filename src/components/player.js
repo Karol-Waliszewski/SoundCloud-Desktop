@@ -11,6 +11,7 @@ import { STOP, START } from "../actions/playerActions";
 // Assets
 import previous from "../assets/previous.svg";
 import play from "../assets/play.svg";
+import pause from "../assets/pause.svg";
 import next from "../assets/next.svg";
 
 // import { ReactComponent as Icon } from "../assets/previous.svg";
@@ -25,20 +26,13 @@ class Player extends Component {
     let playStopButton =
       this.props.playerState == "playing" ? (
         <button className="player__button" onClick={this.props.stop}>
-          <img
-            src={play}
-            alt="stop"
-            className="player__icon--small"
-            style={{ background: "black" }}
-          />
+          <img src={pause} alt="stop" className="player__icon--small" />
         </button>
       ) : (
         <button className="player__button" onClick={this.props.start}>
           <img src={play} alt="play" className="player__icon--small" />
         </button>
       );
-
-    console.log(this.props.playerState);
 
     return (
       <div className="player">
