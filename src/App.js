@@ -11,6 +11,7 @@ import Player from "./components/player";
 import Home from "./routes/Home";
 import Profile from "./routes/Profile";
 import Likes from "./routes/Likes";
+import Search from "./routes/Search";
 
 class App extends React.Component {
   render() {
@@ -23,6 +24,7 @@ class App extends React.Component {
             <Switch>
               <Route path="/profile/:username" component={Profile} />
               <Route path="/likes" component={Likes} />
+              <Route path="/search" component={Search} />
               {/* Home has to be last path in switch */}
               <Route path="/" component={Home} />
             </Switch>

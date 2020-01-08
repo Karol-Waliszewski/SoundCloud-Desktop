@@ -1,8 +1,12 @@
 import { combineReducers } from "redux";
-import playerReducer from "./playerReducer.js";
+
+// Reducers
+import playerReducer from "./playerReducer";
+import searchReducer from "./searchReducer";
 
 var reducers = combineReducers({
-  player: playerReducer
+  player: playerReducer,
+  search: searchReducer
 });
 
 export default reducers;
