@@ -42,3 +42,16 @@ body {
   overflow: auto;
 
 }
+
+.search-result {
+  font-size: 24px;
+  margin: 10px 0;
+
+  span {
+    font-size: inherit;
+  }
+}
+
+.color--primary {
+  color: $primaryColor;
+}
