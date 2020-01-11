@@ -40,10 +40,14 @@ class Player extends Component {
   }
 
   fetchTrack(id) {
-    Soundcloud.get(`/tracks/${id}`).then(track => {
-      console.log(track);
-      this.setState({ track });
-    });
+    Soundcloud.get(`/tracks/${id}`)
+      .then(track => {
+        console.log(track);
+        this.setState({ track });
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 
   render() {

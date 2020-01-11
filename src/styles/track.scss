@@ -9,7 +9,7 @@
     margin-top: 6px;
     margin-bottom: 12px;
 
-    cursor: pointer;
+
 }
 
 .track__image {
@@ -17,6 +17,7 @@
     height: 130px;
     background: $gray;
     margin-bottom: 4px;
+    cursor: pointer;
 
     img {
         width: 100%;
@@ -30,10 +31,13 @@
     font-size: 14px;
     color: $darkGray;
     margin-bottom: 3px;
+    word-break: break-all;
+    cursor: pointer;
 }
 
 .track__author {
     width: 130px;
     font-size: 11px;
     color: lighten($darkGray, 20%);
+    cursor: pointer;
 }

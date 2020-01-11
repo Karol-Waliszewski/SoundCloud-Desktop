@@ -50,6 +50,15 @@ export const UPDATE_QUEUE = queue => ({
   payload: queue
 });
 
+export const START_QUEUE = (queue, play = false) => {
+  return dispatch => {
+    dispatch(UPDATE_QUEUE(queue));
+    if (queue.length > 0) {
+      dispatch(PLAY_TRACK(queue[0], play));
+    }
+  };
+};
+
 export const ADD_TO_QUEUE = id => ({
   type: "ADD_TO_QUEUE",
   payload: id
@@ -57,66 +66,99 @@ export const ADD_TO_QUEUE = id => ({
 
 var fetching = false;
 
-export const PLAY_TRACK = (id, play = false) => {
+const PLAY_TRACK = (id, play = false) => {
   return async (dispatch, getState) => {
     // Prevent multiple calls at once
     if (!fetching) {
-      // Killing previous track
-      if (getState().player.player) {
-        dispatch(CHANGE_TIME(0));
-        getState().player.player.kill();
-      }
-
       fetching = true;
 
       // Getting new track
-      let player = await Soundcloud.stream(`/tracks/${id}`);
+      try {
+
+        let player = await Soundcloud.stream(`/tracks/${id}`);
+
+        // Loading initials for player
+        player.on("play-start", () => {
+          // Killing previous player
+          if (getState().player.player) {
+            if (!getState().player.player.isDead()) {
+              dispatch(CHANGE_TIME(0));
+            }
+            getState().player.player.kill();
+          }
+
+          if (play === false) {
+            player.pause();
+            player.seek(0);
+            dispatch(CHANGE_STATE("paused"));
+          } else {
+            dispatch(CHANGE_STATE("playing"));
+          }
+
+          dispatch(CHANGE_DURATION(player.getDuration()));
+        });
+
+        // Triggering 'play-start' event
+        await player.play();
+
+        // Controlling state changes and music finishing
+        player.on("state-change", state => {
+          // Simply updates state
+          dispatch(CHANGE_STATE(state));
+
+          // When the track is finished
+          if (
+            state === "ended" &&
+            getState().player.queue.length - 1 >
+              getState().player.currentTrackIndex
+          ) {
+            dispatch(NEXT_TRACK(true));
+          } else if (
+            state === "ended" &&
+            getState().player.queue.length > 0 &&
+            getState().player.loop
+          ) {
+            dispatch(PLAY_TRACK(getState().player.queue[0], true));
+          }
+        });
+
+        // Time change event handler
+        player.on("time", time => {
+          //dispatch(UPDATE_TIME(time));
+        });
+
+        // Audio error event
+        player.on("audio_error", err => {
+          console.error(err);
+        });
+
+        // Updating player
+        dispatch(UPDATE_PLAYER(player));
+
+        // Updating track info
+        dispatch(UPDATE_TRACK(id));
+
+        fetching = false;
+      } catch (err) {
+        console.error(err);
+
+        fetching = false;
+
+        // Playing another tracks
+        let queue = [...getState().player.queue];
+        if (queue.length > 0) {
+          let index = queue.indexOf(id);
+          if (index >= 0) {
+            queue.splice(index, 1);
+          }
+          dispatch(UPDATE_QUEUE(queue));
+          index = index < queue.length - 1 ? index : queue.length - 1;
+          console.log(queue[index]);
+          dispatch(PLAY_TRACK(queue[index], play));
+        }
+      }
 
       fetching = false;
-
-      // Updating player
-      dispatch(UPDATE_PLAYER(player));
-
-      // Updating track info
-      dispatch(UPDATE_TRACK(id));
-
-      // Loading initials for player
-      player.on("play-start", () => {
-        if (play === false) {
-          player.pause();
-          player.seek(0);
-        } else {
-          dispatch(CHANGE_STATE("playing"));
-        }
-        player.on("time", time => {
-          dispatch(UPDATE_TIME(time));
-        });
-        dispatch(CHANGE_DURATION(player.getDuration()));
-      });
-
-      // Triggering 'play-start' event
-      player.play();
-
-      // Controlling state changes and music finishing
-      player.on("state-change", state => {
-        // Simply updates state
-        dispatch(CHANGE_STATE(state));
-
-        // When the track is finished
-        if (
-          state === "ended" &&
-          getState().player.queue.length - 1 >
-            getState().player.currentTrackIndex
-        ) {
-          dispatch(NEXT_TRACK(true));
-        } else if (
-          state === "ended" &&
-          getState().player.queue.length > 0 &&
-          getState().player.loop
-        ) {
-          dispatch(PLAY_TRACK(getState().player.queue[0], true));
-        }
-      });
     }
   };
 };
@@ -164,8 +206,10 @@ export const PREVIOUS_TRACK = playing => {
 };
 
 export const ADD_AND_PLAY_TRACK = (id, play = false) => {
-  return dispatch => {
-    dispatch(ADD_TO_QUEUE(id));
+  return (dispatch, getState) => {
+    if (!getState().player.queue.includes(id)) {
+      dispatch(ADD_TO_QUEUE(id));
+    }
     dispatch(PLAY_TRACK(id, play));
   };
 };

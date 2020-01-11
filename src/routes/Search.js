@@ -7,6 +7,7 @@ import Soundcloud from "../actions/playerActions";
 // Components
 import Section from "../components/section";
 import Track from "../components/track";
+import Playlist from "../components/playlist";
 import User from "../components/user";
 
 class Search extends Component {
@@ -15,7 +16,7 @@ class Search extends Component {
     this.state = { tracks: [], playlists: [], users: [] };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.searchQuery(this.props.query);
   }
 
@@ -52,6 +53,7 @@ class Search extends Component {
     let tracks = state.tracks.map(track => (
       <Track
         key={track.id}
+        id={track.id}
         title={track.title}
         author={track.user.username}
         image={track.artwork_url}
@@ -59,12 +61,18 @@ class Search extends Component {
     ));
 
     let users = state.users.map(user => (
-      <User key={user.id} name={user.username} avatar={user.avatar_url}></User>
+      <User
+        key={user.id}
+        id={user.id}
+        name={user.username}
+        avatar={user.avatar_url}
+      ></User>
     ));
 
     let playlists = state.playlists.map(playlist => (
-      <Track
+      <Playlist
         key={playlist.id}
+        id={playlist.id}
         title={playlist.title}
         author={playlist.user.username}
         image={
@@ -72,13 +80,14 @@ class Search extends Component {
             ? playlist.artwork_url
             : playlist.user.avatar_url
         }
-      ></Track>
+      ></Playlist>
     ));
 
     return (
       <div className="route">
         <h4 className="search-result">
-          Results for: "<span className="color--primary">{props.query}</span>"
+          Search results for: "
+          <span className="color--primary">{props.query}</span>"
         </h4>
 
         {tracks.length > 0 && (

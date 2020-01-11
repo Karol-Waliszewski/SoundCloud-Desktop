@@ -8,7 +8,7 @@ import { CHANGE_QUERY } from "../actions/searchActions";
 
 class Search extends Component {
   onInputChange(event) {
-    this.props.changeQuery(event.target.value);
+    this.props.changeQuery(event.target.value.toLowerCase());
   }
 
   render() {

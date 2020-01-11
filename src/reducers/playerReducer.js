@@ -60,7 +60,7 @@ var reducer = function(state = defaultState, action) {
     case "UPDATE_QUEUE":
       return {
         ...state,
-        queue: action.payload
+        queue: [...action.payload]
       };
 
     case "ADD_TO_QUEUE":
