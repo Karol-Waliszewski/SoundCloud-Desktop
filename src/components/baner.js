@@ -7,16 +7,20 @@ class Baner extends Component {
 
     return (
       <div className="baner">
-        <div className="baner__background" style={{'background': props.background}}>
-        </div>
+        <div
+          className="baner__background"
+          style={{ backgroundImage: `url(${props.avatar})` }}
+        ></div>
         <div className="baner__info">
           <div className="baner__avatar">
             <img src={props.avatar} alt="" />
           </div>
           <div className="baner__text">
             <h4 className="baner__username">{props.username}</h4>
-            <h5 className="baner__additional">{props.name}</h5>
-            <p className="baner__additional">{props.description}</p>
+            {props.name && <h5 className="baner__additional">{props.name}</h5>}
+            {props.country && (
+              <p className="baner__additional">{props.country}</p>
+            )}
           </div>
         </div>
       </div>
@@ -27,7 +31,7 @@ class Baner extends Component {
 Baner.propTypes = {
   username: PropTypes.string.isRequired,
   name: PropTypes.string,
-  description: PropTypes.string,
+  country: PropTypes.string,
   avatar: PropTypes.string,
   background: PropTypes.string
 };

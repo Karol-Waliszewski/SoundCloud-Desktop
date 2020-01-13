@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 class User extends Component {
@@ -7,17 +8,19 @@ class User extends Component {
 
     return (
       <div className="user">
-        <div className="user__image">
+        <Link to={`/profile/${props.id}`} className="user__image">
           <img src={props.avatar} alt="" />
-        </div>
-        <h4 className="user__name">{props.name}</h4>
+        </Link>
+        <Link to={`/profile/${props.id}`}  className="user__name">
+          <h4>{props.name}</h4>
+        </Link>
       </div>
     );
   }
 }
 
 User.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired
 };
 
 export default User;

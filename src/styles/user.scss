@@ -9,10 +9,11 @@
     margin-top: 6px;
     margin-bottom: 12px;
 
-   
+
 }
 
 .user__image {
+    display: block;
     width: 130px;
     height: 130px;
     background: $gray;
@@ -34,4 +35,5 @@
     font-size: 14px;
     color: $darkGray;
     cursor: pointer;
+    text-decoration: none;
 }

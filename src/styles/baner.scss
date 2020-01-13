@@ -5,6 +5,8 @@
     position: relative;
 
     padding: 12px 24px;
+
+    overflow: hidden;
 }
 
 .baner__background {
@@ -14,10 +16,16 @@
     right: 0;
     left: 0;
 
+    z-index: 0;
+
     width: 100%;
     height: 100%;
 
     background: darken($lightGray, 5%);
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    filter: blur(20px);
     border-bottom: $gray 1px solid;
 
     pointer-events: none;
@@ -41,12 +49,20 @@
     background: darken($lightGray, 10%);
     border-radius: 50%;
 
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: inherit;
+    }
 }
 
 .baner__text {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    max-height: 100%;
+    max-width: 50%;
 }
 
 .baner__username {
@@ -60,6 +76,7 @@
 }
 
 .baner__additional {
+    word-break: break-all;
 
     font-size: 14px;
 

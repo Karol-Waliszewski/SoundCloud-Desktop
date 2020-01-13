@@ -124,7 +124,7 @@ const PLAY_TRACK = (id, play = false) => {
 
         // Time change event handler
         player.on("time", time => {
-          //dispatch(UPDATE_TIME(time));
+          dispatch(UPDATE_TIME(time));
         });
 
         // Audio error event
@@ -141,6 +141,7 @@ const PLAY_TRACK = (id, play = false) => {
         fetching = false;
       } catch (err) {
         console.error(err);
+        console.error("Selected track is probably unstreamable.");
 
         fetching = false;
 
@@ -153,7 +154,6 @@ const PLAY_TRACK = (id, play = false) => {
           }
           dispatch(UPDATE_QUEUE(queue));
           index = index < queue.length - 1 ? index : queue.length - 1;
-          console.log(queue[index]);
           dispatch(PLAY_TRACK(queue[index], play));
         }
       }

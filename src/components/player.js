@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 // Components
@@ -102,7 +103,12 @@ class Player extends Component {
             <div className="player__info">
               <h2 className="player__title">{state.track.title}</h2>
               {state.track.user && (
-                <h3 className="player__author">{state.track.user.username}</h3>
+                <Link
+                  className="player__author"
+                  to={`/profile/${state.track.user.id}`}
+                >
+                  {state.track.user.username}
+                </Link>
               )}
             </div>
             <button className="player__like">
