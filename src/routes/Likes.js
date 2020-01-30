@@ -1,14 +1,14 @@
 import React from "react";
-import Soundcloud from "soundcloud";
+
 
 class Likes extends React.Component {
-  constructor() {
-    super();
-    // Soundcloud.initialize({
-    //   client_id: "fa791b761f68cafa375ab5f7ea51927a",
-    //   redirect_uri: "https://example.com/callback"
-    // });
-  }
+  // constructor() {
+  //   super();
+  //   // Soundcloud.initialize({
+  //   //   client_id: "fa791b761f68cafa375ab5f7ea51927a",
+  //   //   redirect_uri: "https://example.com/callback"
+  //   // });
+  // }
 
   render() {
     // console.log(

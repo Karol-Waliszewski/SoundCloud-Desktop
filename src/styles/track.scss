@@ -13,17 +13,190 @@
 }
 
 .track__image {
+    position: relative;
     width: 130px;
     height: 130px;
     background: $gray;
     margin-bottom: 4px;
     cursor: pointer;
 
-    img {
+    .track__thumbnail {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
+
+    &:hover {
+        .track__hover {
+            opacity: 1;
+        }
+    }
+}
+
+.track__hover {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    box-shadow: inset 0 -30px 15px -10px rgba($darkGray, 0.25);
+
+    opacity: 0;
+}
+
+.track__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 40%;
+    height: 40%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: $primaryColor;
+    border: none;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    transition: 150ms;
+
+    &:hover {
+        background: darken($primaryColor, 7%);
+    }
+}
+
+.track__icon {
+    width: 50%;
+    height: 50%;
+
+    * {
+        fill: #fff !important;
+    }
+}
+
+.track__more {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+
+    .track__dots {
+        padding: 3px;
+        width: 22px;
+        background: none;
+        border: none;
+
+        cursor: pointer;
+
+        &:focus {
+            outline: none;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+
+}
+
+.track__options {
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    z-index: 4;
+
+    width: 130px;
+
+    background: #fff;
+
+    list-style-type: none;
+
+    border: $gray 1px solid;
+    border-radius: 3px;
+
+
+    li:not(:last-child)>.track__option {
+        border-bottom: 1px solid $gray;
+    }
+}
+
+.track__option {
+    border: 0;
+    background: 0;
+
+    width: 100%;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 3px 4px;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+
+
+    &:focus,
+    &:hover {
+        background: $lightGray;
+    }
+}
+
+.track__icon--option {
+    display: block;
+    width: 16px;
+    height: 16px;
+
+    margin-right: 6px;
+
+    background: red;
+
+    object-fit: contain;
+}
+
+.track__duration {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+
+    display: flex;
+
+    padding: 2px 5px;
+
+    background: rgba($darkGray, 0.6);
+    color: #fff;
+    font-size: 12px;
+}
+
+.track__tracks {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    display: flex;
+
+    padding: 2px 5px;
+
+    background: rgba($darkGray, 0.6);
+    color: #fff;
+    font-size: 12px;
 }
 
 .track__title {
@@ -40,4 +213,5 @@
     font-size: 11px;
     color: lighten($darkGray, 20%);
     cursor: pointer;
+    text-decoration: none;
 }

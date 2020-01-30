@@ -31,13 +31,15 @@ class Search extends Component {
       q: query,
       limit: 12
     }).then(t => {
-      this.setState({ tracks: [...t] });
+      this.setState({ tracks: [...t.filter(track => track.streamable)] });
     });
     Soundcloud.get("/playlists", {
       q: query,
       limit: 12
     }).then(p => {
-      this.setState({ playlists: [...p] });
+      this.setState({
+        playlists: [...p.filter(playlist => playlist.streamable)]
+      });
     });
     Soundcloud.get("/users", {
       q: query,
@@ -49,14 +51,14 @@ class Search extends Component {
 
   render() {
     let { props, state } = this;
-
     let tracks = state.tracks.map(track => (
       <Track
         key={track.id}
         id={track.id}
         title={track.title}
-        author={track.user.username}
+        author={track.user}
         image={track.artwork_url}
+        duration={track.duration}
       ></Track>
     ));
 
@@ -74,7 +76,9 @@ class Search extends Component {
         key={playlist.id}
         id={playlist.id}
         title={playlist.title}
-        author={playlist.user.username}
+        tracks={playlist.track_count}
+        author={playlist.user}
+        duration={playlist.duration}
         image={
           playlist.artwork_url != null
             ? playlist.artwork_url

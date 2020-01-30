@@ -174,7 +174,6 @@ class Profile extends Component {
   fetchUser(id) {
     Soundcloud.get(`/users/${id}`).then(user => {
       this.setState({ user });
-      console.log(user);
     });
   }
 

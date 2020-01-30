@@ -1,11 +1,22 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Actions
 import { ADD_AND_PLAY_TRACK, ADD_TO_QUEUE } from "../actions/playerActions";
 
+// Assets
+import dots from "../assets/dots.svg";
+import { ReactComponent as PlayIcon } from "../assets/play.svg";
+
 class Track extends Component {
+  constructor() {
+    super();
+
+    this.state = { options: false };
+  }
+
   playTrack() {
     let { props } = this;
     if (props.id) {
@@ -13,18 +24,85 @@ class Track extends Component {
     }
   }
 
-  render() {
+  addToQueue() {
     let { props } = this;
+    if (props.id) {
+      props.addToQueue(props.id);
+    }
+    alert("TODO: add notification");
+  }
+
+  toggleOptions() {
+    setTimeout(() => {
+      this.setState({ options: !this.state.options });
+    }, 100);
+  }
+
+  stopPropagation(e) {
+    e.stopPropagation();
+  }
+
+  render() {
+    let { props, state } = this;
+    let duration = props.duration / 1000;
+    let minutes = parseInt(duration / 60);
+    let seconds =
+      duration % 60 < 10
+        ? "0" + parseInt(duration % 60)
+        : parseInt(duration % 60);
 
     return (
       <div className="track">
         <div className="track__image" onClick={this.playTrack.bind(this)}>
-          <img src={props.image} alt="" />
+          <img className="track__thumbnail" src={props.image} alt="" />
+          <div className="track__hover">
+            <button className="track__play">
+              <PlayIcon className="track__icon"></PlayIcon>
+            </button>
+
+            <div className="track__more">
+              <button
+                type="button"
+                className="track__dots"
+                title="More"
+                onClick={this.stopPropagation}
+                onFocus={this.toggleOptions.bind(this)}
+                onBlur={this.toggleOptions.bind(this)}
+              >
+                <img src={dots} alt="3 dots" />
+              </button>
+              {state.options && (
+                <ul className="track__options" onClick={this.stopPropagation}>
+                  <li>
+                    <button
+                      className="track__option"
+                      onClick={this.addToQueue.bind(this)}
+                    >
+                      <img src="" alt="" className="track__icon--option" />
+                      Add to Next up
+                    </button>
+                  </li>
+                  <li>
+                    <button className="track__option">
+                      <img src="" alt="" className="track__icon--option" />
+                      Add to playlists
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
+
+            <span className="track__duration">
+              {minutes}:{seconds}
+            </span>
+          </div>
         </div>
         <h4 className="track__title" onClick={this.playTrack.bind(this)}>
           {props.title}
         </h4>
-        <p className="track__author">{props.author}</p>
+        <Link className="track__author" to={`/profile/${props.author.id}`}>
+          {props.author.username}
+        </Link>
       </div>
     );
   }
@@ -33,7 +111,8 @@ class Track extends Component {
 Track.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
+  author: PropTypes.object.isRequired,
+  time: PropTypes.number.isRequired,
   image: PropTypes.string
 };
 
