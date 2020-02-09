@@ -7,7 +7,8 @@ import dots from "../assets/dots.svg";
 import { ReactComponent as PlayIcon } from "../assets/play.svg";
 
 // Actions
-import Soundcloud, {
+import Soundcloud from "../soundcloud";
+import {
   ADD_AND_PLAY_TRACK,
   ADD_TO_QUEUE,
   START_QUEUE
@@ -111,9 +112,7 @@ class Playlist extends Component {
               {minutes}:{seconds}
             </span>
 
-            <span className="track__tracks">
-              Tracks: {props.tracks}
-            </span>
+            <span className="track__tracks">Tracks: {props.tracks}</span>
           </div>
         </div>
         <h4 className="track__title" onClick={this.playPlaylist.bind(this)}>

@@ -7,7 +7,8 @@ import Timeline from "./timeline";
 import Volume from "./volume";
 
 // Actions
-import Soundcloud, {
+import Soundcloud from "../soundcloud";
+import {
   STOP,
   START,
   NEXT_TRACK,

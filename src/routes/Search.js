@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // Actions
-import Soundcloud from "../actions/playerActions";
+import Soundcloud from "../soundcloud";
 
 // Components
 import Section from "../components/section";

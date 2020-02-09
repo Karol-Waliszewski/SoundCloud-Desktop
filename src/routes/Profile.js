@@ -3,7 +3,7 @@ import { NavLink, Switch, Route } from "react-router-dom";
 // import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 // Actions
-import Soundcloud from "../actions/playerActions";
+import Soundcloud from "../soundcloud";
 
 // Components
 import Baner from "../components/baner";
