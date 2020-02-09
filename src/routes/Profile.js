@@ -1,9 +1,9 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { NavLink, Switch, Route } from "react-router-dom";
-// import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 // Actions
-import Soundcloud from "../soundcloud";
+import { FETCH_USER } from "../actions/profileActions";
 
 // Components
 import Baner from "../components/baner";
@@ -26,29 +26,6 @@ var Tracks = function(props) {
   return (
     <div className="row--start">
       {tracks}
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-    </div>
-  );
-};
-
-var Albums = function(props) {
-  let albums = props.albums.map(track => (
-    <Track
-      title={track.title}
-      author={track.author}
-      image={track.image}
-    ></Track>
-  ));
-  return (
-    <div className="row--start">
-      {albums}
       <Track title="lorem" author="ipsum"></Track>
       <Track title="lorem" author="ipsum"></Track>
       <Track title="lorem" author="ipsum"></Track>
@@ -154,34 +131,22 @@ var Followings = function(props) {
 };
 
 class Profile extends Component {
-  constructor() {
-    super();
-    this.state = { user: null };
-  }
-
   componentDidUpdate(prevProps) {
     if (this.props.match.params.username !== prevProps.match.params.username) {
       // Fetch user
-      this.fetchUser(this.props.match.params.username);
+      this.props.fetchUser(this.props.match.params.username);
     }
   }
 
   componentDidMount() {
     // Fetch user
-    this.fetchUser(this.props.match.params.username);
-  }
-
-  fetchUser(id) {
-    Soundcloud.get(`/users/${id}`).then(user => {
-      console.log(user);
-      this.setState({ user });
-    });
+    this.props.fetchUser(this.props.match.params.username);
   }
 
   render() {
-    let { props, state } = this;
-    let { match } = props;
-    let { user } = state;
+    let { props } = this;
+    let { match, user } = props;
+
     if (user != null) {
       return (
         <>
@@ -218,13 +183,6 @@ class Profile extends Component {
               <NavLink
                 className="profile-nav__link"
                 activeClassName="active"
-                to={"/profile/" + match.params.username + "/albums"}
-              >
-                Albums
-              </NavLink>
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
                 to={"/profile/" + match.params.username + "/reposts"}
               >
                 Reposts
@@ -253,10 +211,6 @@ class Profile extends Component {
               <Route
                 path="/profile/:username/tracks"
                 render={() => <Tracks tracks={[]}></Tracks>}
-              />
-              <Route
-                path="/profile/:username/albums"
-                render={() => <Albums albums={[]}></Albums>}
               />
               <Route
                 path="/profile/:username/reposts"
@@ -375,5 +329,14 @@ class Profile extends Component {
     return <h1>No user found</h1>;
   }
 }
+const mapStateToProps = state => ({
+  user: state.profile.user
+});
 
-export default Profile;
+const mapDispatchToProps = dispatch => ({
+  fetchUser: id => {
+    dispatch(FETCH_USER(id));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
