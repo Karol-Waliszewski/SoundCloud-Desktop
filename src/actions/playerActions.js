@@ -63,7 +63,6 @@ const PLAY_TRACK = (id, play = false) => {
 
       // Getting new track
       try {
-
         let player = await Soundcloud.stream(`/tracks/${id}`);
 
         // Loading initials for player
@@ -112,9 +111,19 @@ const PLAY_TRACK = (id, play = false) => {
         });
 
         // Time change event handler
-        player.on("time", time => {
+        let applyOnTimeEvent = function() {
+          player.on("time", time => {
+            updateTime(time);
+          });
+        };
+
+        let updateTime = function(time) {
           dispatch(UPDATE_TIME(time));
-        });
+          player.off("time");
+          setTimeout(applyOnTimeEvent, 100);
+        };
+
+        applyOnTimeEvent();
 
         // Audio error event
         player.on("audio_error", err => {
