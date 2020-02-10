@@ -44,6 +44,7 @@ class Track extends Component {
 
   render() {
     let { props, state } = this;
+
     let duration = props.duration / 1000;
     let minutes = parseInt(duration / 60);
     let seconds =
@@ -54,7 +55,11 @@ class Track extends Component {
     return (
       <div className="track">
         <div className="track__image" onClick={this.playTrack.bind(this)}>
-          <img className="track__thumbnail" src={props.image} alt="" />
+          <img
+            className="track__thumbnail"
+            src={props.artwork_url}
+            alt=""
+          />
           <div className="track__hover">
             <button className="track__play">
               <PlayIcon className="track__icon"></PlayIcon>
@@ -100,8 +105,8 @@ class Track extends Component {
         <h4 className="track__title" onClick={this.playTrack.bind(this)}>
           {props.title}
         </h4>
-        <Link className="track__author" to={`/profile/${props.author.id}`}>
-          {props.author.username}
+        <Link className="track__author" to={`/profile/${props.user.id}`}>
+          {props.user.username}
         </Link>
       </div>
     );
@@ -109,11 +114,14 @@ class Track extends Component {
 }
 
 Track.propTypes = {
-  id: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
-  author: PropTypes.object.isRequired,
-  time: PropTypes.number.isRequired,
-  image: PropTypes.string
+ 
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
+    time: PropTypes.number.isRequired,
+    artwork_url: PropTypes.string,
+    duration: PropTypes.number.isRequired
+
 };
 
 const mapStateToProps = state => ({});

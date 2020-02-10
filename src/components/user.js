@@ -9,10 +9,10 @@ class User extends Component {
     return (
       <div className="user">
         <Link to={`/profile/${props.id}`} className="user__image">
-          <img src={props.avatar} alt="" />
+          <img src={props.avatar_url.replace("large", "t300x300")} alt="" />
         </Link>
         <Link to={`/profile/${props.id}`}  className="user__name">
-          <h4>{props.name}</h4>
+          <h4>{props.username}</h4>
         </Link>
       </div>
     );
@@ -20,7 +20,12 @@ class User extends Component {
 }
 
 User.propTypes = {
-  name: PropTypes.string.isRequired
+  
+    id: PropTypes.number.isRequired,
+    username: PropTypes.string.isRequired,
+    avatar_url: PropTypes.string.isRequired
+
+  
 };
 
 export default User;

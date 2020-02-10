@@ -23,8 +23,8 @@ class Playlist extends Component {
 
   playPlaylist() {
     let { props } = this;
-    if (props.id) {
-      Soundcloud.get(`/playlists/${props.id}/tracks`, {
+    if (props.playlist.id) {
+      Soundcloud.get(`/playlists/${props.playlist.id}/tracks`, {
         limit: 500
       }).then(tracks => {
         if (tracks) {
@@ -55,6 +55,12 @@ class Playlist extends Component {
 
   render() {
     let { props, state } = this;
+
+    let image =
+      props.artwork_url != null
+        ? props.artwork_url.replace("large", "t300x300")
+        : props.user.avatar_url.replace("large", "t300x300");
+
     let duration = props.duration / 1000;
     let hours = parseInt(duration / 3600);
     let minutes =
@@ -69,7 +75,7 @@ class Playlist extends Component {
     return (
       <div className="track">
         <div className="track__image" onClick={this.playPlaylist.bind(this)}>
-          <img className="track__thumbnail" src={props.image} alt="" />
+          <img className="track__thumbnail" src={image} alt="" />
           <div className="track__hover">
             <button className="track__play">
               <PlayIcon className="track__icon"></PlayIcon>
@@ -112,14 +118,19 @@ class Playlist extends Component {
               {minutes}:{seconds}
             </span>
 
-            <span className="track__tracks">Tracks: {props.tracks}</span>
+            <span className="track__tracks">
+              Tracks: {props.track_count}
+            </span>
           </div>
         </div>
         <h4 className="track__title" onClick={this.playPlaylist.bind(this)}>
           {props.title}
         </h4>
-        <Link className="track__author" to={`/profile/${props.author.id}`}>
-          {props.author.username}
+        <Link
+          className="track__author"
+          to={`/profile/${props.user.id}`}
+        >
+          {props.user.username}
         </Link>
       </div>
     );
@@ -127,12 +138,15 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
-  id: PropTypes.number.isRequired,
-  title: PropTypes.string.isRequired,
-  tracks: PropTypes.number.isRequired,
-  author: PropTypes.object.isRequired,
-  duration: PropTypes.number.isRequired,
-  image: PropTypes.string
+ 
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    track_count: PropTypes.number.isRequired,
+    user: PropTypes.object.isRequired,
+    duration: PropTypes.number.isRequired,
+    image: PropTypes.string,
+    artwork_url: PropTypes.string.isRequired
+ 
 };
 
 const mapStateToProps = state => ({});

@@ -9,6 +9,7 @@ import Section from "../components/section";
 import Track from "../components/track";
 import Playlist from "../components/playlist";
 import User from "../components/user";
+import List from "../components/list";
 
 class Search extends Component {
   constructor() {
@@ -51,41 +52,6 @@ class Search extends Component {
 
   render() {
     let { props, state } = this;
-    let tracks = state.tracks.map(track => (
-      <Track
-        key={track.id}
-        id={track.id}
-        title={track.title}
-        author={track.user}
-        image={track.artwork_url}
-        duration={track.duration}
-      ></Track>
-    ));
-
-    let users = state.users.map(user => (
-      <User
-        key={user.id}
-        id={user.id}
-        name={user.username}
-        avatar={user.avatar_url}
-      ></User>
-    ));
-
-    let playlists = state.playlists.map(playlist => (
-      <Playlist
-        key={playlist.id}
-        id={playlist.id}
-        title={playlist.title}
-        tracks={playlist.track_count}
-        author={playlist.user}
-        duration={playlist.duration}
-        image={
-          playlist.artwork_url != null
-            ? playlist.artwork_url
-            : playlist.user.avatar_url
-        }
-      ></Playlist>
-    ));
 
     return (
       <div className="route">
@@ -94,21 +60,27 @@ class Search extends Component {
           <span className="color--primary">{props.query}</span>"
         </h4>
 
-        {tracks.length > 0 && (
+        {state.tracks.length > 0 && (
           <Section title="Tracks">
-            <div className="row--start">{tracks}</div>
+            <div className="row--start">
+              <List component={Track} list={state.tracks}></List>
+            </div>
           </Section>
         )}
 
-        {playlists.length > 0 && (
+        {state.playlists.length > 0 && (
           <Section title="Playlists">
-            <div className="row--start">{playlists}</div>
+            <div className="row--start">
+              <List component={Playlist} list={state.playlists}></List>
+            </div>
           </Section>
         )}
 
-        {users.length > 0 && (
+        {state.users.length > 0 && (
           <Section title="Users">
-            <div className="row--start">{users}</div>
+            <div className="row--start">
+              <List component={User} list={state.users}></List>
+            </div>
           </Section>
         )}
       </div>
