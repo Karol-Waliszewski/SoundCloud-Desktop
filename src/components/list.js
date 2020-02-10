@@ -5,7 +5,9 @@ class List extends Component {
   render() {
     let { props, state } = this;
     let Tag = props.component;
-    let list = props.list.map(element => <Tag {...element}></Tag>);
+    let list = props.list.map((element, index) => (
+      <Tag key={index} {...element}></Tag>
+    ));
 
     return <>{list}</>;
   }

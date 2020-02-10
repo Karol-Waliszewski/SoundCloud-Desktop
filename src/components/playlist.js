@@ -145,7 +145,7 @@ Playlist.propTypes = {
     user: PropTypes.object.isRequired,
     duration: PropTypes.number.isRequired,
     image: PropTypes.string,
-    artwork_url: PropTypes.string.isRequired
+    artwork_url: PropTypes.string
  
 };
 

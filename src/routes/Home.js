@@ -36,14 +36,14 @@ class Home extends Component {
             <Track title="lorem" author="ipsum"></Track>
           </div>
         </Section> */}
-        <Section title="Followings" link="/followings">
+        {/* <Section title="Followings" link="/followings">
           <div className="row--start">
             <User name="Lorem ipsum"></User>
             <User name="Lorem ipsum"></User>
             <User name="Lorem ipsum"></User>
             <User name="Lorem ipsum lorem ipsum"></User>
           </div>
-        </Section>
+        </Section> */}
       </div>
     );
   }

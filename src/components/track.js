@@ -114,14 +114,11 @@ class Track extends Component {
 }
 
 Track.propTypes = {
- 
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
-    time: PropTypes.number.isRequired,
     artwork_url: PropTypes.string,
     duration: PropTypes.number.isRequired
-
 };
 
 const mapStateToProps = state => ({});
