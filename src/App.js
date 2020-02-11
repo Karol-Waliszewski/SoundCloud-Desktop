@@ -30,7 +30,7 @@ class App extends React.Component {
         <Topbar></Topbar>
         <div className="app__row">
           <Sidebar></Sidebar>
-          <main className="app__main">
+          <main className="app__main" id="main">
             <Switch>
               <Route path="/profile/:username" component={Profile} />
               <Route path="/likes" component={Likes} />

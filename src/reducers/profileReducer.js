@@ -1,10 +1,10 @@
 const defaultState = {
   user: null,
-  tracks: { page: 0, collection: [] },
-  playlists: { page: 0, collection: [] },
-  followings: { page: 0, collection: [] },
-  followers: { page: 0, collection: [] },
-  favourites: { page: 0, collection: [] }
+  tracks: { page: 0, collection: [], more: true },
+  playlists: { page: 0, collection: [], more: true },
+  followings: { page: 0, collection: [], more: true },
+  followers: { page: 0, collection: [], more: true },
+  favourites: { page: 0, collection: [], more: true }
 };
 
 var reducer = function(state = defaultState, action) {
@@ -23,7 +23,8 @@ var reducer = function(state = defaultState, action) {
           page: action.payload.length
             ? state.tracks.page + 1
             : state.tracks.page,
-          collection: [...state.tracks.collection, ...action.payload]
+          collection: [...state.tracks.collection, ...action.payload],
+          more: action.payload.length < 12 ? false : true
         }
       };
     case "CHANGE_PLAYLISTS":
@@ -31,9 +32,10 @@ var reducer = function(state = defaultState, action) {
         ...state,
         playlists: {
           page: action.payload.length
-            ? state.tracks.page + 1
-            : state.tracks.page,
-          collection: [...state.playlists.collection, ...action.payload]
+            ? state.playlists.page + 1
+            : state.playlists.page,
+          collection: [...state.playlists.collection, ...action.payload],
+          more: action.payload.length < 12 ? false : true
         }
       };
     case "CHANGE_FOLLOWINGS":
@@ -41,9 +43,10 @@ var reducer = function(state = defaultState, action) {
         ...state,
         followings: {
           page: action.payload.length
-            ? state.tracks.page + 1
-            : state.tracks.page,
-          collection: [...state.followings.collection, ...action.payload]
+            ? state.followings.page + 1
+            : state.followings.page,
+          collection: [...state.followings.collection, ...action.payload],
+          more: action.payload.length < 12 ? false : true
         }
       };
     case "CHANGE_FOLLOWERS":
@@ -51,9 +54,10 @@ var reducer = function(state = defaultState, action) {
         ...state,
         followers: {
           page: action.payload.length
-            ? state.tracks.page + 1
-            : state.tracks.page,
-          collection: [...state.followers.collection, ...action.payload]
+            ? state.followers.page + 1
+            : state.followers.page,
+          collection: [...state.followers.collection, ...action.payload],
+          more: action.payload.length < 12 ? false : true
         }
       };
     case "CHANGE_FAVOURITES":
@@ -61,9 +65,10 @@ var reducer = function(state = defaultState, action) {
         ...state,
         favourites: {
           page: action.payload.length
-            ? state.tracks.page + 1
-            : state.tracks.page,
-          collection: [...state.favourites.collection, ...action.payload]
+            ? state.favourites.page + 1
+            : state.favourites.page,
+          collection: [...state.favourites.collection, ...action.payload],
+          more: action.payload.length < 12 ? false : true
         }
       };
 

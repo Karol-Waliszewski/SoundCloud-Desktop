@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 
+import InfiniteScroll from "react-infinite-scroll-component";
+
 // Actions
 import {
   FETCH_USER,
@@ -18,6 +20,7 @@ import Track from "../components/track";
 import User from "../components/user";
 import Playlist from "../components/playlist";
 import List from "../components/list";
+import InfiniteList from "../components/infiniteList";
 import ProfileNav from "../components/profileNav";
 
 // Assets
@@ -25,43 +28,34 @@ import LinkIcon from "../assets/link.svg";
 import FollowIcon from "../assets/follow.svg";
 
 var Tracks = function(props) {
-  return (
-    <div className="row--start">
-      <List list={props.tracks} component={Track}></List>
-    </div>
-  );
+  if (props.list)
+    return <InfiniteList {...props} component={Track}></InfiniteList>;
+
+  return null;
 };
 
 var Reposts = function(props) {
-  return (
-    <div className="row--start">
-      <List list={props.tracks} component={Track}></List>
-    </div>
-  );
+  if (props.list)
+    return <InfiniteList {...props} component={Track}></InfiniteList>;
+  return null;
 };
 
 var Favourites = function(props) {
-  return (
-    <div className="row--start">
-      <List list={props.favourites} component={Track}></List>
-    </div>
-  );
+  if (props.list)
+    return <InfiniteList {...props} component={Track}></InfiniteList>;
+  return null;
 };
 
 var Playlists = function(props) {
-  return (
-    <div className="row--start">
-      <List list={props.playlists} component={Playlist}></List>
-    </div>
-  );
+  if (props.list)
+    return <InfiniteList {...props} component={Playlist}></InfiniteList>;
+  return null;
 };
 
 var Followings = function(props) {
-  return (
-    <div className="row--start">
-      <List list={props.users} component={User}></List>
-    </div>
-  );
+  if (props.list)
+    return <InfiniteList {...props} component={User}></InfiniteList>;
+  return null;
 };
 
 class Profile extends Component {
@@ -100,19 +94,45 @@ class Profile extends Component {
               />
               <Route
                 path="/profile/:username/tracks"
-                render={() => <Tracks tracks={[]}></Tracks>}
+                render={() => (
+                  <Tracks
+                    list={props.tracks}
+                    more={props.tracksMore}
+                    fetchFn={props.fetchTracks}
+                  ></Tracks>
+                )}
               />
               <Route
                 path="/profile/:username/reposts"
-                render={() => <Reposts tracks={[]}></Reposts>}
+                render={() => (
+                  <Reposts
+                    list={[]}
+                    more={props.tracksMore}
+                    fetchFn={() => {
+                      console.log("TODO: Make reposts");
+                    }}
+                  ></Reposts>
+                )}
               />
               <Route
                 path="/profile/:username/followings"
-                render={() => <Followings users={[]}></Followings>}
+                render={() => (
+                  <Followings
+                    list={props.followings}
+                    more={props.followingsMore}
+                    fetchFn={props.fetchFollowings}
+                  ></Followings>
+                )}
               />
               <Route
                 path="/profile/:username/likes"
-                render={() => <Favourites tracks={[]}></Favourites>}
+                render={() => (
+                  <Favourites
+                    list={props.favourites}
+                    more={props.favouritesMore}
+                    fetchFn={props.fetchFavourites}
+                  ></Favourites>
+                )}
               />
               <Route
                 path="/profile/:username"
@@ -239,15 +259,19 @@ class Profile extends Component {
         </>
       );
     }
-    return <h1>No user found</h1>;
+    return <h1>TODO: LOADER</h1>;
   }
 }
 const mapStateToProps = state => ({
   user: state.profile.user,
   tracks: state.profile.tracks.collection,
+  tracksMore: state.profile.tracks.more,
   playlists: state.profile.playlists.collection,
+  playlistsMore: state.profile.playlists.more,
   followings: state.profile.followings.collection,
-  favourites: state.profile.favourites.collection
+  followingsMore: state.profile.followings.more,
+  favourites: state.profile.favourites.collection,
+  favouritesMore: state.profile.favourites.more
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -255,6 +279,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(FETCH_USER(id));
   },
   fetchTracks: () => {
+    console.log("fetching??");
     dispatch(FETCH_TRACKS());
   },
   fetchFavourites: () => {
