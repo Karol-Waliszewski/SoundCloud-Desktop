@@ -1,140 +1,89 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { NavLink, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 // Actions
-import { FETCH_USER } from "../actions/profileActions";
+import {
+  FETCH_USER,
+  FETCH_TRACKS,
+  FETCH_FAVOURITES,
+  FETCH_PLAYLISTS,
+  FETCH_FOLLOWINGS
+} from "../actions/profileActions";
 
 // Components
 import Baner from "../components/baner";
 import Section from "../components/section";
 import Track from "../components/track";
 import User from "../components/user";
+import Playlist from "../components/playlist";
+import List from "../components/list";
+import ProfileNav from "../components/profileNav";
 
 // Assets
 import LinkIcon from "../assets/link.svg";
 import FollowIcon from "../assets/follow.svg";
 
 var Tracks = function(props) {
-  let tracks = props.tracks.map(track => (
-    <Track
-      title={track.title}
-      author={track.author}
-      image={track.image}
-    ></Track>
-  ));
   return (
     <div className="row--start">
-      {tracks}
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
+      <List list={props.tracks} component={Track}></List>
     </div>
   );
 };
 
 var Reposts = function(props) {
-  let tracks = props.tracks.map(track => (
-    <Track
-      title={track.title}
-      author={track.author}
-      image={track.image}
-    ></Track>
-  ));
   return (
     <div className="row--start">
-      {tracks}
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
+      <List list={props.tracks} component={Track}></List>
     </div>
   );
 };
 
 var Favourites = function(props) {
-  let tracks = props.tracks.map(track => (
-    <Track
-      title={track.title}
-      author={track.author}
-      image={track.image}
-    ></Track>
-  ));
   return (
     <div className="row--start">
-      {tracks}
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
+      <List list={props.favourites} component={Track}></List>
     </div>
   );
 };
 
 var Playlists = function(props) {
-  let playlists = props.playlists.map(track => (
-    <Track
-      title={track.title}
-      author={track.author}
-      image={track.image}
-    ></Track>
-  ));
   return (
     <div className="row--start">
-      {playlists}
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
-      <Track title="lorem" author="ipsum"></Track>
+      <List list={props.playlists} component={Playlist}></List>
     </div>
   );
 };
 
 var Followings = function(props) {
-  let users = props.users.map(track => (
-    <Track
-      title={track.title}
-      author={track.author}
-      image={track.image}
-    ></Track>
-  ));
   return (
     <div className="row--start">
-      {users}
-      <User name="Lorem ipsum"></User>
-      <User name="Lorem ipsum"></User>
-      <User name="Lorem ipsum"></User>
-      <User name="Lorem ipsum lorem ipsum"></User>
-      <User name="Lorem ipsum"></User>
-      <User name="Lorem ipsum"></User>
-      <User name="Lorem ipsum"></User>
-      <User name="Lorem ipsum lorem ipsum"></User>
+      <List list={props.users} component={User}></List>
     </div>
   );
 };
 
 class Profile extends Component {
+  constructor() {
+    super();
+    this.state = {
+      init: false
+    };
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.match.params.username !== prevProps.match.params.username) {
       // Fetch user
       this.props.fetchUser(this.props.match.params.username);
+    }
+    if (this.props.user && !this.state.init) {
+      this.props.fetchTracks();
+      this.props.fetchFavourites();
+      this.props.fetchPlaylists();
+      this.props.fetchFollowings();
+
+      this.setState({ init: true });
     }
   }
 
@@ -157,51 +106,7 @@ class Profile extends Component {
             country={user.country}
           ></Baner>
           <div className="route">
-            <nav className="profile-nav">
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
-                exact={true}
-                to={"/profile/" + match.params.username}
-              >
-                Overview
-              </NavLink>
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
-                to={"/profile/" + match.params.username + "/tracks"}
-              >
-                Tracks
-              </NavLink>
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
-                to={"/profile/" + match.params.username + "/playlists"}
-              >
-                Playlists
-              </NavLink>
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
-                to={"/profile/" + match.params.username + "/reposts"}
-              >
-                Reposts
-              </NavLink>
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
-                to={"/profile/" + match.params.username + "/followings"}
-              >
-                Followings
-              </NavLink>
-              <NavLink
-                className="profile-nav__link"
-                activeClassName="active"
-                to={"/profile/" + match.params.username + "/likes"}
-              >
-                Likes
-              </NavLink>
-            </nav>
+            <ProfileNav match={match}></ProfileNav>
             <hr className="profile__line" />
             <Switch>
               <Route
@@ -278,14 +183,27 @@ class Profile extends Component {
                       </div>
                     </section>
                     <Section
+                      title="Tracks"
+                      link={"/profile/" + match.params.username + "/tracks"}
+                    >
+                      <div className="row--start">
+                        <List
+                          list={props.tracks}
+                          component={Track}
+                          limit={8}
+                        ></List>
+                      </div>
+                    </Section>
+                    <Section
                       title="Favourites"
                       link={"/profile/" + match.params.username + "/likes"}
                     >
                       <div className="row--start">
-                        <Track title="lorem" author="ipsum"></Track>
-                        <Track title="lorem" author="ipsum"></Track>
-                        <Track title="lorem" author="ipsum"></Track>
-                        <Track title="lorem" author="ipsum"></Track>
+                        <List
+                          list={props.favourites}
+                          component={Track}
+                          limit={8}
+                        ></List>
                       </div>
                     </Section>
                     <Section
@@ -293,18 +211,11 @@ class Profile extends Component {
                       link={"/profile/" + match.params.username + "/playlists"}
                     >
                       <div className="row--start">
-                        <Track title="lorem" author="ipsum"></Track>
-                        <Track title="lorem" author="ipsum"></Track>
-                      </div>
-                    </Section>
-                    <Section
-                      title="Albums"
-                      link={"/profile/" + match.params.username + "/albums"}
-                    >
-                      <div className="row--start">
-                        <Track title="lorem" author="ipsum"></Track>
-                        <Track title="lorem" author="ipsum"></Track>
-                        <Track title="lorem" author="ipsum"></Track>
+                        <List
+                          list={props.playlists}
+                          component={Playlist}
+                          limit={8}
+                        ></List>
                       </div>
                     </Section>
                     <Section
@@ -312,10 +223,11 @@ class Profile extends Component {
                       link={"/profile/" + match.params.username + "/followings"}
                     >
                       <div className="row--start">
-                        <User name="Lorem ipsum"></User>
-                        <User name="Lorem ipsum"></User>
-                        <User name="Lorem ipsum"></User>
-                        <User name="Lorem ipsum lorem ipsum"></User>
+                        <List
+                          list={props.followings}
+                          component={User}
+                          limit={8}
+                        ></List>
                       </div>
                     </Section>
                   </>
@@ -330,12 +242,28 @@ class Profile extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.profile.user
+  user: state.profile.user,
+  tracks: state.profile.tracks.collection,
+  playlists: state.profile.playlists.collection,
+  followings: state.profile.followings.collection,
+  favourites: state.profile.favourites.collection
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchUser: id => {
     dispatch(FETCH_USER(id));
+  },
+  fetchTracks: () => {
+    dispatch(FETCH_TRACKS());
+  },
+  fetchFavourites: () => {
+    dispatch(FETCH_FAVOURITES());
+  },
+  fetchPlaylists: () => {
+    dispatch(FETCH_PLAYLISTS());
+  },
+  fetchFollowings: () => {
+    dispatch(FETCH_FOLLOWINGS());
   }
 });
 

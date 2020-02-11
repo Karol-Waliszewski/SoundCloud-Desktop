@@ -120,7 +120,7 @@ const PLAY_TRACK = (id, play = false) => {
         let updateTime = function(time) {
           dispatch(UPDATE_TIME(time));
           player.off("time");
-          setTimeout(applyOnTimeEvent, 100);
+          setTimeout(applyOnTimeEvent, 500);
         };
 
         applyOnTimeEvent();
