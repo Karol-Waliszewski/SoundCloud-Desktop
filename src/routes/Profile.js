@@ -65,25 +65,10 @@ var Followings = function(props) {
 };
 
 class Profile extends Component {
-  constructor() {
-    super();
-    this.state = {
-      init: false
-    };
-  }
-
   componentDidUpdate(prevProps) {
     if (this.props.match.params.username !== prevProps.match.params.username) {
       // Fetch user
       this.props.fetchUser(this.props.match.params.username);
-    }
-    if (this.props.user && !this.state.init) {
-      this.props.fetchTracks();
-      this.props.fetchFavourites();
-      this.props.fetchPlaylists();
-      this.props.fetchFollowings();
-
-      this.setState({ init: true });
     }
   }
 
@@ -182,54 +167,70 @@ class Profile extends Component {
                         </button>
                       </div>
                     </section>
-                    <Section
-                      title="Tracks"
-                      link={"/profile/" + match.params.username + "/tracks"}
-                    >
-                      <div className="row--start">
-                        <List
-                          list={props.tracks}
-                          component={Track}
-                          limit={8}
-                        ></List>
-                      </div>
-                    </Section>
-                    <Section
-                      title="Favourites"
-                      link={"/profile/" + match.params.username + "/likes"}
-                    >
-                      <div className="row--start">
-                        <List
-                          list={props.favourites}
-                          component={Track}
-                          limit={8}
-                        ></List>
-                      </div>
-                    </Section>
-                    <Section
-                      title="Playlists"
-                      link={"/profile/" + match.params.username + "/playlists"}
-                    >
-                      <div className="row--start">
-                        <List
-                          list={props.playlists}
-                          component={Playlist}
-                          limit={8}
-                        ></List>
-                      </div>
-                    </Section>
-                    <Section
-                      title="Followings"
-                      link={"/profile/" + match.params.username + "/followings"}
-                    >
-                      <div className="row--start">
-                        <List
-                          list={props.followings}
-                          component={User}
-                          limit={8}
-                        ></List>
-                      </div>
-                    </Section>
+
+                    {props.tracks.length > 0 && (
+                      <Section
+                        title="Tracks"
+                        link={"/profile/" + match.params.username + "/tracks"}
+                      >
+                        <div className="row--start">
+                          <List
+                            list={props.tracks}
+                            component={Track}
+                            limit={8}
+                          ></List>
+                        </div>
+                      </Section>
+                    )}
+
+                    {props.favourites.length > 0 && (
+                      <Section
+                        title="Favourites"
+                        link={"/profile/" + match.params.username + "/likes"}
+                      >
+                        <div className="row--start">
+                          <List
+                            list={props.favourites}
+                            component={Track}
+                            limit={8}
+                          ></List>
+                        </div>
+                      </Section>
+                    )}
+
+                    {props.playlists.length > 0 && (
+                      <Section
+                        title="Playlists"
+                        link={
+                          "/profile/" + match.params.username + "/playlists"
+                        }
+                      >
+                        <div className="row--start">
+                          <List
+                            list={props.playlists}
+                            component={Playlist}
+                            limit={8}
+                          ></List>
+                        </div>
+                      </Section>
+                    )}
+
+                    {props.followings.length > 0 && (
+                      <Section
+                        title="Followings"
+                        link={
+                          "/profile/" + match.params.username + "/followings"
+                        }
+                      >
+                        <div className="row--start">
+                          <List
+                            list={props.followings}
+                            component={User}
+                            limit={8}
+                          ></List>
+                        </div>
+                      </Section>
+                    )}
                   </>
                 )}
               />

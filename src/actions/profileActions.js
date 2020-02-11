@@ -43,6 +43,12 @@ export const FETCH_USER = id => {
     try {
       let user = await Soundcloud.get(`/users/${id}`);
       dispatch(CHANGE_USER(user));
+      // Fetching small portion of data about user
+      dispatch(FETCH_TRACKS());
+      dispatch(FETCH_PLAYLISTS());
+      dispatch(FETCH_FAVOURITES());
+      dispatch(FETCH_FOLLOWERS());
+      dispatch(FETCH_FOLLOWINGS());
     } catch (error) {
       console.error(error);
     }
@@ -142,7 +148,6 @@ export const FETCH_FAVOURITES = () => {
           limit: 12,
           offset: page * 12
         });
-        console.log(favourites);
         dispatch(CHANGE_FAVOURITES(favourites));
       } catch (error) {
         console.error(error);

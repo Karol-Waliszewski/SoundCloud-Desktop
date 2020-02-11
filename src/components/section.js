@@ -10,7 +10,7 @@ class Section extends Component {
       <section className="section">
         <header className="section__header">
           <h3 className="section__title">{props.title}</h3>
-          {props.link && (
+          {props.link && props.link.length > 0 && (
             <Link to={props.link} className="section__more">
               Browse all
             </Link>

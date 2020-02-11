@@ -23,8 +23,8 @@ class Playlist extends Component {
 
   playPlaylist() {
     let { props } = this;
-    if (props.playlist.id) {
-      Soundcloud.get(`/playlists/${props.playlist.id}/tracks`, {
+    if (props.id) {
+      Soundcloud.get(`/playlists/${props.id}/tracks`, {
         limit: 500
       }).then(tracks => {
         if (tracks) {
@@ -40,8 +40,8 @@ class Playlist extends Component {
 
   addToQueue() {
     let { props } = this;
-    if (props.playlist.id) {
-      Soundcloud.get(`/playlists/${props.playlist.id}/tracks`, {
+    if (props.id) {
+      Soundcloud.get(`/playlists/${props.id}/tracks`, {
         limit: 500
       }).then(tracks => {
         if (tracks) {
@@ -54,7 +54,7 @@ class Playlist extends Component {
               props.addToQueue(id);
             }
           }
-          alert("TODO: add entire playlist adding");
+          alert("TODO: add entire playlist adding notification");
         }
       });
     }
