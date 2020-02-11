@@ -32,7 +32,7 @@ export const CHANGE_FAVOURITES = favourites => ({
 
 export const CHECK_USER = () => {
   return (dispatch, getState) => {
-    let { user } = getState();
+    let { user } = getState().profile;
     console.log("Checking current user...");
     return user != null ? user : false;
   };
@@ -50,13 +50,17 @@ export const FETCH_USER = id => {
 };
 
 export const FETCH_TRACKS = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     let user = dispatch(CHECK_USER());
     if (!user) {
       dispatch(CHANGE_TRACKS([]));
     } else {
       try {
-        let tracks = await Soundcloud.get(`/users/${user.id}/tracks`);
+        let page = getState().profile.tracks.page;
+        let tracks = await Soundcloud.get(`/users/${user.id}/tracks`, {
+          limit: 12,
+          offset: page * 12
+        });
         dispatch(CHANGE_TRACKS(tracks));
       } catch (error) {
         console.error(error);
@@ -66,13 +70,17 @@ export const FETCH_TRACKS = () => {
 };
 
 export const FETCH_PLAYLISTS = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     let user = dispatch(CHECK_USER());
     if (!user) {
       dispatch(CHANGE_PLAYLISTS([]));
     } else {
       try {
-        let playlists = await Soundcloud.get(`/users/${user.id}/playlists`);
+        let page = getState().profile.playlists.page;
+        let playlists = await Soundcloud.get(`/users/${user.id}/playlists`, {
+          limit: 12,
+          offset: page * 12
+        });
         dispatch(CHANGE_PLAYLISTS(playlists));
       } catch (error) {
         console.error(error);
@@ -82,14 +90,19 @@ export const FETCH_PLAYLISTS = () => {
 };
 
 export const FETCH_FOLLOWINGS = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     let user = dispatch(CHECK_USER());
     if (!user) {
       dispatch(CHANGE_FOLLOWINGS([]));
     } else {
       try {
-        let followings = await Soundcloud.get(`/users/${user.id}/followings`);
-        dispatch(CHANGE_FOLLOWINGS(followings));
+        let page = getState().profile.followings.page;
+        let followings = await Soundcloud.get(`/users/${user.id}/followings`, {
+          limit: 12,
+          offset: page * 12
+        });
+
+        dispatch(CHANGE_FOLLOWINGS(followings.collection));
       } catch (error) {
         console.error(error);
       }
@@ -98,14 +111,18 @@ export const FETCH_FOLLOWINGS = () => {
 };
 
 export const FETCH_FOLLOWERS = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     let user = dispatch(CHECK_USER());
     if (!user) {
       dispatch(CHANGE_FOLLOWERS([]));
     } else {
       try {
-        let followers = await Soundcloud.get(`/users/${user.id}/followers`);
-        dispatch(CHANGE_FOLLOWERS(followers));
+        let page = getState().profile.followers.page;
+        let followers = await Soundcloud.get(`/users/${user.id}/followers`, {
+          limit: 12,
+          offset: page * 12
+        });
+        dispatch(CHANGE_FOLLOWERS(followers.collection));
       } catch (error) {
         console.error(error);
       }
@@ -114,13 +131,18 @@ export const FETCH_FOLLOWERS = () => {
 };
 
 export const FETCH_FAVOURITES = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     let user = dispatch(CHECK_USER());
     if (!user) {
       dispatch(CHANGE_FAVOURITES([]));
     } else {
       try {
-        let favourites = await Soundcloud.get(`/users/${user.id}/favourites`);
+        let page = getState().profile.favourites.page;
+        let favourites = await Soundcloud.get(`/users/${user.id}/favorites`, {
+          limit: 12,
+          offset: page * 12
+        });
+        console.log(favourites);
         dispatch(CHANGE_FAVOURITES(favourites));
       } catch (error) {
         console.error(error);

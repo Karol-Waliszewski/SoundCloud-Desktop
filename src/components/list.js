@@ -9,12 +9,17 @@ class List extends Component {
       <Tag key={index} {...element}></Tag>
     ));
 
+    if (props.limit) {
+      list.splice(props.limit);
+    }
+
     return <>{list}</>;
   }
 }
 
 List.propTypes = {
-  list: PropTypes.array.isRequired
+  list: PropTypes.array.isRequired,
+  limit: PropTypes.number
   //component: PropTypes.element.isRequired
 };
 

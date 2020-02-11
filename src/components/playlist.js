@@ -40,7 +40,24 @@ class Playlist extends Component {
 
   addToQueue() {
     let { props } = this;
-    alert("TODO: add entire playlist adding");
+    if (props.playlist.id) {
+      Soundcloud.get(`/playlists/${props.playlist.id}/tracks`, {
+        limit: 500
+      }).then(tracks => {
+        if (tracks) {
+          // Get IDs of streamable tracks
+          let ids = tracks
+            .filter(track => track.streamable)
+            .map(track => track.id);
+          for (let id of ids) {
+            if (id) {
+              props.addToQueue(id);
+            }
+          }
+          alert("TODO: add entire playlist adding");
+        }
+      });
+    }
   }
 
   toggleOptions() {
@@ -118,18 +135,13 @@ class Playlist extends Component {
               {minutes}:{seconds}
             </span>
 
-            <span className="track__tracks">
-              Tracks: {props.track_count}
-            </span>
+            <span className="track__tracks">Tracks: {props.track_count}</span>
           </div>
         </div>
         <h4 className="track__title" onClick={this.playPlaylist.bind(this)}>
           {props.title}
         </h4>
-        <Link
-          className="track__author"
-          to={`/profile/${props.user.id}`}
-        >
+        <Link className="track__author" to={`/profile/${props.user.id}`}>
           {props.user.username}
         </Link>
       </div>
@@ -138,15 +150,13 @@ class Playlist extends Component {
 }
 
 Playlist.propTypes = {
- 
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    track_count: PropTypes.number.isRequired,
-    user: PropTypes.object.isRequired,
-    duration: PropTypes.number.isRequired,
-    image: PropTypes.string,
-    artwork_url: PropTypes.string
- 
+  id: PropTypes.number.isRequired,
+  title: PropTypes.string.isRequired,
+  track_count: PropTypes.number.isRequired,
+  user: PropTypes.object.isRequired,
+  duration: PropTypes.number.isRequired,
+  image: PropTypes.string,
+  artwork_url: PropTypes.string
 };
 
 const mapStateToProps = state => ({});
