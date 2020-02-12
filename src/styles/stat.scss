@@ -1,10 +1,14 @@
 .stat {
+    a {
+        text-decoration: none;
+    }
+
     &:first-child {
         padding: {
             top: 3px;
             bottom: 3px;
             right: 10px;
-         
+
         }
 
     }
@@ -24,9 +28,11 @@
     color: darken($gray, 20%);
     font-size: 12px;
     margin-bottom: 2px;
+
 }
 
 .stat__value {
     color: lighten($darkGray, 10%);
-    font-size: 22px
+    font-size: 22px;
+
 }

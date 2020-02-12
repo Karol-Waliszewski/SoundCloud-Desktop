@@ -23,7 +23,9 @@ var reducer = function(state = defaultState, action) {
           page: action.payload.length
             ? state.tracks.page + 1
             : state.tracks.page,
-          collection: [...state.tracks.collection, ...action.payload],
+          collection: [
+            ...new Set([...state.tracks.collection, ...action.payload])
+          ],
           more: action.payload.length < 12 ? false : true
         }
       };
@@ -34,7 +36,9 @@ var reducer = function(state = defaultState, action) {
           page: action.payload.length
             ? state.playlists.page + 1
             : state.playlists.page,
-          collection: [...state.playlists.collection, ...action.payload],
+          collection: [
+            ...new Set([...state.playlists.collection, ...action.payload])
+          ],
           more: action.payload.length < 12 ? false : true
         }
       };
@@ -45,7 +49,9 @@ var reducer = function(state = defaultState, action) {
           page: action.payload.length
             ? state.followings.page + 1
             : state.followings.page,
-          collection: [...state.followings.collection, ...action.payload],
+          collection: [
+            ...new Set([...state.followings.collection, ...action.payload])
+          ],
           more: action.payload.length < 12 ? false : true
         }
       };
@@ -56,7 +62,9 @@ var reducer = function(state = defaultState, action) {
           page: action.payload.length
             ? state.followers.page + 1
             : state.followers.page,
-          collection: [...state.followers.collection, ...action.payload],
+          collection: [
+            ...new Set([...state.followers.collection, ...action.payload])
+          ],
           more: action.payload.length < 12 ? false : true
         }
       };
@@ -67,7 +75,9 @@ var reducer = function(state = defaultState, action) {
           page: action.payload.length
             ? state.favourites.page + 1
             : state.favourites.page,
-          collection: [...state.favourites.collection, ...action.payload],
+          collection: [
+            ...new Set([...state.favourites.collection, ...action.payload])
+          ],
           more: action.payload.length < 12 ? false : true
         }
       };

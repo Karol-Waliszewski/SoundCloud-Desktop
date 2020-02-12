@@ -28,13 +28,6 @@ const ProfileNav = ({ match }) => (
     <NavLink
       className="profile-nav__link"
       activeClassName="active"
-      to={"/profile/" + match.params.username + "/reposts"}
-    >
-      Reposts
-    </NavLink>
-    <NavLink
-      className="profile-nav__link"
-      activeClassName="active"
       to={"/profile/" + match.params.username + "/followings"}
     >
       Followings
@@ -42,9 +35,16 @@ const ProfileNav = ({ match }) => (
     <NavLink
       className="profile-nav__link"
       activeClassName="active"
+      to={"/profile/" + match.params.username + "/followers"}
+    >
+      Followers
+    </NavLink>
+    <NavLink
+      className="profile-nav__link"
+      activeClassName="active"
       to={"/profile/" + match.params.username + "/likes"}
     >
-      Likes
+      Favourites
     </NavLink>
   </nav>
 );

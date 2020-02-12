@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
-
-import InfiniteScroll from "react-infinite-scroll-component";
+import { Switch, Route, Link } from "react-router-dom";
 
 // Actions
 import {
@@ -10,7 +8,8 @@ import {
   FETCH_TRACKS,
   FETCH_FAVOURITES,
   FETCH_PLAYLISTS,
-  FETCH_FOLLOWINGS
+  FETCH_FOLLOWINGS,
+  FETCH_FOLLOWERS
 } from "../actions/profileActions";
 
 // Components
@@ -34,12 +33,6 @@ var Tracks = function(props) {
   return null;
 };
 
-var Reposts = function(props) {
-  if (props.list)
-    return <InfiniteList {...props} component={Track}></InfiniteList>;
-  return null;
-};
-
 var Favourites = function(props) {
   if (props.list)
     return <InfiniteList {...props} component={Track}></InfiniteList>;
@@ -53,6 +46,12 @@ var Playlists = function(props) {
 };
 
 var Followings = function(props) {
+  if (props.list)
+    return <InfiniteList {...props} component={User}></InfiniteList>;
+  return null;
+};
+
+var Followers = function(props) {
   if (props.list)
     return <InfiniteList {...props} component={User}></InfiniteList>;
   return null;
@@ -90,7 +89,13 @@ class Profile extends Component {
             <Switch>
               <Route
                 path="/profile/:username/playlists"
-                render={() => <Playlists playlists={[]}></Playlists>}
+                render={() => (
+                  <Playlists
+                    list={props.playlists}
+                    more={props.playlistsMore}
+                    fetchFn={props.fetchPlaylists}
+                  ></Playlists>
+                )}
               />
               <Route
                 path="/profile/:username/tracks"
@@ -103,15 +108,13 @@ class Profile extends Component {
                 )}
               />
               <Route
-                path="/profile/:username/reposts"
+                path="/profile/:username/followers"
                 render={() => (
-                  <Reposts
-                    list={[]}
-                    more={props.tracksMore}
-                    fetchFn={() => {
-                      console.log("TODO: Make reposts");
-                    }}
-                  ></Reposts>
+                  <Followers
+                    list={props.followers}
+                    more={props.followersMore}
+                    fetchFn={props.fetchFollowers}
+                  ></Followers>
                 )}
               />
               <Route
@@ -150,22 +153,44 @@ class Profile extends Component {
                       <div className="profile__info">
                         <div className="profile__stats">
                           <div className="stat">
-                            <p className="stat__title">Followers</p>
-                            <span className="stat__value">
-                              {user.followers_count}
-                            </span>
+                            <Link
+                              to={
+                                "/profile/" +
+                                match.params.username +
+                                "/followers"
+                              }
+                            >
+                              <p className="stat__title">Followers</p>
+                              <span className="stat__value">
+                                {user.followers_count}
+                              </span>
+                            </Link>
                           </div>
                           <div className="stat">
-                            <p className="stat__title">Followings</p>
-                            <span className="stat__value">
-                              {user.followings_count}
-                            </span>
+                            <Link
+                              to={
+                                "/profile/" +
+                                match.params.username +
+                                "/followings"
+                              }
+                            >
+                              <p className="stat__title">Followings</p>
+                              <span className="stat__value">
+                                {user.followings_count}
+                              </span>
+                            </Link>
                           </div>
                           <div className="stat">
-                            <p className="stat__title">Tracks</p>
-                            <span className="stat__value">
-                              {user.track_count}
-                            </span>
+                            <Link
+                              to={
+                                "/profile/" + match.params.username + "/tracks"
+                              }
+                            >
+                              <p className="stat__title">Tracks</p>
+                              <span className="stat__value">
+                                {user.track_count}
+                              </span>
+                            </Link>
                           </div>
                         </div>
                         {user.website && (
@@ -270,6 +295,8 @@ const mapStateToProps = state => ({
   playlistsMore: state.profile.playlists.more,
   followings: state.profile.followings.collection,
   followingsMore: state.profile.followings.more,
+  followers: state.profile.followers.collection,
+  followersMore: state.profile.followers.more,
   favourites: state.profile.favourites.collection,
   favouritesMore: state.profile.favourites.more
 });
@@ -279,7 +306,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch(FETCH_USER(id));
   },
   fetchTracks: () => {
-    console.log("fetching??");
     dispatch(FETCH_TRACKS());
   },
   fetchFavourites: () => {
@@ -290,6 +316,9 @@ const mapDispatchToProps = dispatch => ({
   },
   fetchFollowings: () => {
     dispatch(FETCH_FOLLOWINGS());
+  },
+  fetchFollowers: () => {
+    dispatch(FETCH_FOLLOWERS());
   }
 });
 
