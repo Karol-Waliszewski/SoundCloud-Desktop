@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 // Components
-import Timeline from "./timeline";
-import Volume from "./volume";
+import Timeline from "../components/timeline";
+import Volume from "../components/volume";
 
 // Actions
 import Soundcloud from "../soundcloud";
@@ -15,6 +15,7 @@ import {
   PREVIOUS_TRACK,
   TOGGLE_LOOP
 } from "../actions/playerActions";
+import { TOGGLE_QUEUE } from "../actions/layoutActions";
 
 // Assets
 import previous from "../assets/previous.svg";
@@ -28,6 +29,7 @@ import next from "../assets/next.svg";
 import { ReactComponent as ShuffleIcon } from "../assets/shuffle.svg";
 import { ReactComponent as RepeatIcon } from "../assets/repeat.svg";
 import { ReactComponent as LikeIcon } from "../assets/like.svg";
+import { ReactComponent as QueueIcon } from "../assets/queue.svg";
 
 class Player extends Component {
   constructor() {
@@ -113,7 +115,12 @@ class Player extends Component {
               )}
             </div>
             <button className="player__like">
-              <LikeIcon className="player__icon--small active"></LikeIcon>
+              <LikeIcon className="player__icon--xs active"></LikeIcon>
+            </button>
+            <button className="player__button" onClick={props.toggleQueue}>
+              <QueueIcon
+                className={`player__icon ${props.queueActive ? "active" : ""}`}
+              ></QueueIcon>
             </button>
           </div>
         </div>
@@ -125,7 +132,8 @@ class Player extends Component {
 const mapStateToProps = state => ({
   playerState: state.player.playerState,
   trackID: state.player.currentTrackID,
-  loop: state.player.loop
+  loop: state.player.loop,
+  queueActive: state.layout.queueActive
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -143,6 +151,9 @@ const mapDispatchToProps = dispatch => ({
   },
   toggleRepeat: () => {
     dispatch(TOGGLE_LOOP());
+  },
+  toggleQueue: () => {
+    dispatch(TOGGLE_QUEUE());
   }
 });
 

@@ -7,9 +7,10 @@ import { connect } from "react-redux";
 import { ADD_AND_PLAY_TRACK, ADD_TO_QUEUE } from "./actions/playerActions";
 
 // Layout
-import Topbar from "./components/topbar";
-import Sidebar from "./components/sidebar";
-import Player from "./components/player";
+import Topbar from "./layout/topbar";
+import Sidebar from "./layout/sidebar";
+import Player from "./layout/player";
+import Queue from "./layout/queue";
 
 // Routes
 import Home from "./routes/Home";
@@ -40,6 +41,7 @@ class App extends React.Component {
             </Switch>
           </main>
         </div>
+        <Queue></Queue>
         <Player></Player>
       </div>
     );

@@ -4,11 +4,16 @@
 @import "normalize";
 @import "grid";
 @import "animations";
-@import "route";
-@import "section";
+
+// Layout
 @import "topbar";
 @import "sidebar";
 @import "player";
+@import "queue";
+
+// Components
+@import "route";
+@import "section";
 @import "search";
 @import "timeline";
 @import "volume";
@@ -18,16 +23,22 @@
 @import "profile";
 @import "stat";
 
+
 body {
   font-family: 'Roboto', sans-serif;
 }
 
 .app {
-  padding-top: $navH;
-  padding-bottom: $playerH;
+  position: relative;
+
   display: flex;
   flex-direction: column;
   height: 100vh;
+
+  padding-top: $navH;
+  padding-bottom: $playerH;
+
+  overflow: hidden;
 }
 
 .app__row {

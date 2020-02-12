@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import Search from "./search";
+import Search from "../components/search";
 
 import logo from "../assets/soundcloud.svg";
 

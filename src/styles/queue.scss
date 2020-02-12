@@ -1,0 +1,21 @@
+.queue {
+    position: absolute;
+    bottom: -30%;
+    right: 50px;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: 750ms cubic-bezier(.96, -0.32, .08, 1.37);
+
+    width: 35%;
+    height: 65%;
+
+    background: white;
+    box-shadow: 0 0 4px rgba($darkGray, 0.3);
+
+    &.active {
+        bottom: 58px;
+        visibility: visible;
+        opacity: 1;
+    }
+}
