@@ -13,7 +13,8 @@ import {
   START,
   NEXT_TRACK,
   PREVIOUS_TRACK,
-  TOGGLE_LOOP
+  TOGGLE_LOOP,
+  TOGGLE_SHUFFLE
 } from "../actions/playerActions";
 import { TOGGLE_QUEUE } from "../actions/layoutActions";
 
@@ -82,8 +83,10 @@ class Player extends Component {
             <button className="player__button" onClick={props.next}>
               <img src={next} alt="next" className="player__icon--small" />
             </button>
-            <button className="player__button">
-              <ShuffleIcon className="player__icon"></ShuffleIcon>
+            <button className="player__button" onClick={props.toggleShuffle}>
+              <ShuffleIcon
+                className={`player__icon ${props.shuffle ? "active" : ""}`}
+              ></ShuffleIcon>
             </button>
             <button className="player__button" onClick={props.toggleRepeat}>
               <RepeatIcon
@@ -132,6 +135,7 @@ const mapStateToProps = state => ({
   playerState: state.player.playerState,
   trackID: state.player.currentTrackID,
   loop: state.player.loop,
+  shuffle: state.player.shuffle,
   queueActive: state.layout.queueActive
 });
 
@@ -150,6 +154,9 @@ const mapDispatchToProps = dispatch => ({
   },
   toggleRepeat: () => {
     dispatch(TOGGLE_LOOP());
+  },
+  toggleShuffle: () => {
+    dispatch(TOGGLE_SHUFFLE());
   },
   toggleQueue: () => {
     dispatch(TOGGLE_QUEUE());

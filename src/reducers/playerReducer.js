@@ -1,3 +1,5 @@
+import { shuffleArray } from "../utils";
+
 const defaultState = {
   volume: 0.5,
   maxVolume: 1,
@@ -8,7 +10,9 @@ const defaultState = {
   currentTrackID: null,
   currentTrackIndex: null,
   loop: true,
-  queue: []
+  shuffle: false,
+  queue: [],
+  shuffledQueue: []
 };
 
 var reducer = function(state = defaultState, action) {
@@ -60,19 +64,26 @@ var reducer = function(state = defaultState, action) {
     case "UPDATE_QUEUE":
       return {
         ...state,
-        queue: [...action.payload]
-      };
-
-    case "ADD_TO_QUEUE":
-      return {
-        ...state,
-        queue: [...state.queue, action.payload]
+        queue: [...action.payload],
+        shuffledQueue: shuffleArray(
+          [...action.payload],
+          state.currentTrackIndex + 1
+        )
       };
 
     case "TOGGLE_LOOP":
       return {
         ...state,
         loop: !state.loop
+      };
+
+    case "TOGGLE_SHUFFLE":
+      return {
+        ...state,
+        shuffle: !state.shuffle,
+        shuffledQueue: !state.shuffle
+          ? shuffleArray([...state.queue], state.currentTrackIndex + 1)
+          : [...state.shuffledQueue]
       };
 
     default:

@@ -1,40 +1,65 @@
 import React from "react";
+import { connect } from "react-redux";
 
+import SoundCloud from "../soundcloud";
 
 class Likes extends React.Component {
-  // constructor() {
-  //   super();
-  //   // Soundcloud.initialize({
-  //   //   client_id: "fa791b761f68cafa375ab5f7ea51927a",
-  //   //   redirect_uri: "https://example.com/callback"
-  //   // });
-  // }
+  constructor() {
+    super();
+    this.state = {
+      queue: [],
+      shuffled: []
+    };
+  }
+
+  async fetchTracks() {
+    let queue = [],
+      shuffled = [];
+    for (let t of this.props.queue) {
+      let track = await SoundCloud.get(`/tracks/${t}`);
+      queue.push(track.title);
+    }
+    for (let t of this.props.shuffled) {
+      let track = await SoundCloud.get(`/tracks/${t}`);
+      shuffled.push(track.title);
+    }
+    this.setState({ queue, shuffled });
+  }
+
+  componentWillReceiveProps() {
+    this.fetchTracks();
+  }
+
+  componentDidMount() {
+    this.fetchTracks();
+  }
+
 
   render() {
-    // console.log(
-    //   Soundcloud.resolve(
-    //     "https://soundcloud.com/peachyperidots/fujitsu-awaiting"
-    //   ).then(track=>track)
-    // );
-
-    // Soundcloud.get("/playlists", {
-    //   q: "aestral",
-    //   limit: 30
-    // }).then(function(tracks) {
-    //   console.log(tracks);
-    // });
-
-    // Soundcloud.stream("/tracks/337213956").then(function(player) {
-    //   player.play();
-    //   player.seek(123 * 1000);
-    //   player.on("finish", () => {
-    //     console.log("finished");
-    //   });
-    //   console.log(player.getState());
-    // });
-
-    return <div className="sandbox">SANDBOXIK</div>;
+    this.fetchTracks();
+    let { state } = this;
+    return (
+      <div className="sandbox">
+        <ul>
+          {state.queue.map(el => (
+            <p>{el}</p>
+          ))}
+        </ul>
+        <hr />
+        <ul>
+          {state.shuffled.map(el => (
+            <p>{el}</p>
+          ))}
+        </ul>
+      </div>
+    );
   }
 }
+const mapStateToProps = state => ({
+  queue: state.player.queue,
+  shuffled: state.player.shuffledQueue
+});
 
-export default Likes;
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Likes);

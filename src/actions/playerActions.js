@@ -4,6 +4,10 @@ export const TOGGLE_LOOP = () => ({
   type: "TOGGLE_LOOP"
 });
 
+export const TOGGLE_SHUFFLE = () => ({
+  type: "TOGGLE_SHUFFLE"
+});
+
 export const CHANGE_VOLUME = volume => ({
   type: "CHANGE_VOLUME",
   payload: volume
@@ -40,18 +44,27 @@ export const UPDATE_QUEUE = queue => ({
 });
 
 export const START_QUEUE = (queue, play = false) => {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(UPDATE_QUEUE(queue));
     if (queue.length > 0) {
-      dispatch(PLAY_TRACK(queue[0], play));
+      let shuffle = getState().player.shuffle;
+      if (shuffle) {
+        dispatch(
+          PLAY_TRACK(queue[Math.round(Math.random() * queue.length)], play)
+        );
+      } else {
+        dispatch(PLAY_TRACK(queue[0], play));
+      }
     }
   };
 };
 
-export const ADD_TO_QUEUE = id => ({
-  type: "ADD_TO_QUEUE",
-  payload: id
-});
+export const ADD_TO_QUEUE = id => {
+  return (dispatch, getState) => {
+    let q = [...getState().player.queue, id];
+    dispatch(UPDATE_QUEUE(q));
+  };
+};
 
 var fetching = false;
 

@@ -23,7 +23,9 @@ var reducer = function(state = defaultState, action) {
         tracks: {
           href: action.payload.href,
           collection: tracks,
-          more: Boolean(action.payload.href)
+          more:
+            Boolean(action.payload.href) &&
+            Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_PLAYLISTS":
@@ -36,7 +38,9 @@ var reducer = function(state = defaultState, action) {
         playlists: {
           href: action.payload.href,
           collection: playlists,
-          more: Boolean(action.payload.href)
+          more:
+            Boolean(action.payload.href) &&
+            Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_FOLLOWINGS":
@@ -49,7 +53,9 @@ var reducer = function(state = defaultState, action) {
         followings: {
           href: action.payload.href,
           collection: followings,
-          more: Boolean(action.payload.href)
+          more:
+            Boolean(action.payload.href) &&
+            Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_FOLLOWERS":
@@ -62,7 +68,9 @@ var reducer = function(state = defaultState, action) {
         followers: {
           href: action.payload.href,
           collection: followers,
-          more: Boolean(action.payload.href)
+          more:
+            Boolean(action.payload.href) &&
+            Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_FAVOURITES":
@@ -75,7 +83,9 @@ var reducer = function(state = defaultState, action) {
         favourites: {
           href: action.payload.href,
           collection: favourites,
-          more: Boolean(action.payload.href)
+          more:
+            Boolean(action.payload.href) &&
+            Boolean(action.payload.collection.length)
         }
       };
 
