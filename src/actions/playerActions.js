@@ -55,7 +55,7 @@ export const ADD_TO_QUEUE = id => ({
 
 var fetching = false;
 
-const PLAY_TRACK = (id, play = false) => {
+export const PLAY_TRACK = (id, play = false) => {
   return async (dispatch, getState) => {
     // Prevent multiple calls at once
     if (!fetching) {

@@ -15,3 +15,14 @@
     opacity: 0.01;
     transition: opacity 300ms ease-in;
 }
+
+// TODO: improve expanding
+@keyframes expand {
+    0% {
+        max-height: 0px;
+    }
+
+    100% {
+        max-height: 300px;
+    }
+}
