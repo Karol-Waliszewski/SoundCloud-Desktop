@@ -78,7 +78,7 @@ class Profile extends Component {
       return (
         <>
           <Baner
-            avatar={user.avatar_url}
+            avatar={user.avatar_url.replace("large", "t300x300")}
             username={user.username}
             name={user.full_name}
             country={user.country}
