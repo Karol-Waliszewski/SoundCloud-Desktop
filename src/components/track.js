@@ -44,7 +44,6 @@ class Track extends Component {
 
   render() {
     let { props, state } = this;
-    console.log(props);
 
     let duration = props.duration / 1000;
     let minutes = parseInt(duration / 60);
