@@ -1,10 +1,10 @@
 const defaultState = {
   user: null,
-  tracks: { page: 0, collection: [], more: true },
-  playlists: { page: 0, collection: [], more: true },
-  followings: { page: 0, collection: [], more: true },
-  followers: { page: 0, collection: [], more: true },
-  favourites: { page: 0, collection: [], more: true }
+  tracks: { href: null, collection: [], more: true },
+  playlists: { href: null, collection: [], more: true },
+  followings: { href: null, collection: [], more: true },
+  followers: { href: null, collection: [], more: true },
+  favourites: { href: null, collection: [], more: true }
 };
 
 var reducer = function(state = defaultState, action) {
@@ -17,68 +17,65 @@ var reducer = function(state = defaultState, action) {
         user: action.payload
       };
     case "CHANGE_TRACKS":
+      let tracks = [...state.tracks.collection, ...action.payload.collection];
       return {
         ...state,
         tracks: {
-          page: action.payload.length
-            ? state.tracks.page + 1
-            : state.tracks.page,
-          collection: [
-            ...new Set([...state.tracks.collection, ...action.payload])
-          ],
-          more: action.payload.length < 12 ? false : true
+          href: action.payload.href,
+          collection: tracks,
+          more: Boolean(action.payload.href)
         }
       };
     case "CHANGE_PLAYLISTS":
+      let playlists = [
+        ...state.playlists.collection,
+        ...action.payload.collection
+      ];
       return {
         ...state,
         playlists: {
-          page: action.payload.length
-            ? state.playlists.page + 1
-            : state.playlists.page,
-          collection: [
-            ...new Set([...state.playlists.collection, ...action.payload])
-          ],
-          more: action.payload.length < 12 ? false : true
+          href: action.payload.href,
+          collection: playlists,
+          more: Boolean(action.payload.href)
         }
       };
     case "CHANGE_FOLLOWINGS":
+      let followings = [
+        ...state.followings.collection,
+        ...action.payload.collection
+      ];
       return {
         ...state,
         followings: {
-          page: action.payload.length
-            ? state.followings.page + 1
-            : state.followings.page,
-          collection: [
-            ...new Set([...state.followings.collection, ...action.payload])
-          ],
-          more: action.payload.length < 12 ? false : true
+          href: action.payload.href,
+          collection: followings,
+          more: Boolean(action.payload.href)
         }
       };
     case "CHANGE_FOLLOWERS":
+      let followers = [
+        ...state.followers.collection,
+        ...action.payload.collection
+      ];
       return {
         ...state,
         followers: {
-          page: action.payload.length
-            ? state.followers.page + 1
-            : state.followers.page,
-          collection: [
-            ...new Set([...state.followers.collection, ...action.payload])
-          ],
-          more: action.payload.length < 12 ? false : true
+          href: action.payload.href,
+          collection: followers,
+          more: Boolean(action.payload.href)
         }
       };
     case "CHANGE_FAVOURITES":
+      let favourites = [
+        ...state.favourites.collection,
+        ...action.payload.collection
+      ];
       return {
         ...state,
         favourites: {
-          page: action.payload.length
-            ? state.favourites.page + 1
-            : state.favourites.page,
-          collection: [
-            ...new Set([...state.favourites.collection, ...action.payload])
-          ],
-          more: action.payload.length < 12 ? false : true
+          href: action.payload.href,
+          collection: favourites,
+          more: Boolean(action.payload.href)
         }
       };
 

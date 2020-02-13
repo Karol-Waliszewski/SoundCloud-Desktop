@@ -1,33 +1,34 @@
 import Soundcloud from "../soundcloud";
+import axios from "axios";
 
 export const CHANGE_USER = user => ({
   type: "CHANGE_USER",
   payload: user
 });
 
-export const CHANGE_TRACKS = tracks => ({
+export const CHANGE_TRACKS = (tracks, href = null) => ({
   type: "CHANGE_TRACKS",
-  payload: tracks
+  payload: { collection: tracks, href }
 });
 
-export const CHANGE_PLAYLISTS = playlists => ({
+export const CHANGE_PLAYLISTS = (playlists, href = null) => ({
   type: "CHANGE_PLAYLISTS",
-  payload: playlists
+  payload: { collection: playlists, href }
 });
 
-export const CHANGE_FOLLOWINGS = followings => ({
+export const CHANGE_FOLLOWINGS = (followings, href = null) => ({
   type: "CHANGE_FOLLOWINGS",
-  payload: followings
+  payload: { collection: followings, href }
 });
 
-export const CHANGE_FOLLOWERS = followers => ({
+export const CHANGE_FOLLOWERS = (followers, href = null) => ({
   type: "CHANGE_FOLLOWERS",
-  payload: followers
+  payload: { collection: followers, href }
 });
 
-export const CHANGE_FAVOURITES = favourites => ({
+export const CHANGE_FAVOURITES = (favourites, href = null) => ({
   type: "CHANGE_FAVOURITES",
-  payload: favourites
+  payload: { collection: favourites, href }
 });
 
 export const CHECK_USER = () => {
@@ -62,12 +63,18 @@ export const FETCH_TRACKS = () => {
       dispatch(CHANGE_TRACKS([]));
     } else {
       try {
-        let page = getState().profile.tracks.page;
-        let tracks = await Soundcloud.get(`/users/${user.id}/tracks`, {
-          limit: 12,
-          offset: page * 12
-        });
-        dispatch(CHANGE_TRACKS(tracks));
+        let href = getState().profile.tracks.href;
+        let tracks;
+        if (href == null) {
+          tracks = await Soundcloud.get(`/users/${user.id}/tracks`, {
+            limit: 12,
+            linked_partitioning: true
+          });
+        } else {
+          tracks = await axios.get(href);
+          tracks = tracks.data;
+        }
+        dispatch(CHANGE_TRACKS(tracks.collection, tracks.next_href));
       } catch (error) {
         console.error(error);
       }
@@ -82,12 +89,18 @@ export const FETCH_PLAYLISTS = () => {
       dispatch(CHANGE_PLAYLISTS([]));
     } else {
       try {
-        let page = getState().profile.playlists.page;
-        let playlists = await Soundcloud.get(`/users/${user.id}/playlists`, {
-          limit: 12,
-          offset: page * 12
-        });
-        dispatch(CHANGE_PLAYLISTS(playlists));
+        let href = getState().profile.playlists.href;
+        let playlists;
+        if (href == null) {
+          playlists = await Soundcloud.get(`/users/${user.id}/playlists`, {
+            limit: 12,
+            linked_partitioning: true
+          });
+        } else {
+          playlists = await axios.get(href);
+          playlists = playlists.data;
+        }
+        dispatch(CHANGE_PLAYLISTS(playlists.collection, playlists.next_href));
       } catch (error) {
         console.error(error);
       }
@@ -102,13 +115,20 @@ export const FETCH_FOLLOWINGS = () => {
       dispatch(CHANGE_FOLLOWINGS([]));
     } else {
       try {
-        let page = getState().profile.followings.page;
-        let followings = await Soundcloud.get(`/users/${user.id}/followings`, {
-          limit: 12,
-          offset: page * 12
-        });
-
-        dispatch(CHANGE_FOLLOWINGS(followings.collection));
+        let href = getState().profile.followings.href;
+        let followings;
+        if (href == null) {
+          followings = await Soundcloud.get(`/users/${user.id}/followings`, {
+            limit: 12,
+            linked_partitioning: true
+          });
+        } else {
+          followings = await axios.get(href);
+          followings = followings.data;
+        }
+        dispatch(
+          CHANGE_FOLLOWINGS(followings.collection, followings.next_href)
+        );
       } catch (error) {
         console.error(error);
       }
@@ -123,12 +143,18 @@ export const FETCH_FOLLOWERS = () => {
       dispatch(CHANGE_FOLLOWERS([]));
     } else {
       try {
-        let page = getState().profile.followers.page;
-        let followers = await Soundcloud.get(`/users/${user.id}/followers`, {
-          limit: 12,
-          offset: page * 12
-        });
-        dispatch(CHANGE_FOLLOWERS(followers.collection));
+        let href = getState().profile.followers.href;
+        let followers;
+        if (href == null) {
+          followers = await Soundcloud.get(`/users/${user.id}/followers`, {
+            limit: 12,
+            linked_partitioning: true
+          });
+        } else {
+          followers = await axios.get(href);
+          followers = followers.data;
+        }
+        dispatch(CHANGE_FOLLOWERS(followers.collection, followers.next_href));
       } catch (error) {
         console.error(error);
       }
@@ -143,12 +169,20 @@ export const FETCH_FAVOURITES = () => {
       dispatch(CHANGE_FAVOURITES([]));
     } else {
       try {
-        let page = getState().profile.favourites.page;
-        let favourites = await Soundcloud.get(`/users/${user.id}/favorites`, {
-          limit: 12,
-          offset: page * 12
-        });
-        dispatch(CHANGE_FAVOURITES(favourites));
+        let href = getState().profile.favourites.href;
+        let favourites;
+        if (href == null) {
+          favourites = await Soundcloud.get(`/users/${user.id}/favorites`, {
+            limit: 12,
+            linked_partitioning: true
+          });
+        } else {
+          favourites = await axios.get(href);
+          favourites = favourites.data;
+        }
+        dispatch(
+          CHANGE_FAVOURITES(favourites.collection, favourites.next_href)
+        );
       } catch (error) {
         console.error(error);
       }
