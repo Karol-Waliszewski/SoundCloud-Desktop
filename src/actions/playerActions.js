@@ -136,7 +136,7 @@ var fetching = false;
 export const PLAY_TRACK = (id, play = false) => {
   return async (dispatch, getState) => {
     // Prevent multiple calls at once
-    if (!fetching) {
+    if (!fetching && id) {
       fetching = true;
 
       // Getting new track
@@ -222,12 +222,13 @@ export const PLAY_TRACK = (id, play = false) => {
         fetching = false;
 
         // Playing another tracks
-        let queue = [...getState().player.queue];
+        let queue = [...getState().player.activeQueue];
         if (queue.length > 0) {
-          let index = queue.indexOf(id);
+          let index = queue.indexOf(String(id));
           if (index >= 0) {
             queue.splice(index, 1);
           }
+          
           dispatch(UPDATE_QUEUE(queue));
           dispatch(UPDATE_SHUFFLED_QUEUE(queue));
           dispatch(UPDATE_ACTIVE_QUEUE());
