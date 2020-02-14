@@ -8,13 +8,15 @@ class Likes extends React.Component {
     super();
     this.state = {
       queue: [],
-      shuffled: []
+      shuffled: [],
+      active: []
     };
   }
 
   async fetchTracks() {
     let queue = [],
-      shuffled = [];
+      shuffled = [],
+      active = [];
     for (let t of this.props.queue) {
       let track = await SoundCloud.get(`/tracks/${t}`);
       queue.push(track.title);
@@ -23,7 +25,11 @@ class Likes extends React.Component {
       let track = await SoundCloud.get(`/tracks/${t}`);
       shuffled.push(track.title);
     }
-    this.setState({ queue, shuffled });
+    for (let t of this.props.active) {
+      let track = await SoundCloud.get(`/tracks/${t}`);
+      active.push(track.title);
+    }
+    this.setState({ queue, shuffled, active });
   }
 
   componentWillReceiveProps() {
@@ -33,7 +39,6 @@ class Likes extends React.Component {
   componentDidMount() {
     this.fetchTracks();
   }
-
 
   render() {
     this.fetchTracks();
@@ -51,13 +56,20 @@ class Likes extends React.Component {
             <p>{el}</p>
           ))}
         </ul>
+        <hr />
+        <ul>
+          {state.active.map(el => (
+            <p>{el}</p>
+          ))}
+        </ul>
       </div>
     );
   }
 }
 const mapStateToProps = state => ({
   queue: state.player.queue,
-  shuffled: state.player.shuffledQueue
+  shuffled: state.player.shuffledQueue,
+  active: state.player.activeQueue
 });
 
 const mapDispatchToProps = dispatch => ({});

@@ -1,11 +1,8 @@
 import Soundcloud from "../soundcloud";
+import { shuffleArray } from "../utils";
 
 export const TOGGLE_LOOP = () => ({
   type: "TOGGLE_LOOP"
-});
-
-export const TOGGLE_SHUFFLE = () => ({
-  type: "TOGGLE_SHUFFLE"
 });
 
 export const CHANGE_VOLUME = volume => ({
@@ -33,29 +30,95 @@ export const UPDATE_PLAYER = player => ({
   payload: player
 });
 
-export const UPDATE_TRACK = id => ({
-  type: "UPDATE_TRACK",
-  payload: id
+export const UPDATE_TRACK = id => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: "UPDATE_TRACK",
+      payload: id
+    });
+    dispatch(
+      UPDATE_TRACK_INDEX(
+        getState().player.queue.indexOf(id),
+        getState().player.activeQueue.indexOf(id)
+      )
+    );
+  };
+};
+
+export const UPDATE_TRACK_INDEX = (queue, active) => ({
+  type: "UPDATE_TRACK_INDEX",
+  payload: { queue, active }
 });
+
+export const TOGGLE_SHUFFLE = () => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: "TOGGLE_SHUFFLE"
+    });
+    if (getState().player.shuffle) {
+      dispatch(UPDATE_SHUFFLED_QUEUE());
+    }
+    dispatch(UPDATE_ACTIVE_QUEUE());
+    let id = getState().player.currentTrackID;
+    dispatch(
+      UPDATE_TRACK_INDEX(
+        getState().player.queue.indexOf(id),
+        getState().player.activeQueue.indexOf(id)
+      )
+    );
+  };
+};
 
 export const UPDATE_QUEUE = queue => ({
   type: "UPDATE_QUEUE",
   payload: queue
 });
 
+export const UPDATE_SHUFFLED_QUEUE = (queue, i) => {
+  return (dispatch, getState) => {
+    if (!queue) {
+      queue = getState().player.queue;
+    }
+    if (!i) {
+      i = getState().player.currentTrackIndex.queue + 1;
+    }
+    dispatch({
+      type: "UPDATE_SHUFFLED_QUEUE",
+      payload: shuffleArray([...queue], i)
+    });
+  };
+};
+
+export const UPDATE_ACTIVE_QUEUE = () => {
+  return (dispatch, getState) => {
+    if (getState().player.shuffle) {
+      dispatch({
+        type: "UPDATE_ACTIVE_QUEUE",
+        payload: getState().player.shuffledQueue
+      });
+    } else {
+      dispatch({
+        type: "UPDATE_ACTIVE_QUEUE",
+        payload: getState().player.queue
+      });
+    }
+  };
+};
+
 export const START_QUEUE = (queue, play = false) => {
   return (dispatch, getState) => {
+    let index = Math.round(Math.random() * queue.length);
     dispatch(UPDATE_QUEUE(queue));
     if (queue.length > 0) {
       let shuffle = getState().player.shuffle;
       if (shuffle) {
-        dispatch(
-          PLAY_TRACK(queue[Math.round(Math.random() * queue.length)], play)
-        );
+        dispatch(PLAY_TRACK(queue[index], play));
       } else {
         dispatch(PLAY_TRACK(queue[0], play));
       }
     }
+    dispatch(UPDATE_SHUFFLED_QUEUE(queue, index + 1));
+    dispatch(UPDATE_ACTIVE_QUEUE());
   };
 };
 
@@ -63,6 +126,8 @@ export const ADD_TO_QUEUE = id => {
   return (dispatch, getState) => {
     let q = [...getState().player.queue, id];
     dispatch(UPDATE_QUEUE(q));
+    dispatch(UPDATE_SHUFFLED_QUEUE(q));
+    dispatch(UPDATE_ACTIVE_QUEUE());
   };
 };
 
@@ -111,7 +176,7 @@ export const PLAY_TRACK = (id, play = false) => {
           if (
             state === "ended" &&
             getState().player.queue.length - 1 >
-              getState().player.currentTrackIndex
+              getState().player.currentTrackIndex.active
           ) {
             dispatch(NEXT_TRACK(true));
           } else if (
@@ -164,6 +229,8 @@ export const PLAY_TRACK = (id, play = false) => {
             queue.splice(index, 1);
           }
           dispatch(UPDATE_QUEUE(queue));
+          dispatch(UPDATE_SHUFFLED_QUEUE(queue));
+          dispatch(UPDATE_ACTIVE_QUEUE());
           index = index < queue.length - 1 ? index : queue.length - 1;
           dispatch(PLAY_TRACK(queue[index], play));
         }
@@ -180,15 +247,18 @@ export const NEXT_TRACK = playing => {
       let state = getState();
       let play =
         state.player.playerState === "playing" || playing ? true : false;
-      if (state.player.queue.length - 1 > state.player.currentTrackIndex) {
+      if (
+        state.player.activeQueue.length - 1 >
+        state.player.currentTrackIndex.active
+      ) {
         dispatch(
           PLAY_TRACK(
-            state.player.queue[state.player.currentTrackIndex + 1],
+            state.player.activeQueue[state.player.currentTrackIndex.active + 1],
             play
           )
         );
       } else if (state.player.loop) {
-        dispatch(PLAY_TRACK(state.player.queue[0], play));
+        dispatch(PLAY_TRACK(state.player.activeQueue[0], play));
       }
     }
   };
@@ -200,16 +270,19 @@ export const PREVIOUS_TRACK = playing => {
       let state = getState();
       let play =
         state.player.playerState === "playing" || playing ? true : false;
-      if (0 < state.player.currentTrackIndex) {
+      if (0 < state.player.currentTrackIndex.active) {
         dispatch(
           PLAY_TRACK(
-            state.player.queue[state.player.currentTrackIndex - 1],
+            state.player.activeQueue[state.player.currentTrackIndex.active - 1],
             play
           )
         );
       } else if (state.player.loop) {
         dispatch(
-          PLAY_TRACK(state.player.queue[state.player.queue.length - 1], play)
+          PLAY_TRACK(
+            state.player.activeQueue[state.player.activeQueue.length - 1],
+            play
+          )
         );
       }
     }

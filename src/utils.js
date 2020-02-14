@@ -3,6 +3,9 @@ export const shuffleArray = (array, from = 0) => {
     temp,
     j;
 
+  // Prevent mutation
+  array = [...array];
+
   // While there remain elements to shuffle…
   while (i != array.length - 1) {
     // Pick a remaining element…

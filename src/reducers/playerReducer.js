@@ -1,5 +1,3 @@
-import { shuffleArray } from "../utils";
-
 const defaultState = {
   volume: 0.5,
   maxVolume: 1,
@@ -8,11 +6,12 @@ const defaultState = {
   player: null,
   playerState: "paused",
   currentTrackID: null,
-  currentTrackIndex: null,
+  currentTrackIndex: { queue: null, active: null },
   loop: true,
   shuffle: false,
   queue: [],
-  shuffledQueue: []
+  shuffledQueue: [],
+  activeQueue: []
 };
 
 var reducer = function(state = defaultState, action) {
@@ -46,11 +45,17 @@ var reducer = function(state = defaultState, action) {
       };
 
     case "UPDATE_TRACK":
-      let index = state.queue.indexOf(action.payload);
       return {
         ...state,
-        currentTrackID: action.payload,
-        currentTrackIndex: index
+        currentTrackID: action.payload
+      };
+
+    case "UPDATE_TRACK_INDEX":
+      return {
+        ...state,
+        currentTrackIndex: {
+          ...action.payload
+        }
       };
 
     case "UPDATE_PLAYER":
@@ -64,11 +69,19 @@ var reducer = function(state = defaultState, action) {
     case "UPDATE_QUEUE":
       return {
         ...state,
-        queue: [...action.payload],
-        shuffledQueue: shuffleArray(
-          [...action.payload],
-          state.currentTrackIndex + 1
-        )
+        queue: [...action.payload]
+      };
+
+    case "UPDATE_SHUFFLED_QUEUE":
+      return {
+        ...state,
+        shuffledQueue: [...action.payload]
+      };
+
+    case "UPDATE_ACTIVE_QUEUE":
+      return {
+        ...state,
+        activeQueue: [...action.payload]
       };
 
     case "TOGGLE_LOOP":
@@ -80,10 +93,7 @@ var reducer = function(state = defaultState, action) {
     case "TOGGLE_SHUFFLE":
       return {
         ...state,
-        shuffle: !state.shuffle,
-        shuffledQueue: !state.shuffle
-          ? shuffleArray([...state.queue], state.currentTrackIndex + 1)
-          : [...state.shuffledQueue]
+        shuffle: !state.shuffle
       };
 
     default:
