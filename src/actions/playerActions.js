@@ -107,17 +107,18 @@ export const UPDATE_ACTIVE_QUEUE = () => {
 
 export const START_QUEUE = (queue, play = false) => {
   return (dispatch, getState) => {
-    let index = Math.round(Math.random() * queue.length);
     dispatch(UPDATE_QUEUE(queue));
+    dispatch(UPDATE_SHUFFLED_QUEUE(queue, 0));
+    let shuffledQueue = getState().player.shuffledQueue;
     if (queue.length > 0) {
       let shuffle = getState().player.shuffle;
       if (shuffle) {
-        dispatch(PLAY_TRACK(queue[index], play));
+        dispatch(PLAY_TRACK(shuffledQueue[0], play));
       } else {
         dispatch(PLAY_TRACK(queue[0], play));
       }
+      
     }
-    dispatch(UPDATE_SHUFFLED_QUEUE(queue, index + 1));
     dispatch(UPDATE_ACTIVE_QUEUE());
   };
 };
@@ -228,7 +229,7 @@ export const PLAY_TRACK = (id, play = false) => {
           if (index >= 0) {
             queue.splice(index, 1);
           }
-          
+
           dispatch(UPDATE_QUEUE(queue));
           dispatch(UPDATE_SHUFFLED_QUEUE(queue));
           dispatch(UPDATE_ACTIVE_QUEUE());

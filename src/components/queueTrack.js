@@ -82,15 +82,6 @@ class Track extends Component {
           {state.options && (
             <ul className="queueTrack__options" onClick={this.stopPropagation}>
               <li>
-                <button
-                  className="queueTrack__option"
-                  onClick={this.addToQueue.bind(this)}
-                >
-                  <img src="" alt="" className="queueTrack__icon--option" />
-                  Add to Next up
-                </button>
-              </li>
-              <li>
                 <button className="queueTrack__option">
                   <img src="" alt="" className="queueTrack__icon--option" />
                   Add to playlists

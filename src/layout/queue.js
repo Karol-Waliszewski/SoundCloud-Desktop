@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import SoundCloud from "../soundcloud";
 
+// Actions
+import { TOGGLE_QUEUE } from "../actions/layoutActions";
+
 // Components
 import Track from "../components/queueTrack";
 
@@ -17,7 +20,6 @@ class Queue extends Component {
   async fetchTracks(tracks) {
     //TODO: improve efficiency
     let queue = [];
-    console.log("CALLED")
     try {
       for (let t of tracks) {
         let track = await SoundCloud.get(`/tracks/${t}`);
@@ -37,8 +39,7 @@ class Queue extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if(this.props.queue != newProps.queue)
-    this.fetchTracks(newProps.queue);
+    if (this.props.queue != newProps.queue) this.fetchTracks(newProps.queue);
   }
 
   componentDidMount() {
@@ -55,7 +56,7 @@ class Queue extends Component {
           <h3 className="queue__heading">Next up</h3>
           <div className="queue__buttons">
             <button className="queue__clear">Clear</button>
-            <button className="queue__close">
+            <button className="queue__close" onClick={props.closeQueue}>
               <img src={close} alt="x (close)" />
             </button>
           </div>
@@ -71,6 +72,10 @@ const mapStateToProps = state => ({
   queue: state.player.activeQueue
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  closeQueue: () => {
+    dispatch(TOGGLE_QUEUE());
+  }
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Queue);
