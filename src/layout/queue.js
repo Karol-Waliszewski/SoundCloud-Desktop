@@ -4,6 +4,11 @@ import SoundCloud from "../soundcloud";
 
 // Actions
 import { TOGGLE_QUEUE } from "../actions/layoutActions";
+import {
+  UPDATE_QUEUE,
+  UPDATE_SHUFFLED_QUEUE,
+  UPDATE_ACTIVE_QUEUE
+} from "../actions/playerActions";
 
 // Components
 import Track from "../components/queueTrack";
@@ -55,7 +60,9 @@ class Queue extends Component {
         <header className="queue__header">
           <h3 className="queue__heading">Next up</h3>
           <div className="queue__buttons">
-            <button className="queue__clear">Clear</button>
+            <button className="queue__clear" onClick={props.clearQueue}>
+              Clear
+            </button>
             <button className="queue__close" onClick={props.closeQueue}>
               <img src={close} alt="x (close)" />
             </button>
@@ -75,6 +82,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   closeQueue: () => {
     dispatch(TOGGLE_QUEUE());
+  },
+  clearQueue: () => {
+    dispatch(UPDATE_QUEUE([]));
+    dispatch(UPDATE_SHUFFLED_QUEUE([]));
+    dispatch(UPDATE_ACTIVE_QUEUE());
   }
 });
 
