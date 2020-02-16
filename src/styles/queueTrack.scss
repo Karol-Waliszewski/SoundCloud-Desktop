@@ -4,13 +4,14 @@
     justify-content: space-between;
     align-items: center;
 
+    width: 100%;
+
     padding: 8px 6px;
 
     border: {
         bottom: 1px solid $lightGray;
     }
 
-    ;
 }
 
 .queueTrack__drag {

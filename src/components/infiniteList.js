@@ -9,7 +9,7 @@ const InfiniteList = props => {
   //TODO: loader~!!!!!
   return (
     <InfiniteScroll
-      scrollableTarget={"main"}
+      scrollableTarget={props.target || "main"}
       dataLength={props.list.length}
       next={props.fetchFn}
       hasMore={props.more}
@@ -35,7 +35,8 @@ InfiniteList.propTypes = {
   more: PropTypes.bool.isRequired,
   fetchFn: PropTypes.func.isRequired,
   component: PropTypes.elementType.isRequired,
-  limit: PropTypes.number
+  limit: PropTypes.number,
+  target: PropTypes.string
 };
 
 export default InfiniteList;

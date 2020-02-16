@@ -71,7 +71,7 @@ export const TOGGLE_SHUFFLE = () => {
 
 export const UPDATE_QUEUE = queue => ({
   type: "UPDATE_QUEUE",
-  payload: queue
+  payload: queue.filter(el=> el != undefined)
 });
 
 export const UPDATE_SHUFFLED_QUEUE = (queue, i) => {
@@ -84,7 +84,7 @@ export const UPDATE_SHUFFLED_QUEUE = (queue, i) => {
     }
     dispatch({
       type: "UPDATE_SHUFFLED_QUEUE",
-      payload: shuffleArray([...queue], i)
+      payload: shuffleArray([...queue.filter(el=> el != undefined)], i)
     });
   };
 };

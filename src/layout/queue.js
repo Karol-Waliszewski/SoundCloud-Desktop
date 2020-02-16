@@ -12,6 +12,7 @@ import {
 
 // Components
 import Track from "../components/queueTrack";
+import InfiniteList from "../components/infiniteList";
 
 // Assets
 import close from "../assets/close.svg";
@@ -19,7 +20,11 @@ import close from "../assets/close.svg";
 class Queue extends Component {
   constructor() {
     super();
-    this.state = { queue: [] };
+    this.state = {
+      queue: []
+    };
+
+    this.getTracks = this.getTracks.bind(this);
   }
 
   async fetchTracks(tracks) {
@@ -34,26 +39,32 @@ class Queue extends Component {
       console.log(error);
     }
 
-    this.setState({ queue });
+    return queue;
   }
 
-  renderTracks() {
-    return this.state.queue.map((track, i) => (
-      <Track key={i} {...track}></Track>
-    ));
+  async getTracks(
+    queue = this.props.queue,
+    currentSize = this.state.queue.length
+  ) {
+    try {
+      let tracks = await this.fetchTracks([...queue].splice(currentSize, 14));
+      this.setState({
+        queue: [...this.state.queue, ...tracks]
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.queue != newProps.queue) this.fetchTracks(newProps.queue);
-  }
-
-  componentDidMount() {
-    this.fetchTracks(this.props.queue);
+  async componentDidUpdate(prevProps) {
+    if (prevProps.queue !== this.props.queue) {
+      this.setState({ queue: [] });
+      await this.getTracks(this.props.queue, 0);
+    }
   }
 
   render() {
-    let { props } = this;
-    let list = this.renderTracks();
+    let { props, state } = this;
 
     return (
       <section className={`queue ${props.active ? "active" : ""}`}>
@@ -68,7 +79,15 @@ class Queue extends Component {
             </button>
           </div>
         </header>
-        <div className="queue__list">{list}</div>
+        <div className="queue__list" id="queue">
+          <InfiniteList
+            more={props.queue.length != state.queue.length}
+            list={state.queue}
+            fetchFn={this.getTracks}
+            component={Track}
+            target={"queue"}
+          ></InfiniteList>
+        </div>
       </section>
     );
   }
