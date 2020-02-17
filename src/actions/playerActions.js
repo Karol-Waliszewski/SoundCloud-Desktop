@@ -32,10 +32,13 @@ export const UPDATE_PLAYER = player => ({
 
 export const UPDATE_TRACK = id => {
   return (dispatch, getState) => {
+    // Updating current track id
     dispatch({
       type: "UPDATE_TRACK",
       payload: id
     });
+
+    // Updating current tracks positions in queues
     dispatch(
       UPDATE_TRACK_INDEX(
         getState().player.queue.indexOf(id),
@@ -45,6 +48,7 @@ export const UPDATE_TRACK = id => {
   };
 };
 
+// Updating current tracks positions in queues
 export const UPDATE_TRACK_INDEX = (queue, active) => ({
   type: "UPDATE_TRACK_INDEX",
   payload: { queue, active }
@@ -52,13 +56,20 @@ export const UPDATE_TRACK_INDEX = (queue, active) => ({
 
 export const TOGGLE_SHUFFLE = () => {
   return (dispatch, getState) => {
+    // Toggling whether queue is shuffled or not
     dispatch({
       type: "TOGGLE_SHUFFLE"
     });
+
+    // If queue is to be shuffled, shuffle it
     if (getState().player.shuffle) {
       dispatch(UPDATE_SHUFFLED_QUEUE());
     }
+
+    // Update active queue
     dispatch(UPDATE_ACTIVE_QUEUE());
+
+    // Update current track positions
     let id = getState().player.currentTrackID;
     dispatch(
       UPDATE_TRACK_INDEX(
@@ -78,18 +89,25 @@ export const UPDATE_SHUFFLED_QUEUE = (
   { queue, i, shuffle } = { queue: null, i: null, shuffle: true }
 ) => {
   return (dispatch, getState) => {
+    // If queue parameter is empty, use current player queue
     if (!queue) {
       queue = getState().player.queue;
     }
+
+    // If index parameter is not set, use current track position increased by 1
     if (!i) {
       i = getState().player.currentTrackIndex.queue + 1;
     }
+
+    // If passed queue is to be shuffled, shuffle it
     if (shuffle) {
       dispatch({
         type: "UPDATE_SHUFFLED_QUEUE",
         payload: shuffleArray([...queue.filter(el => el != undefined)], i)
       });
-    } else {
+    }
+    // If queue don't have to be shuffled, just pass it to the reducer
+    else {
       dispatch({
         type: "UPDATE_SHUFFLED_QUEUE",
         payload: [...queue.filter(el => el != undefined)]
@@ -100,12 +118,15 @@ export const UPDATE_SHUFFLED_QUEUE = (
 
 export const UPDATE_ACTIVE_QUEUE = () => {
   return (dispatch, getState) => {
+    // If player's shuffle switch is true, active queue is the shuffled one
     if (getState().player.shuffle) {
       dispatch({
         type: "UPDATE_ACTIVE_QUEUE",
         payload: getState().player.shuffledQueue
       });
-    } else {
+    }
+    // If switch if false, active queue is normal queue
+    else {
       dispatch({
         type: "UPDATE_ACTIVE_QUEUE",
         payload: getState().player.queue
@@ -116,9 +137,14 @@ export const UPDATE_ACTIVE_QUEUE = () => {
 
 export const START_QUEUE = (queue, play = false) => {
   return (dispatch, getState) => {
+    // Updating queues
     dispatch(UPDATE_QUEUE(queue));
     dispatch(UPDATE_SHUFFLED_QUEUE({ queue, i: 0 }));
+
+    // Getting shuffled queue
     let shuffledQueue = getState().player.shuffledQueue;
+
+    // Playing 1st track of the queue TODO: shuffle first track in shuffled queue.
     if (queue.length > 0) {
       let shuffle = getState().player.shuffle;
       if (shuffle) {
@@ -127,6 +153,8 @@ export const START_QUEUE = (queue, play = false) => {
         dispatch(PLAY_TRACK(queue[0], play));
       }
     }
+
+    // Updating active queue
     dispatch(UPDATE_ACTIVE_QUEUE());
   };
 };
@@ -192,6 +220,7 @@ export const PLAY_TRACK = (id, play = false) => {
             getState().player.player.kill();
           }
 
+          // Updating player state
           if (play === false) {
             player.pause();
             player.seek(0);
@@ -260,18 +289,21 @@ export const PLAY_TRACK = (id, play = false) => {
 
         fetching = false;
 
-        // Playing another tracks
+        // Choosing next track to stream
         let queue = [...getState().player.activeQueue];
         if (queue.length > 0) {
+          // Deleting faulty track
           let index = queue.indexOf(String(id));
           if (index >= 0) {
             queue.splice(index, 1);
           }
 
+          // Updating queues
           dispatch(UPDATE_QUEUE(queue));
           dispatch(UPDATE_SHUFFLED_QUEUE({ queue }));
           dispatch(UPDATE_ACTIVE_QUEUE());
           index = index < queue.length - 1 ? index : queue.length - 1;
+          // Playing another tracks
           dispatch(PLAY_TRACK(queue[index], play));
         }
       }
@@ -287,6 +319,7 @@ export const NEXT_TRACK = playing => {
       let state = getState();
       let play =
         state.player.playerState === "playing" || playing ? true : false;
+      // If there is next track, play it
       if (
         state.player.activeQueue.length - 1 >
         state.player.currentTrackIndex.active
@@ -297,7 +330,9 @@ export const NEXT_TRACK = playing => {
             play
           )
         );
-      } else if (state.player.loop) {
+      }
+      // If it was the last track, but looping is active, play first track
+      else if (state.player.loop) {
         dispatch(PLAY_TRACK(state.player.activeQueue[0], play));
       }
     }
@@ -310,6 +345,7 @@ export const PREVIOUS_TRACK = playing => {
       let state = getState();
       let play =
         state.player.playerState === "playing" || playing ? true : false;
+      // If there is previous track, play it
       if (0 < state.player.currentTrackIndex.active) {
         dispatch(
           PLAY_TRACK(
@@ -317,7 +353,9 @@ export const PREVIOUS_TRACK = playing => {
             play
           )
         );
-      } else if (state.player.loop) {
+      }
+      // If it is the first track, but looping is active, play the last one
+      else if (state.player.loop) {
         dispatch(
           PLAY_TRACK(
             state.player.activeQueue[state.player.activeQueue.length - 1],
@@ -331,6 +369,7 @@ export const PREVIOUS_TRACK = playing => {
 
 export const ADD_AND_PLAY_TRACK = (id, play = false) => {
   return (dispatch, getState) => {
+    // Preventing doubling track in queue
     if (!getState().player.queue.includes(id)) {
       dispatch(ADD_TO_QUEUE(id));
     }
