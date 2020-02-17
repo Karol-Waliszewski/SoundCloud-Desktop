@@ -20,9 +20,9 @@ import Search from "./routes/Search";
 
 class App extends React.Component {
   componentDidMount() {
-    this.props.playTrack("496922577");
-    this.props.addToQueue("204957649");
-    this.props.addToQueue("504437034");
+    this.props.playTrack(496922577);
+    this.props.addToQueue(204957649);
+    this.props.addToQueue(504437034);
   }
 
   render() {

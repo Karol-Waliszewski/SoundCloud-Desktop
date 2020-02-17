@@ -71,10 +71,12 @@ export const TOGGLE_SHUFFLE = () => {
 
 export const UPDATE_QUEUE = queue => ({
   type: "UPDATE_QUEUE",
-  payload: queue.filter(el=> el != undefined)
+  payload: queue.filter(el => el != undefined)
 });
 
-export const UPDATE_SHUFFLED_QUEUE = (queue, i) => {
+export const UPDATE_SHUFFLED_QUEUE = (
+  { queue, i, shuffle } = { queue: null, i: null, shuffle: true }
+) => {
   return (dispatch, getState) => {
     if (!queue) {
       queue = getState().player.queue;
@@ -82,10 +84,17 @@ export const UPDATE_SHUFFLED_QUEUE = (queue, i) => {
     if (!i) {
       i = getState().player.currentTrackIndex.queue + 1;
     }
-    dispatch({
-      type: "UPDATE_SHUFFLED_QUEUE",
-      payload: shuffleArray([...queue.filter(el=> el != undefined)], i)
-    });
+    if (shuffle) {
+      dispatch({
+        type: "UPDATE_SHUFFLED_QUEUE",
+        payload: shuffleArray([...queue.filter(el => el != undefined)], i)
+      });
+    } else {
+      dispatch({
+        type: "UPDATE_SHUFFLED_QUEUE",
+        payload: [...queue.filter(el => el != undefined)]
+      });
+    }
   };
 };
 
@@ -108,7 +117,7 @@ export const UPDATE_ACTIVE_QUEUE = () => {
 export const START_QUEUE = (queue, play = false) => {
   return (dispatch, getState) => {
     dispatch(UPDATE_QUEUE(queue));
-    dispatch(UPDATE_SHUFFLED_QUEUE(queue, 0));
+    dispatch(UPDATE_SHUFFLED_QUEUE({ queue, i: 0 }));
     let shuffledQueue = getState().player.shuffledQueue;
     if (queue.length > 0) {
       let shuffle = getState().player.shuffle;
@@ -117,7 +126,6 @@ export const START_QUEUE = (queue, play = false) => {
       } else {
         dispatch(PLAY_TRACK(queue[0], play));
       }
-      
     }
     dispatch(UPDATE_ACTIVE_QUEUE());
   };
@@ -125,9 +133,39 @@ export const START_QUEUE = (queue, play = false) => {
 
 export const ADD_TO_QUEUE = id => {
   return (dispatch, getState) => {
-    let q = [...getState().player.queue, id];
+    // Adding new track to queue
+    let queue = [...getState().player.queue];
+    let currentIndex = getState().player.currentTrackIndex.queue + 1 || 1;
+    // Placing new element after current track
+    let q = [
+      ...[...queue].splice(0, currentIndex),
+      id,
+      ...[...queue].splice(currentIndex, queue.length - currentIndex)
+    ];
+
+    // Updating queue
     dispatch(UPDATE_QUEUE(q));
-    dispatch(UPDATE_SHUFFLED_QUEUE(q));
+
+    // If active queue is shuffled, add new track after current element
+    if (getState().player.shuffle) {
+      // Adding new track to shuffled queue
+      let shuffledIndex = getState().player.currentTrackIndex.active + 1 || 1;
+      let shuffledQueue = [...getState().player.shuffledQueue];
+      // Placing new element after current track
+      let s = [
+        ...[...shuffledQueue].splice(0, shuffledIndex),
+        id,
+        ...[...shuffledQueue].splice(
+          shuffledIndex,
+          queue.length - shuffledIndex
+        )
+      ];
+      // Updating shuffled queue
+      dispatch(UPDATE_SHUFFLED_QUEUE({ queue: s, shuffle: false }));
+    } else {
+      // Updating shuffled queue
+      dispatch(UPDATE_SHUFFLED_QUEUE({ queue: q }));
+    }
     dispatch(UPDATE_ACTIVE_QUEUE());
   };
 };
@@ -231,7 +269,7 @@ export const PLAY_TRACK = (id, play = false) => {
           }
 
           dispatch(UPDATE_QUEUE(queue));
-          dispatch(UPDATE_SHUFFLED_QUEUE(queue));
+          dispatch(UPDATE_SHUFFLED_QUEUE({ queue }));
           dispatch(UPDATE_ACTIVE_QUEUE());
           index = index < queue.length - 1 ? index : queue.length - 1;
           dispatch(PLAY_TRACK(queue[index], play));
