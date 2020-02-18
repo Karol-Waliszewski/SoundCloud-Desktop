@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Loader from "react-loader-spinner";
 import SoundCloud from "../soundcloud";
 
 // Actions
@@ -15,7 +16,6 @@ import {
 
 // Components
 import Track from "../components/queueTrack";
-import InfiniteList from "../components/infiniteList";
 
 // Assets
 import close from "../assets/close.svg";
@@ -35,7 +35,7 @@ class Queue extends Component {
   fetchTracks() {
     // Preventing fetching multiple times at once
     let fetching = false;
-    return async (tracks) => {
+    return async tracks => {
       if (!fetching) {
         fetching = true;
 
@@ -53,6 +53,7 @@ class Queue extends Component {
         fetching = false;
         return queue;
       }
+      return [];
     };
   }
 
@@ -71,9 +72,11 @@ class Queue extends Component {
   }
 
   async componentDidUpdate(prevProps) {
+    //TODO: reload on new playlist with same size
+    
     if (
       prevProps.queue.length !== this.props.queue.length ||
-      prevProps.shuffle !== this.props.shuffle
+      prevProps.shuffle !== this.props.shuffle 
     ) {
       this.setState({ queue: [] });
       await this.getTracks(this.props.queue, 0);
@@ -90,7 +93,7 @@ class Queue extends Component {
     }
 
     // If dropped at the same place
-    if (source.index == destination.index) {
+    if (source.index === destination.index) {
       return;
     }
 
@@ -150,8 +153,18 @@ class Queue extends Component {
                   scrollableTarget={"queue"}
                   dataLength={state.queue.length}
                   next={this.getTracks}
-                  hasMore={props.queue.length != state.queue.length}
-                  loader={<h4>Loading...</h4>}
+                  hasMore={props.queue.length !== state.queue.length}
+                  loader={
+                    <div className="queue__loader">
+                      <Loader
+                        type="Bars"
+                        color="#FF7700"
+                        height={30}
+                        width={30}
+                      ></Loader>
+                    </div>
+                  }
+                  className="queue__infinite"
                 >
                   {state.queue.map((item, index) => (
                     <Draggable
@@ -184,7 +197,7 @@ class Queue extends Component {
 const mapStateToProps = state => ({
   active: state.layout.queueActive,
   queue: state.player.activeQueue,
-
+  currentTrack: state.player.currentTrackID,
   shuffle: state.player.shuffle
 });
 
