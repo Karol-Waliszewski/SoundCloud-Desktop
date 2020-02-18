@@ -24,7 +24,8 @@ class Queue extends Component {
   constructor() {
     super();
     this.state = {
-      queue: []
+      queue: [],
+      faultyTracks: 0
     };
 
     this.getTracks = this.getTracks.bind(this);
@@ -41,13 +42,18 @@ class Queue extends Component {
 
         //TODO: improve efficiency
         let queue = [];
-        try {
-          for (let t of tracks) {
+
+        for (let t of tracks) {
+          try {
             let track = await SoundCloud.get(`/tracks/${t}`);
             queue.push(track);
+          } catch (error) {
+            this.setState(prevState => ({
+              faultyTracks: prevState.faultyTracks + 1
+            }));
+// TODO: faulty array xd
+            console.error(error);
           }
-        } catch (error) {
-          console.log(error);
         }
 
         fetching = false;
@@ -62,7 +68,7 @@ class Queue extends Component {
     currentSize = this.state.queue.length
   ) {
     try {
-      let tracks = await this.fetchTracks([...queue].splice(currentSize, 14));
+      let tracks = await this.fetchTracks([...queue].splice(currentSize + this.state.faultyTracks, 14));
       this.setState({
         queue: [...this.state.queue, ...tracks]
       });
@@ -73,10 +79,10 @@ class Queue extends Component {
 
   async componentDidUpdate(prevProps) {
     //TODO: reload on new playlist with same size
-    
+
     if (
       prevProps.queue.length !== this.props.queue.length ||
-      prevProps.shuffle !== this.props.shuffle 
+      prevProps.shuffle !== this.props.shuffle
     ) {
       this.setState({ queue: [] });
       await this.getTracks(this.props.queue, 0);
@@ -107,6 +113,7 @@ class Queue extends Component {
     // Reordering Redux store
     let queue = [...props.queue];
     let t = queue.splice(source.index, 1)[0];
+    // TODO: faulty array
     queue.splice(destination.index, 0, t);
     // If queue is shuffled right now
     if (props.shuffle) {
@@ -153,7 +160,7 @@ class Queue extends Component {
                   scrollableTarget={"queue"}
                   dataLength={state.queue.length}
                   next={this.getTracks}
-                  hasMore={props.queue.length !== state.queue.length}
+                  hasMore={props.queue.length !== state.queue.length + state.faultyTracks}
                   loader={
                     <div className="queue__loader">
                       <Loader
