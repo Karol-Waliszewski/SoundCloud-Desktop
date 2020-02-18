@@ -50,7 +50,12 @@ class Track extends Component {
     }
 
     return (
-      <div className="queueTrack">
+      <div
+        className={`queueTrack ${props.isDragging ? "drag" : ""}`}
+        ref={props.innerRef}
+        {...props.draggableProps}
+        {...props.dragHandleProps}
+      >
         <button className="queueTrack__drag"></button>
         <div className="queueTrack__image" onClick={this.playTrack.bind(this)}>
           <img className="queueTrack__thumbnail" src={image} alt="" />
@@ -100,7 +105,8 @@ Track.propTypes = {
   title: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired,
   artwork_url: PropTypes.string,
-  duration: PropTypes.number.isRequired
+  duration: PropTypes.number.isRequired,
+  innerRef: PropTypes.any
 };
 
 const mapStateToProps = state => ({});

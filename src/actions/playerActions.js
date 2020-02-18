@@ -54,6 +54,17 @@ export const UPDATE_TRACK_INDEX = (queue, active) => ({
   payload: { queue, active }
 });
 
+export const UPDATE_TRACK_INDEX_AUTO = () => (dispatch, getState) => {
+  // Update current track positions
+  let id = getState().player.currentTrackID;
+  dispatch(
+    UPDATE_TRACK_INDEX(
+      getState().player.queue.indexOf(id),
+      getState().player.activeQueue.indexOf(id)
+    )
+  );
+};
+
 export const TOGGLE_SHUFFLE = () => {
   return (dispatch, getState) => {
     // Toggling whether queue is shuffled or not
@@ -70,13 +81,7 @@ export const TOGGLE_SHUFFLE = () => {
     dispatch(UPDATE_ACTIVE_QUEUE());
 
     // Update current track positions
-    let id = getState().player.currentTrackID;
-    dispatch(
-      UPDATE_TRACK_INDEX(
-        getState().player.queue.indexOf(id),
-        getState().player.activeQueue.indexOf(id)
-      )
-    );
+    dispatch(UPDATE_TRACK_INDEX_AUTO());
   };
 };
 
@@ -166,7 +171,7 @@ export const ADD_TO_QUEUE = id => {
     let currentIndex = getState().player.currentTrackIndex.queue + 1 || 1;
 
     // Creating array of ids if only one was passed
-    if(!Array.isArray(id)){
+    if (!Array.isArray(id)) {
       id = [id];
     }
 
@@ -299,7 +304,7 @@ export const PLAY_TRACK = (id, play = false) => {
         let queue = [...getState().player.activeQueue];
         if (queue.length > 0) {
           // Deleting faulty track
-          let index = queue.indexOf(String(id));
+          let index = queue.indexOf(id);
           if (index >= 0) {
             queue.splice(index, 1);
           }

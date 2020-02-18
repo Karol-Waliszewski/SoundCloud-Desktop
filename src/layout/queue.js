@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import SoundCloud from "../soundcloud";
 
 // Actions
@@ -7,7 +9,8 @@ import { TOGGLE_QUEUE } from "../actions/layoutActions";
 import {
   UPDATE_QUEUE,
   UPDATE_SHUFFLED_QUEUE,
-  UPDATE_ACTIVE_QUEUE
+  UPDATE_ACTIVE_QUEUE,
+  UPDATE_TRACK_INDEX_AUTO
 } from "../actions/playerActions";
 
 // Components
@@ -25,6 +28,7 @@ class Queue extends Component {
     };
 
     this.getTracks = this.getTracks.bind(this);
+    this.onDragEnd = this.onDragEnd.bind(this);
   }
 
   async fetchTracks(tracks) {
@@ -57,10 +61,54 @@ class Queue extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    if (prevProps.queue !== this.props.queue) {
+    if (
+      prevProps.queue.length !== this.props.queue.length ||
+      prevProps.shuffle !== this.props.shuffle
+    ) {
       this.setState({ queue: [] });
       await this.getTracks(this.props.queue, 0);
     }
+  }
+
+  onDragEnd(result) {
+    let { props, state } = this;
+    let { source, destination } = result;
+
+    // If dropped outside a list
+    if (!destination) {
+      return;
+    }
+
+    // If dropped at the same place
+    if (source.index == destination.index) {
+      return;
+    }
+
+    // Reordering state
+    let q = [...state.queue];
+    let temp = q.splice(source.index, 1)[0];
+    q.splice(destination.index, 0, temp);
+
+    this.setState({ queue: q });
+
+    // Reordering Redux store
+    let queue = [...props.queue];
+    let t = queue.splice(source.index, 1)[0];
+    queue.splice(destination.index, 0, t);
+    // If queue is shuffled right now
+    if (props.shuffle) {
+      props.updateShuffledQueue(queue);
+    }
+    // If queue is not shuffled
+    else {
+      props.updateQueue(queue);
+    }
+
+    // Updating current queue
+    props.updateActiveQueue();
+
+    // Updating indexes
+    props.updateIndexes();
   }
 
   render() {
@@ -79,15 +127,45 @@ class Queue extends Component {
             </button>
           </div>
         </header>
-        <div className="queue__list" id="queue">
-          <InfiniteList
-            more={props.queue.length != state.queue.length}
-            list={state.queue}
-            fetchFn={this.getTracks}
-            component={Track}
-            target={"queue"}
-          ></InfiniteList>
-        </div>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Droppable droppableId="queue">
+            {provided => (
+              <div
+                className="queue__list"
+                id="queue"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                <InfiniteScroll
+                  scrollableTarget={"queue"}
+                  dataLength={state.queue.length}
+                  next={this.getTracks}
+                  hasMore={props.queue.length != state.queue.length}
+                  loader={<h4>Loading...</h4>}
+                >
+                  {state.queue.map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={String(item.id)}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <Track
+                          innerRef={provided.innerRef}
+                          draggableProps={provided.draggableProps}
+                          dragHandleProps={provided.dragHandleProps}
+                          {...item}
+                          isDragging={snapshot.isDragging}
+                        ></Track>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </InfiniteScroll>
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </section>
     );
   }
@@ -95,7 +173,9 @@ class Queue extends Component {
 
 const mapStateToProps = state => ({
   active: state.layout.queueActive,
-  queue: state.player.activeQueue
+  queue: state.player.activeQueue,
+
+  shuffle: state.player.shuffle
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -104,8 +184,20 @@ const mapDispatchToProps = dispatch => ({
   },
   clearQueue: () => {
     dispatch(UPDATE_QUEUE([]));
-    dispatch(UPDATE_SHUFFLED_QUEUE([]));
+    dispatch(UPDATE_SHUFFLED_QUEUE({ queue: [] }));
     dispatch(UPDATE_ACTIVE_QUEUE());
+  },
+  updateQueue: q => {
+    dispatch(UPDATE_QUEUE(q));
+  },
+  updateShuffledQueue: q => {
+    dispatch(UPDATE_SHUFFLED_QUEUE({ queue: q, shuffle: false }));
+  },
+  updateActiveQueue: () => {
+    dispatch(UPDATE_ACTIVE_QUEUE());
+  },
+  updateIndexes: () => {
+    dispatch(UPDATE_TRACK_INDEX_AUTO());
   }
 });
 

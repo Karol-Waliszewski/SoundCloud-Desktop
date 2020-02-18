@@ -12,6 +12,12 @@
         bottom: 1px solid $lightGray;
     }
 
+    background-color: white;
+
+    &.drag {
+        border: 1px solid $lightGray;
+
+    }
 }
 
 .queueTrack__drag {

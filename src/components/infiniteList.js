@@ -25,6 +25,7 @@ const InfiniteList = props => {
         ) : (
           <List list={props.list} component={props.component}></List>
         )}
+        {props.children}
       </div>
     </InfiniteScroll>
   );
