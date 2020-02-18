@@ -15,7 +15,6 @@ import {
 
 // Components
 import Track from "../components/queueTrack";
-import InfiniteList from "../components/infiniteList";
 
 // Assets
 import close from "../assets/close.svg";
@@ -53,6 +52,7 @@ class Queue extends Component {
         fetching = false;
         return queue;
       }
+      return [];
     };
   }
 
@@ -152,6 +152,7 @@ class Queue extends Component {
                   next={this.getTracks}
                   hasMore={props.queue.length != state.queue.length}
                   loader={<h4>Loading...</h4>}
+                  className="queue__infinite"
                 >
                   {state.queue.map((item, index) => (
                     <Draggable

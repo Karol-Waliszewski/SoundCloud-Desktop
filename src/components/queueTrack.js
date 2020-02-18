@@ -4,11 +4,13 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Actions
-import { PLAY_TRACK } from "../actions/playerActions";
+import { PLAY_TRACK, STOP, START } from "../actions/playerActions";
 
 // Assets
-import dots from "../assets/dots.svg";
+import dots from "../assets/queueDots.svg";
+import drag from "../assets/drag.svg";
 import { ReactComponent as PlayIcon } from "../assets/play.svg";
+import { ReactComponent as PauseIcon } from "../assets/pause.svg";
 
 class Track extends Component {
   constructor() {
@@ -44,26 +46,63 @@ class Track extends Component {
 
   render() {
     let { props, state } = this;
+
+    // Getting duration
+    let duration = props.duration / 1000;
+    let minutes = parseInt(duration / 60);
+    let seconds =
+      duration % 60 < 10
+        ? "0" + parseInt(duration % 60)
+        : parseInt(duration % 60);
+
+    // Getting image
     let image = props.artwork_url || props.user.avatar_url;
     if (typeof image == "string") {
       image = image.replace("large", "t300x300");
     }
 
+    // Checking if active
+    let active = props.currentID == props.id;
+
+    // Rendering play button
+    let playButton;
+    if (active && props.playing) {
+      playButton = (
+        <button className="queueTrack__play" onClick={this.props.stop}>
+          <PauseIcon className="queueTrack__icon"></PauseIcon>
+        </button>
+      );
+    } else if (active) {
+      playButton = (
+        <button className="queueTrack__play" onClick={this.props.start}>
+          <PlayIcon className="queueTrack__icon"></PlayIcon>
+        </button>
+      );
+    } else {
+      playButton = (
+        <button
+          className="queueTrack__play"
+          onClick={this.playTrack.bind(this)}
+        >
+          <PlayIcon className="queueTrack__icon"></PlayIcon>
+        </button>
+      );
+    }
+
     return (
       <div
-        className={`queueTrack ${props.isDragging ? "drag" : ""}`}
+        className={`queueTrack ${props.isDragging ? "drag" : ""} ${
+          active ? "active" : ""
+        }`}
         ref={props.innerRef}
         {...props.draggableProps}
-        {...props.dragHandleProps}
       >
-        <button className="queueTrack__drag"></button>
-        <div className="queueTrack__image" onClick={this.playTrack.bind(this)}>
+        <div className="queueTrack__drag" {...props.dragHandleProps}>
+          <img src={drag} alt="" />
+        </div>
+        <div className="queueTrack__image">
           <img className="queueTrack__thumbnail" src={image} alt="" />
-          <div className="queueTrack__hover">
-            <button className="queueTrack__play">
-              <PlayIcon className="queueTrack__icon"></PlayIcon>
-            </button>
-          </div>
+          <div className="queueTrack__hover">{playButton}</div>
         </div>
         <div className="queueTrack__data">
           <h4 className="queueTrack__title" onClick={this.playTrack.bind(this)}>
@@ -73,6 +112,9 @@ class Track extends Component {
             {props.user.username}
           </Link>
         </div>
+        <span className="queueTrack__duration">
+          {minutes}:{seconds}
+        </span>
         <div className="queueTrack__more">
           <button
             type="button"
@@ -109,11 +151,20 @@ Track.propTypes = {
   innerRef: PropTypes.any
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  currentID: state.player.currentTrackID,
+  playing: state.player.playerState == "playing" ? true : false
+});
 
 const mapDispatchToProps = dispatch => ({
   playTrack: (id, play) => {
     dispatch(PLAY_TRACK(id, play));
+  },
+  stop: () => {
+    dispatch(STOP());
+  },
+  start: () => {
+    dispatch(START());
   }
 });
 
