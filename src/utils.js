@@ -7,7 +7,7 @@ export const shuffleArray = (array, from = 0) => {
   array = [...array];
 
   // While there remain elements to shuffle…
-  while (i != array.length - 1) {
+  while (i !== array.length - 1) {
     // Pick a remaining element…
     j = Math.floor(Math.random() * Math.abs(array.length - i) + from);
     i++;

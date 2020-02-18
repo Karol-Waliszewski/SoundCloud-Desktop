@@ -103,3 +103,10 @@
 .queue__infinite {
     min-height: 100%;
 }
+
+.queue__loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+}

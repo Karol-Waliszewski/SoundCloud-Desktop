@@ -87,7 +87,7 @@ export const TOGGLE_SHUFFLE = () => {
 
 export const UPDATE_QUEUE = queue => ({
   type: "UPDATE_QUEUE",
-  payload: queue.filter(el => el != undefined)
+  payload: queue.filter(el => el !== undefined)
 });
 
 export const UPDATE_SHUFFLED_QUEUE = (
@@ -108,14 +108,14 @@ export const UPDATE_SHUFFLED_QUEUE = (
     if (shuffle) {
       dispatch({
         type: "UPDATE_SHUFFLED_QUEUE",
-        payload: shuffleArray([...queue.filter(el => el != undefined)], i)
+        payload: shuffleArray([...queue.filter(el => el !== undefined)], i)
       });
     }
     // If queue don't have to be shuffled, just pass it to the reducer
     else {
       dispatch({
         type: "UPDATE_SHUFFLED_QUEUE",
-        payload: [...queue.filter(el => el != undefined)]
+        payload: [...queue.filter(el => el !== undefined)]
       });
     }
   };
