@@ -29,21 +29,31 @@ class Queue extends Component {
 
     this.getTracks = this.getTracks.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
+    this.fetchTracks = this.fetchTracks();
   }
 
-  async fetchTracks(tracks) {
-    //TODO: improve efficiency
-    let queue = [];
-    try {
-      for (let t of tracks) {
-        let track = await SoundCloud.get(`/tracks/${t}`);
-        queue.push(track);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  fetchTracks() {
+    // Preventing fetching multiple times at once
+    let fetching = false;
+    return async (tracks) => {
+      if (!fetching) {
+        fetching = true;
 
-    return queue;
+        //TODO: improve efficiency
+        let queue = [];
+        try {
+          for (let t of tracks) {
+            let track = await SoundCloud.get(`/tracks/${t}`);
+            queue.push(track);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+        fetching = false;
+        return queue;
+      }
+    };
   }
 
   async getTracks(
