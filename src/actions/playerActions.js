@@ -164,10 +164,16 @@ export const ADD_TO_QUEUE = id => {
     // Adding new track to queue
     let queue = [...getState().player.queue];
     let currentIndex = getState().player.currentTrackIndex.queue + 1 || 1;
+
+    // Creating array of ids if only one was passed
+    if(!Array.isArray(id)){
+      id = [id];
+    }
+
     // Placing new element after current track
     let q = [
       ...[...queue].splice(0, currentIndex),
-      id,
+      ...id,
       ...[...queue].splice(currentIndex, queue.length - currentIndex)
     ];
 
@@ -182,7 +188,7 @@ export const ADD_TO_QUEUE = id => {
       // Placing new element after current track
       let s = [
         ...[...shuffledQueue].splice(0, shuffledIndex),
-        id,
+        ...id,
         ...[...shuffledQueue].splice(
           shuffledIndex,
           queue.length - shuffledIndex

@@ -49,11 +49,9 @@ class Playlist extends Component {
           let ids = tracks
             .filter(track => track.streamable)
             .map(track => track.id);
-          for (let id of ids) {
-            if (id) {
-              props.addToQueue(id);
-            }
-          }
+
+          props.addToQueue(ids);
+
           alert("TODO: add entire playlist adding notification");
         }
       });
