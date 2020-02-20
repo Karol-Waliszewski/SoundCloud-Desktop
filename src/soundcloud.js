@@ -8,6 +8,7 @@ import {
   ADD_FAULTY_TRACK,
   ADD_FAULTY_TRACKS
 } from "./actions/apiActions";
+import { DELETE_FROM_QUEUE } from "./actions/playerActions";
 
 Soundcloud.initialize({
   client_id: "fa791b761f68cafa375ab5f7ea51927a",
@@ -37,6 +38,7 @@ export const fetchTrack = async id => {
       // If there was an error during the fetch, add the track to unaccessible through API
       console.error(error);
       dispatch(ADD_FAULTY_TRACK(id));
+      dispatch(DELETE_FROM_QUEUE(id));
     }
   }
 
@@ -75,6 +77,7 @@ export const fetchTracks = async ids => {
 
   // Updating store
   dispatch(ADD_TRACKS(tracks));
+  dispatch(DELETE_FROM_QUEUE(faulty));
   dispatch(ADD_FAULTY_TRACKS(faulty));
 
   // Returning obtained tracks

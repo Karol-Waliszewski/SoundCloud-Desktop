@@ -132,6 +132,23 @@ export const UPDATE_ACTIVE_QUEUE = () => (dispatch, getState) => {
   }
 };
 
+export const DELETE_FROM_QUEUE = ids => (dispatch, getState) => {
+  // If single id has been passed
+  if (!Array.isArray(ids)) {
+    ids = [ids];
+  }
+
+  let queue = getState().player.queue.filter(el => !ids.includes(el));
+  let shuffledQueue = getState().player.shuffledQueue.filter(
+    el => !ids.includes(el)
+  );
+
+  dispatch(UPDATE_QUEUE(queue));
+  dispatch(UPDATE_SHUFFLED_QUEUE({ queue: shuffledQueue, shuffle: false }));
+  dispatch(UPDATE_ACTIVE_QUEUE());
+  dispatch(UPDATE_TRACK_INDEX_AUTO());
+};
+
 export const START_QUEUE = (queue, play = false) => (dispatch, getState) => {
   // Updating queues
   dispatch(UPDATE_QUEUE(queue));
