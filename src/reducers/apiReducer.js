@@ -24,7 +24,7 @@ var reducer = function(state = defaultState, action) {
         ...state,
         tracks: {
           ...state.tracks,
-          fetched: new Map([...state.fetched, ...action.payload]),
+          fetched: new Map([...state.tracks.fetched, ...action.payload]),
           
         }
       };
@@ -33,7 +33,7 @@ var reducer = function(state = defaultState, action) {
         ...state,
         tracks: {
           ...state.tracks,
-          faulty: [...state.fetchedIds, action.payload]
+          faulty: [...state.tracks.faulty, action.payload]
         }
       };
     case "ADD_FAULTY_TRACKS":
@@ -41,7 +41,7 @@ var reducer = function(state = defaultState, action) {
         ...state,
         tracks: {
           ...state.tracks,
-          faulty: [...state.fetchedIds, ...action.payload]
+          faulty: [...state.tracks.faulty, ...action.payload]
         }
       };
 

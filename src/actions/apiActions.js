@@ -1,7 +1,7 @@
 import SoundCloud from "../soundcloud";
 
 export const ADD_TRACK = (id, track) => ({
-  action: "ADD_TRACK",
+  type: "ADD_TRACK",
   payload: {
     data: track,
     id
@@ -9,16 +9,16 @@ export const ADD_TRACK = (id, track) => ({
 });
 
 export const ADD_TRACKS = tracks => ({
-  action: "ADD_TRACKS",
+  type: "ADD_TRACKS",
   payload: tracks
 });
 
 export const ADD_FAULTY_TRACK = id => ({
-  action: "ADD_FAULTY_TRACK",
+  type: "ADD_FAULTY_TRACK",
   payload: id
 });
 
 export const ADD_FAULTY_TRACKS = ids => ({
-  action: "ADD_FAULTY_TRACKS",
+  type: "ADD_FAULTY_TRACKS",
   payload: ids
 });
