@@ -61,12 +61,12 @@ class Track extends Component {
 
     // Getting image
     let image = props.artwork_url || props.user.avatar_url;
-    if (typeof image == "string") {
+    if (typeof image === "string") {
       image = image.replace("large", "t300x300");
     }
 
     // Checking if active
-    let active = props.currentID == props.id;
+    let active = props.currentID === props.id;
 
     // Rendering play button
     let playButton;
@@ -155,7 +155,7 @@ Track.propTypes = {
 
 const mapStateToProps = state => ({
   currentID: state.player.currentTrackID,
-  playing: state.player.playerState == "playing" ? true : false
+  playing: state.player.playerState === "playing" ? true : false
 });
 
 const mapDispatchToProps = dispatch => ({

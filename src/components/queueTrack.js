@@ -4,7 +4,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Actions
-import { PLAY_TRACK, STOP, START } from "../actions/playerActions";
+import {
+  PLAY_TRACK,
+  STOP,
+  START,
+  DELETE_FROM_QUEUE
+} from "../actions/playerActions";
 
 // Assets
 import dots from "../assets/queueDots.svg";
@@ -23,6 +28,13 @@ class Track extends Component {
     let { props } = this;
     if (props.id) {
       props.playTrack(props.id, true);
+    }
+  }
+
+  deleteTrack() {
+    let { props } = this;
+    if (props.id) {
+      props.deleteTrack(props.id);
     }
   }
 
@@ -57,12 +69,12 @@ class Track extends Component {
 
     // Getting image
     let image = props.artwork_url || props.user.avatar_url;
-    if (typeof image == "string") {
+    if (typeof image === "string") {
       image = image.replace("large", "t300x300");
     }
 
     // Checking if active
-    let active = props.currentID == props.id;
+    let active = props.currentID === props.id;
 
     // Rendering play button
     let playButton;
@@ -134,6 +146,15 @@ class Track extends Component {
                   Add to playlists
                 </button>
               </li>
+              <li>
+                <button
+                  className="queueTrack__option"
+                  onClick={this.deleteTrack.bind(this)}
+                >
+                  <img src="" alt="" className="queueTrack__icon--option" />
+                  Delete from queue
+                </button>
+              </li>
             </ul>
           )}
         </div>
@@ -153,12 +174,15 @@ Track.propTypes = {
 
 const mapStateToProps = state => ({
   currentID: state.player.currentTrackID,
-  playing: state.player.playerState == "playing" ? true : false
+  playing: state.player.playerState === "playing" ? true : false
 });
 
 const mapDispatchToProps = dispatch => ({
   playTrack: (id, play) => {
     dispatch(PLAY_TRACK(id, play));
+  },
+  deleteTrack: id => {
+    dispatch(DELETE_FROM_QUEUE(id));
   },
   stop: () => {
     dispatch(STOP());

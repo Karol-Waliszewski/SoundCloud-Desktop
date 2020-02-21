@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import SoundCloud from "../soundcloud";
+import Loader from "react-loader-spinner";
+import SoundCloud, { fetchTracks } from "../soundcloud";
 
 // Actions
 import { TOGGLE_QUEUE } from "../actions/layoutActions";
@@ -34,20 +35,11 @@ class Queue extends Component {
   fetchTracks() {
     // Preventing fetching multiple times at once
     let fetching = false;
-    return async (tracks) => {
+    return async tracks => {
       if (!fetching) {
         fetching = true;
 
-        //TODO: improve efficiency
-        let queue = [];
-        try {
-          for (let t of tracks) {
-            let track = await SoundCloud.get(`/tracks/${t}`);
-            queue.push(track);
-          }
-        } catch (error) {
-          console.log(error);
-        }
+        let queue = await fetchTracks(tracks);
 
         fetching = false;
         return queue;
@@ -61,7 +53,7 @@ class Queue extends Component {
     currentSize = this.state.queue.length
   ) {
     try {
-      let tracks = await this.fetchTracks([...queue].splice(currentSize, 14));
+      let tracks = await this.fetchTracks([...queue].splice(currentSize, 12));
       this.setState({
         queue: [...this.state.queue, ...tracks]
       });
@@ -70,13 +62,15 @@ class Queue extends Component {
     }
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
+    //TODO: reload playlist.
+
     if (
-      prevProps.queue.length !== this.props.queue.length ||
+      // (prevProps.queue.length !== this.props.queue.length ) ||
       prevProps.shuffle !== this.props.shuffle
     ) {
       this.setState({ queue: [] });
-      await this.getTracks(this.props.queue, 0);
+      this.getTracks(this.props.queue, 0);
     }
   }
 
@@ -90,7 +84,7 @@ class Queue extends Component {
     }
 
     // If dropped at the same place
-    if (source.index == destination.index) {
+    if (source.index === destination.index) {
       return;
     }
 
@@ -104,6 +98,7 @@ class Queue extends Component {
     // Reordering Redux store
     let queue = [...props.queue];
     let t = queue.splice(source.index, 1)[0];
+    // TODO: faulty array
     queue.splice(destination.index, 0, t);
     // If queue is shuffled right now
     if (props.shuffle) {
@@ -150,8 +145,17 @@ class Queue extends Component {
                   scrollableTarget={"queue"}
                   dataLength={state.queue.length}
                   next={this.getTracks}
-                  hasMore={props.queue.length != state.queue.length}
-                  loader={<h4>Loading...</h4>}
+                  hasMore={props.queue.length !== state.queue.length}
+                  loader={
+                    <div className="queue__loader">
+                      <Loader
+                        type="Bars"
+                        color="#FF7700"
+                        height={30}
+                        width={30}
+                      ></Loader>
+                    </div>
+                  }
                   className="queue__infinite"
                 >
                   {state.queue.map((item, index) => (
@@ -185,7 +189,7 @@ class Queue extends Component {
 const mapStateToProps = state => ({
   active: state.layout.queueActive,
   queue: state.player.activeQueue,
-
+  currentTrack: state.player.currentTrackID,
   shuffle: state.player.shuffle
 });
 

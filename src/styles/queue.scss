@@ -101,5 +101,12 @@
 }
 
 .queue__infinite {
-    height: 100% !important;
+    min-height: 100%;
+}
+
+.queue__loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
 }
