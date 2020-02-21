@@ -38,12 +38,7 @@ export const UPDATE_TRACK = id => (dispatch, getState) => {
   });
 
   // Updating current tracks positions in queues
-  dispatch(
-    UPDATE_TRACK_INDEX(
-      getState().player.queue.indexOf(id),
-      getState().player.activeQueue.indexOf(id)
-    )
-  );
+  dispatch(UPDATE_TRACK_INDEX_AUTO());
 };
 
 // Updating current tracks positions in queues
@@ -53,12 +48,13 @@ export const UPDATE_TRACK_INDEX = (queue, active) => ({
 });
 
 export const UPDATE_TRACK_INDEX_AUTO = () => (dispatch, getState) => {
+  let state = getState();
   // Update current track positions
-  let id = getState().player.currentTrackID;
+  let id = state.player.currentTrackID;
   dispatch(
     UPDATE_TRACK_INDEX(
-      getState().player.queue.indexOf(id),
-      getState().player.activeQueue.indexOf(id)
+      state.player.queue.indexOf(id),
+      state.player.activeQueue.indexOf(id)
     )
   );
 };
@@ -133,20 +129,35 @@ export const UPDATE_ACTIVE_QUEUE = () => (dispatch, getState) => {
 };
 
 export const DELETE_FROM_QUEUE = ids => (dispatch, getState) => {
+  let state = getState();
+
   // If single id has been passed
   if (!Array.isArray(ids)) {
     ids = [ids];
   }
 
-  let queue = getState().player.queue.filter(el => !ids.includes(el));
-  let shuffledQueue = getState().player.shuffledQueue.filter(
+  // Erasing ids from queues
+  let queue = state.player.queue.filter(el => !ids.includes(el));
+  let shuffledQueue = state.player.shuffledQueue.filter(
     el => !ids.includes(el)
   );
 
+  // Updating queues state
   dispatch(UPDATE_QUEUE(queue));
   dispatch(UPDATE_SHUFFLED_QUEUE({ queue: shuffledQueue, shuffle: false }));
   dispatch(UPDATE_ACTIVE_QUEUE());
-  dispatch(UPDATE_TRACK_INDEX_AUTO());
+
+  // If current track had been deleted, choose another one
+  if (ids.includes(state.player.currentTrackID) && queue.length) {
+    let newIndex = Math.min(
+      state.player.currentTrackIndex.active,
+      getState().player.activeQueue.length - 1
+    );
+
+    dispatch(UPDATE_TRACK(getState().player.activeQueue[newIndex]));
+  } else {
+    dispatch(UPDATE_TRACK_INDEX_AUTO());
+  }
 };
 
 export const START_QUEUE = (queue, play = false) => (dispatch, getState) => {

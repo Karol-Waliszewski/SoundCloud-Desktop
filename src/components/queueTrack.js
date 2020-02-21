@@ -4,7 +4,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // Actions
-import { PLAY_TRACK, STOP, START } from "../actions/playerActions";
+import {
+  PLAY_TRACK,
+  STOP,
+  START,
+  DELETE_FROM_QUEUE
+} from "../actions/playerActions";
 
 // Assets
 import dots from "../assets/queueDots.svg";
@@ -23,6 +28,13 @@ class Track extends Component {
     let { props } = this;
     if (props.id) {
       props.playTrack(props.id, true);
+    }
+  }
+
+  deleteTrack() {
+    let { props } = this;
+    if (props.id) {
+      props.deleteTrack(props.id);
     }
   }
 
@@ -134,6 +146,15 @@ class Track extends Component {
                   Add to playlists
                 </button>
               </li>
+              <li>
+                <button
+                  className="queueTrack__option"
+                  onClick={this.deleteTrack.bind(this)}
+                >
+                  <img src="" alt="" className="queueTrack__icon--option" />
+                  Delete from queue
+                </button>
+              </li>
             </ul>
           )}
         </div>
@@ -159,6 +180,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   playTrack: (id, play) => {
     dispatch(PLAY_TRACK(id, play));
+  },
+  deleteTrack: id => {
+    dispatch(DELETE_FROM_QUEUE(id));
   },
   stop: () => {
     dispatch(STOP());

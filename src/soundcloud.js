@@ -48,8 +48,8 @@ export const fetchTrack = async id => {
 
 export const fetchTracks = async ids => {
   // Getting data from Redux store
-  let fetchedTracks = getState().api.fetched;
-  let faultyTracks = getState().api.faulty;
+  let fetchedTracks = getState().api.tracks.fetched;
+  let faultyTracks = getState().api.tracks.faulty;
 
   let tracks = new Map();
   let faulty = [];
@@ -59,7 +59,7 @@ export const fetchTracks = async ids => {
       try {
         let track;
         // If track has already been fetched before
-        if (fetchTracks.has(id)) {
+        if (fetchedTracks.has(id)) {
           // Getting track from Redux store
           track = fetchedTracks.get(id);
         } else {
@@ -76,12 +76,16 @@ export const fetchTracks = async ids => {
   }
 
   // Updating store
-  dispatch(ADD_TRACKS(tracks));
-  dispatch(DELETE_FROM_QUEUE(faulty));
-  dispatch(ADD_FAULTY_TRACKS(faulty));
+  if (tracks.size) {
+    dispatch(ADD_TRACKS(tracks));
+  }
+  if (faulty.length) {
+    dispatch(DELETE_FROM_QUEUE(faulty));
+    dispatch(ADD_FAULTY_TRACKS(faulty));
+  }
 
   // Returning obtained tracks
-  return tracks;
+  return [...tracks.values()];
 };
 
 export default Soundcloud;

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Loader from "react-loader-spinner";
-import SoundCloud from "../soundcloud";
+import SoundCloud, { fetchTracks } from "../soundcloud";
 
 // Actions
 import { TOGGLE_QUEUE } from "../actions/layoutActions";
@@ -24,8 +24,7 @@ class Queue extends Component {
   constructor() {
     super();
     this.state = {
-      queue: [],
-      faultyTracks: 0
+      queue: []
     };
 
     this.getTracks = this.getTracks.bind(this);
@@ -40,21 +39,7 @@ class Queue extends Component {
       if (!fetching) {
         fetching = true;
 
-        //TODO: improve efficiency
-        let queue = [];
-
-        for (let t of tracks) {
-          try {
-            let track = await SoundCloud.get(`/tracks/${t}`);
-            queue.push(track);
-          } catch (error) {
-            this.setState(prevState => ({
-              faultyTracks: prevState.faultyTracks + 1
-            }));
-// TODO: faulty array xd
-            console.error(error);
-          }
-        }
+        let queue = await fetchTracks(tracks);
 
         fetching = false;
         return queue;
@@ -68,7 +53,7 @@ class Queue extends Component {
     currentSize = this.state.queue.length
   ) {
     try {
-      let tracks = await this.fetchTracks([...queue].splice(currentSize + this.state.faultyTracks, 14));
+      let tracks = await this.fetchTracks([...queue].splice(currentSize, 12));
       this.setState({
         queue: [...this.state.queue, ...tracks]
       });
@@ -77,15 +62,15 @@ class Queue extends Component {
     }
   }
 
-  async componentDidUpdate(prevProps) {
-    //TODO: reload on new playlist with same size
+  componentDidUpdate(prevProps) {
+    //TODO: reload playlist.
 
     if (
-      prevProps.queue.length !== this.props.queue.length ||
+      // (prevProps.queue.length !== this.props.queue.length ) ||
       prevProps.shuffle !== this.props.shuffle
     ) {
       this.setState({ queue: [] });
-      await this.getTracks(this.props.queue, 0);
+      this.getTracks(this.props.queue, 0);
     }
   }
 
@@ -160,7 +145,7 @@ class Queue extends Component {
                   scrollableTarget={"queue"}
                   dataLength={state.queue.length}
                   next={this.getTracks}
-                  hasMore={props.queue.length !== state.queue.length + state.faultyTracks}
+                  hasMore={props.queue.length !== state.queue.length}
                   loader={
                     <div className="queue__loader">
                       <Loader
