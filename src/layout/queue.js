@@ -65,11 +65,10 @@ class Queue extends Component {
   componentDidUpdate(prevProps) {
     //TODO: reload playlist.
 
-    if (
-      // (prevProps.queue.length !== this.props.queue.length ) ||
-      prevProps.shuffle !== this.props.shuffle
-    ) {
-      this.setState({ queue: [] });
+    if (prevProps.queue !== this.props.queue) {
+      this.setState({
+        queue: []
+      });
       this.getTracks(this.props.queue, 0);
     }
   }
