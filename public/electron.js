@@ -12,8 +12,8 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
-    "minHeight": 600,
-    "minWidth": 800,
+    minHeight: 600,
+    minWidth: 800,
     webPreferences: {
       nodeIntegration: true
     }
@@ -27,6 +27,11 @@ function createWindow() {
 
   mainWindow.on("closed", () => {
     mainWindow = null;
+  });
+
+  mainWindow.webContents.on("new-window", function(event, url) {
+    event.preventDefault();
+    electron.shell.openExternal(url);
   });
 }
 

@@ -13,6 +13,7 @@ import {
 } from "../actions/profileActions";
 
 // Components
+import Loader from "react-loader-spinner";
 import Baner from "../components/baner";
 import Section from "../components/section";
 import Track from "../components/track";
@@ -26,36 +27,122 @@ import ProfileNav from "../components/profileNav";
 import LinkIcon from "../assets/link.svg";
 import FollowIcon from "../assets/follow.svg";
 
-var Tracks = function(props) {
+var ProfileList = props => {
   if (props.list)
-    return <InfiniteList {...props} component={Track}></InfiniteList>;
-
+    return <InfiniteList {...props} component={props.tag}></InfiniteList>;
   return null;
 };
 
-var Favourites = function(props) {
-  if (props.list)
-    return <InfiniteList {...props} component={Track}></InfiniteList>;
-  return null;
-};
+class ProfileHome extends Component {
+  render() {
+    let { props } = this;
+    let { match, user } = props;
+    return (
+      <>
+        <section className="profile__about">
+          <div className="profile__content">
+            <h4 className="profile__heading">About</h4>
+            <div className="profile__description">
+              {user.description ? user.description : "No description found."}
+            </div>
+          </div>
+          <div className="profile__info">
+            <div className="profile__stats">
+              <div className="stat">
+                <Link to={"/profile/" + match.params.username + "/followers"}>
+                  <p className="stat__title">Followers</p>
+                  <span className="stat__value">{user.followers_count}</span>
+                </Link>
+              </div>
+              <div className="stat">
+                <Link to={"/profile/" + match.params.username + "/followings"}>
+                  <p className="stat__title">Followings</p>
+                  <span className="stat__value">{user.followings_count}</span>
+                </Link>
+              </div>
+              <div className="stat">
+                <Link to={"/profile/" + match.params.username + "/tracks"}>
+                  <p className="stat__title">Tracks</p>
+                  <span className="stat__value">{user.track_count}</span>
+                </Link>
+              </div>
+            </div>
+            {user.website && (
+              <div className="profile__link">
+                <div className="profile__icon">
+                  <img src={LinkIcon} alt="globe" />
+                </div>
 
-var Playlists = function(props) {
-  if (props.list)
-    return <InfiniteList {...props} component={Playlist}></InfiniteList>;
-  return null;
-};
+                {user.website_title ? (
+                  <a href={user.website} target="_blank">
+                    {user.website_title}
+                  </a>
+                ) : (
+                  <a href={user.website} target="_blank">
+                    {user.website}
+                  </a>
+                )}
+              </div>
+            )}
 
-var Followings = function(props) {
-  if (props.list)
-    return <InfiniteList {...props} component={User}></InfiniteList>;
-  return null;
-};
+            <button className="profile__follow">
+              <img src={FollowIcon} alt="person with plus sign" />
+              <span>follow</span>
+            </button>
+          </div>
+        </section>
 
-var Followers = function(props) {
-  if (props.list)
-    return <InfiniteList {...props} component={User}></InfiniteList>;
-  return null;
-};
+        {props.tracks.length > 0 && (
+          <Section
+            title="Tracks"
+            link={"/profile/" + match.params.username + "/tracks"}
+          >
+            <div className="row--start">
+              <List list={props.tracks} component={Track} limit={8}></List>
+            </div>
+          </Section>
+        )}
+
+        {props.favourites.length > 0 && (
+          <Section
+            title="Favourites"
+            link={"/profile/" + match.params.username + "/likes"}
+          >
+            <div className="row--start">
+              <List list={props.favourites} component={Track} limit={8}></List>
+            </div>
+          </Section>
+        )}
+
+        {props.playlists.length > 0 && (
+          <Section
+            title="Playlists"
+            link={"/profile/" + match.params.username + "/playlists"}
+          >
+            <div className="row--start">
+              <List
+                list={props.playlists}
+                component={Playlist}
+                limit={8}
+              ></List>
+            </div>
+          </Section>
+        )}
+
+        {props.followings.length > 0 && (
+          <Section
+            title="Followings"
+            link={"/profile/" + match.params.username + "/followings"}
+          >
+            <div className="row--start">
+              <List list={props.followings} component={User} limit={8}></List>
+            </div>
+          </Section>
+        )}
+      </>
+    );
+  }
+}
 
 class Profile extends Component {
   componentDidUpdate(prevProps) {
@@ -90,193 +177,70 @@ class Profile extends Component {
               <Route
                 path="/profile/:username/playlists"
                 render={() => (
-                  <Playlists
+                  <ProfileList
                     list={props.playlists}
                     more={props.playlistsMore}
                     fetchFn={props.fetchPlaylists}
-                  ></Playlists>
+                    tag={Playlist}
+                  ></ProfileList>
                 )}
               />
               <Route
                 path="/profile/:username/tracks"
                 render={() => (
-                  <Tracks
+                  <ProfileList
                     list={props.tracks}
                     more={props.tracksMore}
                     fetchFn={props.fetchTracks}
-                  ></Tracks>
+                    tag={Track}
+                  ></ProfileList>
                 )}
               />
               <Route
                 path="/profile/:username/followers"
                 render={() => (
-                  <Followers
+                  <ProfileList
                     list={props.followers}
                     more={props.followersMore}
                     fetchFn={props.fetchFollowers}
-                  ></Followers>
+                    tag={User}
+                  ></ProfileList>
                 )}
               />
               <Route
                 path="/profile/:username/followings"
                 render={() => (
-                  <Followings
+                  <ProfileList
                     list={props.followings}
                     more={props.followingsMore}
                     fetchFn={props.fetchFollowings}
-                  ></Followings>
+                    tag={User}
+                  ></ProfileList>
                 )}
               />
               <Route
                 path="/profile/:username/likes"
                 render={() => (
-                  <Favourites
+                  <ProfileList
                     list={props.favourites}
                     more={props.favouritesMore}
                     fetchFn={props.fetchFavourites}
-                  ></Favourites>
+                    tag={Track}
+                  ></ProfileList>
                 )}
               />
               <Route
                 path="/profile/:username"
                 render={() => (
-                  <>
-                    <section className="profile__about">
-                      <div className="profile__content">
-                        <h4 className="profile__heading">About</h4>
-                        <div className="profile__description">
-                          {user.description
-                            ? user.description
-                            : "No description found."}
-                        </div>
-                      </div>
-                      <div className="profile__info">
-                        <div className="profile__stats">
-                          <div className="stat">
-                            <Link
-                              to={
-                                "/profile/" +
-                                match.params.username +
-                                "/followers"
-                              }
-                            >
-                              <p className="stat__title">Followers</p>
-                              <span className="stat__value">
-                                {user.followers_count}
-                              </span>
-                            </Link>
-                          </div>
-                          <div className="stat">
-                            <Link
-                              to={
-                                "/profile/" +
-                                match.params.username +
-                                "/followings"
-                              }
-                            >
-                              <p className="stat__title">Followings</p>
-                              <span className="stat__value">
-                                {user.followings_count}
-                              </span>
-                            </Link>
-                          </div>
-                          <div className="stat">
-                            <Link
-                              to={
-                                "/profile/" + match.params.username + "/tracks"
-                              }
-                            >
-                              <p className="stat__title">Tracks</p>
-                              <span className="stat__value">
-                                {user.track_count}
-                              </span>
-                            </Link>
-                          </div>
-                        </div>
-                        {user.website && (
-                          <div className="profile__link">
-                            <div className="profile__icon">
-                              <img src={LinkIcon} alt="globe" />
-                            </div>
-                            {user.website_title ? (
-                              <a href={user.website}>{user.website_title}</a>
-                            ) : (
-                              <a href={user.website}>{user.website}</a>
-                            )}
-                          </div>
-                        )}
-
-                        <button className="profile__follow">
-                          <img src={FollowIcon} alt="person with plus sign" />
-                          <span>follow</span>
-                        </button>
-                      </div>
-                    </section>
-
-                    {props.tracks.length > 0 && (
-                      <Section
-                        title="Tracks"
-                        link={"/profile/" + match.params.username + "/tracks"}
-                      >
-                        <div className="row--start">
-                          <List
-                            list={props.tracks}
-                            component={Track}
-                            limit={8}
-                          ></List>
-                        </div>
-                      </Section>
-                    )}
-
-                    {props.favourites.length > 0 && (
-                      <Section
-                        title="Favourites"
-                        link={"/profile/" + match.params.username + "/likes"}
-                      >
-                        <div className="row--start">
-                          <List
-                            list={props.favourites}
-                            component={Track}
-                            limit={8}
-                          ></List>
-                        </div>
-                      </Section>
-                    )}
-
-                    {props.playlists.length > 0 && (
-                      <Section
-                        title="Playlists"
-                        link={
-                          "/profile/" + match.params.username + "/playlists"
-                        }
-                      >
-                        <div className="row--start">
-                          <List
-                            list={props.playlists}
-                            component={Playlist}
-                            limit={8}
-                          ></List>
-                        </div>
-                      </Section>
-                    )}
-
-                    {props.followings.length > 0 && (
-                      <Section
-                        title="Followings"
-                        link={
-                          "/profile/" + match.params.username + "/followings"
-                        }
-                      >
-                        <div className="row--start">
-                          <List
-                            list={props.followings}
-                            component={User}
-                            limit={8}
-                          ></List>
-                        </div>
-                      </Section>
-                    )}
-                  </>
+                  <ProfileHome
+                    user={user}
+                    match={match}
+                    tracks={props.tracks}
+                    playlists={props.playlists}
+                    favourites={props.favourites}
+                    followers={props.followers}
+                    followings={props.followings}
+                  ></ProfileHome>
                 )}
               />
             </Switch>
@@ -284,7 +248,11 @@ class Profile extends Component {
         </>
       );
     }
-    return <h1>TODO: LOADER</h1>;
+    return (
+      <div className="loader">
+        <Loader type="Bars" color="#FF7700" height={36} width={36}></Loader>
+      </div>
+    );
   }
 }
 const mapStateToProps = state => ({

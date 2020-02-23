@@ -40,6 +40,7 @@ export const CHECK_USER = () => (dispatch, getState) => {
 export const FETCH_USER = id => async dispatch => {
   try {
     let user = await Soundcloud.get(`/users/${id}`);
+    // Saving new user
     dispatch(CHANGE_USER(user));
     // Fetching small portion of data about user
     dispatch(FETCH_TRACKS());
