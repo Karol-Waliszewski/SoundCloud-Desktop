@@ -1,4 +1,5 @@
-import axios, { CancelToken } from "axios";
+import axios from "axios";
+
 import Soundcloud from "soundcloud";
 
 // TODO: fetching more than 12 results
@@ -26,6 +27,7 @@ export const CHANGE_USERS = (followings, href = null) => ({
 export const FIND_TRACKS = query => async (dispatch, getState) => {
   try {
     let href = getState().search.tracks.href;
+    let preFetchQueryID = getState().search.queryID;
     let tracks;
     // If it is the first fetch for the user, do not use linked partitioning
     if (href == null) {
@@ -40,7 +42,12 @@ export const FIND_TRACKS = query => async (dispatch, getState) => {
       tracks = await axios.get(href);
       tracks = tracks.data;
     }
-    dispatch(CHANGE_TRACKS(tracks.collection, tracks.next_href));
+    let afterFetchQueryID = getState().search.queryID;
+
+    // Send data only if pre and after fetch IDs are the same
+    if (preFetchQueryID === afterFetchQueryID) {
+      dispatch(CHANGE_TRACKS(tracks.collection, tracks.next_href));
+    }
   } catch (error) {
     console.error(error);
   }
@@ -49,6 +56,7 @@ export const FIND_TRACKS = query => async (dispatch, getState) => {
 export const FIND_PLAYLISTS = query => async (dispatch, getState) => {
   try {
     let href = getState().search.playlists.href;
+    let preFetchQueryID = getState().search.queryID;
     let playlists;
     // If it is the first fetch for the user, do not use linked partitioning
     if (href == null) {
@@ -63,7 +71,12 @@ export const FIND_PLAYLISTS = query => async (dispatch, getState) => {
       playlists = await axios.get(href);
       playlists = playlists.data;
     }
-    dispatch(CHANGE_PLAYLISTS(playlists.collection, playlists.next_href));
+
+    let afterFetchQueryID = getState().search.queryID;
+    // Send data only if pre and after fetch IDs are the same
+    if (preFetchQueryID === afterFetchQueryID) {
+      dispatch(CHANGE_PLAYLISTS(playlists.collection, playlists.next_href));
+    }
   } catch (error) {
     console.error(error);
   }
@@ -72,6 +85,7 @@ export const FIND_PLAYLISTS = query => async (dispatch, getState) => {
 export const FIND_USERS = query => async (dispatch, getState) => {
   try {
     let href = getState().search.users.href;
+    let preFetchQueryID = getState().search.queryID;
     let users;
     // If it is the first fetch for the user, do not use linked partitioning
     if (href == null) {
@@ -86,7 +100,12 @@ export const FIND_USERS = query => async (dispatch, getState) => {
       users = await axios.get(href);
       users = users.data;
     }
-    dispatch(CHANGE_USERS(users.collection, users.next_href));
+
+    let afterFetchQueryID = getState().search.queryID;
+    // Send data only if pre and after fetch IDs are the same
+    if (preFetchQueryID === afterFetchQueryID) {
+      dispatch(CHANGE_USERS(users.collection, users.next_href));
+    }
   } catch (error) {
     console.error(error);
   }

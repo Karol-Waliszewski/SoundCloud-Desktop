@@ -1,5 +1,8 @@
+import uuid from "uuid/v4";
+
 const defaultState = {
   query: "",
+  queryID: uuid(),
   tracks: { href: null, collection: [], more: true },
   playlists: { href: null, collection: [], more: true },
   users: { href: null, collection: [], more: true }
@@ -13,10 +16,11 @@ var reducer = function(state = defaultState, action) {
       }
       return {
         ...defaultState,
-        query: action.payload
+        query: action.payload,
+        queryID: uuid()
       };
     case "CHANGE_TRACKS":
-      let tracks = [...action.payload.collection];
+      let tracks = [...state.tracks.collection, ...action.payload.collection];
       return {
         ...state,
         tracks: {
@@ -28,7 +32,10 @@ var reducer = function(state = defaultState, action) {
         }
       };
     case "CHANGE_PLAYLISTS":
-      let playlists = [...action.payload.collection];
+      let playlists = [
+        ...state.playlists.collection,
+        ...action.payload.collection
+      ];
       return {
         ...state,
         playlists: {
@@ -40,7 +47,7 @@ var reducer = function(state = defaultState, action) {
         }
       };
     case "CHANGE_USERS":
-      let users = [...action.payload.collection];
+      let users = [...state.users.collection, ...action.payload.collection];
       return {
         ...state,
         users: {
