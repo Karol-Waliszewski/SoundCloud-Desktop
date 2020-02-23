@@ -6,8 +6,13 @@ import {
   ADD_TRACK,
   ADD_TRACKS,
   ADD_FAULTY_TRACK,
-  ADD_FAULTY_TRACKS
+  ADD_FAULTY_TRACKS,
+  ADD_USER
 } from "./actions/apiActions";
+import {
+  FETCH_BASIC_PROFILE_INFO,
+  CHANGE_USER
+} from "./actions/profileActions";
 import { DELETE_FROM_QUEUE } from "./actions/playerActions";
 
 Soundcloud.initialize({
@@ -17,8 +22,8 @@ Soundcloud.initialize({
 
 export const fetchTrack = async id => {
   // Getting data from Redux store
-  let fetchedTracks = getState().api.fetched;
-  let faultyTracks = getState().api.faulty;
+  let fetchedTracks = getState().api.tracks.fetched;
+  let faultyTracks = getState().api.tracks.faulty;
 
   // If track has already been fetched before
   if (fetchTracks.has(id)) {
@@ -86,6 +91,35 @@ export const fetchTracks = async ids => {
 
   // Returning obtained tracks
   return [...tracks.values()];
+};
+
+export const fetchUser = async id => {
+  // Getting data from Redux store
+  let fetchedUsers = getState().api.users.fetched;
+  let user = null;
+
+  // If user has already been fetched before
+  if (fetchedUsers.has(id)) {
+    user = fetchedUsers.get(id);
+  } else {
+    try {
+      // Getting user from API
+      user = await Soundcloud.get(`/users/${id}`);
+      // Saving fetched user
+      dispatch(ADD_USER(id, user));
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Changing current user
+  dispatch(CHANGE_USER(user));
+
+  // Fetching small portion of data about user
+  dispatch(FETCH_BASIC_PROFILE_INFO());
+
+  // Returning user, or null if fetching had been unsuccessful :/
+  return user;
 };
 
 export default Soundcloud;

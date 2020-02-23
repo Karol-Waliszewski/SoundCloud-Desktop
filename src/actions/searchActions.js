@@ -1,8 +1,8 @@
 import axios from "axios";
-
 import Soundcloud from "soundcloud";
 
-// TODO: fetching more than 12 results
+// Actions
+import { ADD_PLAYLISTS, ADD_TRACKS, ADD_USERS } from "./apiActions";
 
 export const CHANGE_QUERY = query => ({
   type: "CHANGE_QUERY",
@@ -44,6 +44,15 @@ export const FIND_TRACKS = query => async (dispatch, getState) => {
     }
     let afterFetchQueryID = getState().search.queryID;
 
+    if (tracks.collection.length) {
+      // Saving fetched tracked to "session storage"
+      let mapOfTracks = new Map();
+      for (let track of tracks.collection) {
+        mapOfTracks.set(track.id, track);
+      }
+      dispatch(ADD_TRACKS(mapOfTracks));
+    }
+
     // Send data only if pre and after fetch IDs are the same
     if (preFetchQueryID === afterFetchQueryID) {
       dispatch(CHANGE_TRACKS(tracks.collection, tracks.next_href));
@@ -73,6 +82,16 @@ export const FIND_PLAYLISTS = query => async (dispatch, getState) => {
     }
 
     let afterFetchQueryID = getState().search.queryID;
+
+    if (playlists.collection.length) {
+      // Saving fetched tracked to "session storage"
+      let mapOfPlaylists = new Map();
+      for (let playlist of playlists.collection) {
+        mapOfPlaylists.set(playlist.id, playlist);
+      }
+      dispatch(ADD_PLAYLISTS(mapOfPlaylists));
+    }
+
     // Send data only if pre and after fetch IDs are the same
     if (preFetchQueryID === afterFetchQueryID) {
       dispatch(CHANGE_PLAYLISTS(playlists.collection, playlists.next_href));
@@ -102,6 +121,16 @@ export const FIND_USERS = query => async (dispatch, getState) => {
     }
 
     let afterFetchQueryID = getState().search.queryID;
+
+    if (users.collection.length) {
+      // Saving fetched tracked to "session storage"
+      let mapOfUsers = new Map();
+      for (let user of users.collection) {
+        mapOfUsers.set(user.id, user);
+      }
+      dispatch(ADD_USERS(mapOfUsers));
+    }
+
     // Send data only if pre and after fetch IDs are the same
     if (preFetchQueryID === afterFetchQueryID) {
       dispatch(CHANGE_USERS(users.collection, users.next_href));

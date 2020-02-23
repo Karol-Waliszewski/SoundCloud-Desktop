@@ -1,6 +1,9 @@
 import Soundcloud from "../soundcloud";
 import axios from "axios";
 
+// Actions
+import { ADD_PLAYLISTS, ADD_TRACKS, ADD_USERS, ADD_USER } from "./apiActions";
+
 export const CHANGE_USER = user => ({
   type: "CHANGE_USER",
   payload: user
@@ -37,22 +40,6 @@ export const CHECK_USER = () => (dispatch, getState) => {
   return user != null ? user : false;
 };
 
-export const FETCH_USER = id => async dispatch => {
-  try {
-    let user = await Soundcloud.get(`/users/${id}`);
-    // Saving new user
-    dispatch(CHANGE_USER(user));
-    // Fetching small portion of data about user
-    dispatch(FETCH_TRACKS());
-    dispatch(FETCH_PLAYLISTS());
-    dispatch(FETCH_FAVOURITES());
-    dispatch(FETCH_FOLLOWERS());
-    dispatch(FETCH_FOLLOWINGS());
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const FETCH_TRACKS = () => async (dispatch, getState) => {
   let user = dispatch(CHECK_USER());
   // If user has not been found, sent empty array
@@ -73,6 +60,15 @@ export const FETCH_TRACKS = () => async (dispatch, getState) => {
       else {
         tracks = await axios.get(href);
         tracks = tracks.data;
+      }
+
+      if (tracks.collection.length) {
+        // Saving fetched tracked to "session storage"
+        let mapOfTracks = new Map();
+        for (let track of tracks.collection) {
+          mapOfTracks.set(track.id, track);
+        }
+        dispatch(ADD_TRACKS(mapOfTracks));
       }
 
       // Update tracks
@@ -104,6 +100,16 @@ export const FETCH_PLAYLISTS = () => async (dispatch, getState) => {
         playlists = await axios.get(href);
         playlists = playlists.data;
       }
+
+      if (playlists.collection.length) {
+        // Saving fetched tracked to "session storage"
+        let mapOfPlaylists = new Map();
+        for (let playlist of playlists.collection) {
+          mapOfPlaylists.set(playlist.id, playlist);
+        }
+        dispatch(ADD_PLAYLISTS(mapOfPlaylists));
+      }
+
       dispatch(CHANGE_PLAYLISTS(playlists.collection, playlists.next_href));
     } catch (error) {
       console.error(error);
@@ -132,6 +138,16 @@ export const FETCH_FOLLOWINGS = () => async (dispatch, getState) => {
         followings = await axios.get(href);
         followings = followings.data;
       }
+
+      if (followings.collection.length) {
+        // Saving fetched tracked to "session storage"
+        let mapOfUsers = new Map();
+        for (let user of followings.collection) {
+          mapOfUsers.set(user.id, user);
+        }
+        dispatch(ADD_USERS(mapOfUsers));
+      }
+
       dispatch(CHANGE_FOLLOWINGS(followings.collection, followings.next_href));
     } catch (error) {
       console.error(error);
@@ -160,6 +176,16 @@ export const FETCH_FOLLOWERS = () => async (dispatch, getState) => {
         followers = await axios.get(href);
         followers = followers.data;
       }
+
+      if (followers.collection.length) {
+        // Saving fetched tracked to "session storage"
+        let mapOfUsers = new Map();
+        for (let user of followers.collection) {
+          mapOfUsers.set(user.id, user);
+        }
+        dispatch(ADD_USERS(mapOfUsers));
+      }
+
       dispatch(CHANGE_FOLLOWERS(followers.collection, followers.next_href));
     } catch (error) {
       console.error(error);
@@ -188,9 +214,27 @@ export const FETCH_FAVOURITES = () => async (dispatch, getState) => {
         favourites = await axios.get(href);
         favourites = favourites.data;
       }
+
+      if (favourites.collection.length) {
+        // Saving fetched tracked to "session storage"
+        let mapOfTracks = new Map();
+        for (let track of favourites.collection) {
+          mapOfTracks.set(track.id, track);
+        }
+        dispatch(ADD_TRACKS(mapOfTracks));
+      }
+
       dispatch(CHANGE_FAVOURITES(favourites.collection, favourites.next_href));
     } catch (error) {
       console.error(error);
     }
   }
 };
+
+export const FETCH_BASIC_PROFILE_INFO = () => (dispatch) => {
+  dispatch(FETCH_TRACKS());
+  dispatch(FETCH_PLAYLISTS());
+  dispatch(FETCH_FAVOURITES());
+  dispatch(FETCH_FOLLOWERS());
+  dispatch(FETCH_FOLLOWINGS());
+}

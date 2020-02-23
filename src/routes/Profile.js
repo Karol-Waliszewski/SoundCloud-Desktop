@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { Switch, Route, Link } from "react-router-dom";
 
 // Actions
+import { fetchUser } from "../soundcloud";
 import {
-  FETCH_USER,
   FETCH_TRACKS,
   FETCH_FAVOURITES,
   FETCH_PLAYLISTS,
@@ -148,13 +148,13 @@ class Profile extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.match.params.username !== prevProps.match.params.username) {
       // Fetch user
-      this.props.fetchUser(this.props.match.params.username);
+      fetchUser(Number(this.props.match.params.username));
     }
   }
 
   componentDidMount() {
     // Fetch user
-    this.props.fetchUser(this.props.match.params.username);
+    fetchUser(Number(this.props.match.params.username));
   }
 
   render() {
@@ -270,9 +270,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchUser: id => {
-    dispatch(FETCH_USER(id));
-  },
   fetchTracks: () => {
     dispatch(FETCH_TRACKS());
   },
