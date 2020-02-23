@@ -3,17 +3,21 @@ import PropTypes from "prop-types";
 
 // Components
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from "react-loader-spinner";
 import List from "./list";
 
 const InfiniteList = props => {
-  //TODO: loader~!!!!!
   return (
     <InfiniteScroll
       scrollableTarget={props.target || "main"}
       dataLength={props.list.length}
       next={props.fetchFn}
       hasMore={props.more}
-      loader={<h4>Loading...</h4>}
+      loader={
+        <div className="loader">
+          <Loader type="Bars" color="#FF7700" height={36} width={36}></Loader>
+        </div>
+      }
     >
       <div className="row--start">
         {props.limit ? (
