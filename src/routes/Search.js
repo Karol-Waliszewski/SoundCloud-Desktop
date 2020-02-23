@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
 // Actions
@@ -14,6 +15,68 @@ import Track from "../components/track";
 import Playlist from "../components/playlist";
 import User from "../components/user";
 import List from "../components/list";
+import InfiniteList from "../components/infiniteList";
+
+class SearchHome extends Component {
+  render() {
+    let { props } = this;
+    return (
+      <>
+        {props.tracks.length > 0 && (
+          <Section
+            title="Tracks"
+            link={props.tracks.length == 12 ? "/search/tracks" : null}
+          >
+            <div className="row--start">
+              <List component={Track} list={props.tracks} limit={12}></List>
+            </div>
+          </Section>
+        )}
+
+        {props.playlists.length > 0 && (
+          <Section
+            title="Playlists"
+            link={props.playlists.length == 12 ? "/search/playlists" : null}
+          >
+            <div className="row--start">
+              <List
+                component={Playlist}
+                list={props.playlists}
+                limit={12}
+              ></List>
+            </div>
+          </Section>
+        )}
+
+        {props.users.length > 0 && (
+          <Section
+            title="Users"
+            link={props.users.length == 12 ? "/search/users" : null}
+          >
+            <div className="row--start">
+              <List component={User} list={props.users} limit={12}></List>
+            </div>
+          </Section>
+        )}
+      </>
+    );
+  }
+}
+
+var SearchSpecific = props => {
+  if (props.list)
+    return (
+      <Section title={props.title}>
+        <InfiniteList
+          list={props.list}
+          fetchFn={props.fetchMore}
+          more={props.list.length % 12 === 0}
+          component={props.tag}
+        ></InfiniteList>
+      </Section>
+    );
+  return null;
+};
 
 class Search extends Component {
   componentDidMount() {
@@ -26,6 +89,16 @@ class Search extends Component {
     }
   }
 
+  findTracks() {
+    this.props.findTracks(this.props.query);
+  }
+  findPlaylists() {
+    this.props.findPlaylists(this.props.query);
+  }
+  findUsers() {
+    this.props.findUsers(this.props.query);
+  }
+
   searchQuery(query) {
     this.props.findTracks(query);
     this.props.findPlaylists(query);
@@ -33,7 +106,7 @@ class Search extends Component {
   }
 
   render() {
-    let { props, state } = this;
+    let { props } = this;
 
     return (
       <div className="route">
@@ -42,29 +115,51 @@ class Search extends Component {
           <span className="color--primary">{props.query}</span>"
         </h4>
 
-        {props.tracks.length > 0 && (
-          <Section title="Tracks">
-            <div className="row--start">
-              <List component={Track} list={props.tracks}></List>
-            </div>
-          </Section>
-        )}
-
-        {props.playlists.length > 0 && (
-          <Section title="Playlists">
-            <div className="row--start">
-              <List component={Playlist} list={props.playlists}></List>
-            </div>
-          </Section>
-        )}
-
-        {props.users.length > 0 && (
-          <Section title="Users">
-            <div className="row--start">
-              <List component={User} list={props.users}></List>
-            </div>
-          </Section>
-        )}
+        <Switch>
+          <Route
+            path="/search/tracks"
+            render={() => (
+              <SearchSpecific
+                fetchMore={this.findTracks.bind(this)}
+                list={props.tracks}
+                tag={Track}
+                title="Tracks"
+              ></SearchSpecific>
+            )}
+          ></Route>
+          <Route
+            path="/search/playlists"
+            render={() => (
+              <SearchSpecific
+                fetchMore={this.findPlaylists.bind(this)}
+                list={props.playlists}
+                tag={Playlist}
+                title="Playlists"
+              ></SearchSpecific>
+            )}
+          ></Route>
+          <Route
+            path="/search/users"
+            render={() => (
+              <SearchSpecific
+                fetchMore={this.findUsers.bind(this)}
+                list={props.users}
+                tag={User}
+                title="Users"
+              ></SearchSpecific>
+            )}
+          ></Route>
+          <Route
+            path="/search"
+            render={() => (
+              <SearchHome
+                tracks={props.tracks}
+                playlists={props.playlists}
+                users={props.users}
+              ></SearchHome>
+            )}
+          ></Route>
+        </Switch>
       </div>
     );
   }
