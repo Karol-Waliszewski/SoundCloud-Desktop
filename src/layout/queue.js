@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Loader from "react-loader-spinner";
-import SoundCloud, { fetchTracks } from "../soundcloud";
+import uuid from "uuid/v4";
+import { fetchTracks } from "../soundcloud";
 
 // Actions
 import { TOGGLE_QUEUE } from "../actions/layoutActions";
@@ -27,6 +28,9 @@ class Queue extends Component {
       queue: []
     };
 
+    this.queueID = uuid();
+    this.update = true;
+
     this.getTracks = this.getTracks.bind(this);
     this.onDragEnd = this.onDragEnd.bind(this);
     this.fetchTracks = this.fetchTracks();
@@ -35,14 +39,21 @@ class Queue extends Component {
   fetchTracks() {
     // Preventing fetching multiple times at once
     let fetching = false;
-    return async tracks => {
+    return async (tracks, id) => {
       if (!fetching) {
+        // Preventing queue update while fetching
+        this.update = false;
         fetching = true;
 
         let queue = await fetchTracks(tracks);
 
         fetching = false;
-        return queue;
+        this.update = true;
+
+        // Only save result if 'queue session' id has not changed, otherwise data is already outdated
+        if (this.queueID === id) {
+          return queue;
+        }
       }
       return [];
     };
@@ -53,7 +64,12 @@ class Queue extends Component {
     currentSize = this.state.queue.length
   ) {
     try {
-      let tracks = await this.fetchTracks([...queue].splice(currentSize, 12));
+      // Getting new tracks
+      let tracks = await this.fetchTracks(
+        [...queue].splice(currentSize, 12),
+        this.queueID
+      );
+      // Saving tracks to state
       this.setState({
         queue: [...this.state.queue, ...tracks]
       });
@@ -63,13 +79,17 @@ class Queue extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    //TODO: reload playlist.
-
-    if (prevProps.queue !== this.props.queue) {
+    // On Redux queue change and state update needed
+    if (prevProps.queue !== this.props.queue && this.update) {
+      // Create new 'queue session' id
+      this.queueID = uuid();
+      // Update state
       this.setState({
         queue: []
       });
       this.getTracks(this.props.queue, 0);
+    } else if (!this.update) {
+      this.update = true;
     }
   }
 
@@ -92,7 +112,8 @@ class Queue extends Component {
     let temp = q.splice(source.index, 1)[0];
     q.splice(destination.index, 0, temp);
 
-    this.setState({ queue: q });
+    // Updating queue and preventing re-render
+    this.setState({ queue: q, update: false });
 
     // Reordering Redux store
     let queue = [...props.queue];
