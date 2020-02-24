@@ -74,11 +74,11 @@ class ProfileHome extends Component {
                 </div>
 
                 {user.website_title ? (
-                  <a href={user.website} target="_blank">
+                  <a href={user.website} target="_blank" rel="noopener noreferrer">
                     {user.website_title}
                   </a>
                 ) : (
-                  <a href={user.website} target="_blank">
+                  <a href={user.website} target="_blank" rel="noopener noreferrer">
                     {user.website}
                   </a>
                 )}

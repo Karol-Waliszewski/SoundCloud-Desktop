@@ -2,7 +2,7 @@ import Soundcloud from "../soundcloud";
 import axios from "axios";
 
 // Actions
-import { ADD_PLAYLISTS, ADD_TRACKS, ADD_USERS, ADD_USER } from "./apiActions";
+import { ADD_PLAYLISTS, ADD_TRACKS, ADD_USERS } from "./apiActions";
 
 export const CHANGE_USER = user => ({
   type: "CHANGE_USER",

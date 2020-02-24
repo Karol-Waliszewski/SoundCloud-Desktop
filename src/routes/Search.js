@@ -25,7 +25,7 @@ class SearchHome extends Component {
         {props.tracks.length > 0 && (
           <Section
             title="Tracks"
-            link={props.tracks.length == 12 ? "/search/tracks" : null}
+            link={props.tracks.length === 12 ? "/search/tracks" : null}
           >
             <div className="row--start">
               <List component={Track} list={props.tracks} limit={12}></List>
@@ -36,7 +36,7 @@ class SearchHome extends Component {
         {props.playlists.length > 0 && (
           <Section
             title="Playlists"
-            link={props.playlists.length == 12 ? "/search/playlists" : null}
+            link={props.playlists.length === 12 ? "/search/playlists" : null}
           >
             <div className="row--start">
               <List
@@ -51,7 +51,7 @@ class SearchHome extends Component {
         {props.users.length > 0 && (
           <Section
             title="Users"
-            link={props.users.length == 12 ? "/search/users" : null}
+            link={props.users.length === 12 ? "/search/users" : null}
           >
             <div className="row--start">
               <List component={User} list={props.users} limit={12}></List>
