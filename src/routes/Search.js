@@ -10,60 +10,82 @@ import {
 } from "../actions/searchActions";
 
 // Components
+import Loader from "react-loader-spinner";
 import Section from "../components/section";
 import Track from "../components/track";
 import Playlist from "../components/playlist";
 import User from "../components/user";
 import List from "../components/list";
 import InfiniteList from "../components/infiniteList";
+import SearchNotFound from "../components/searchNotFound";
 
 class SearchHome extends Component {
+  constructor() {
+    super();
+
+    this.renderList = this.renderList.bind(this);
+  }
+
+  renderList(list, tag) {
+    let { props } = this;
+    if (props.api[list].fetching) {
+      return <SearchLoader></SearchLoader>;
+    }
+
+    if (!props.tracks.length && props.api[list].fullfilled) {
+      return <SearchNotFound query={props.query}></SearchNotFound>;
+    }
+
+    return (
+      <div className="row--start">
+        <List component={tag} list={props[list]} limit={12}></List>
+      </div>
+    );
+  }
+
   render() {
     let { props } = this;
     return (
       <>
-        {props.tracks.length > 0 && (
-          <Section
-            title="Tracks"
-            link={props.tracks.length === 12 ? "/search/tracks" : null}
-          >
-            <div className="row--start">
-              <List component={Track} list={props.tracks} limit={12}></List>
-            </div>
-          </Section>
-        )}
+        <Section
+          title="Tracks"
+          link={props.tracks.length === 12 ? "/search/tracks" : null}
+        >
+          {this.renderList("tracks", Track)}
+        </Section>
 
-        {props.playlists.length > 0 && (
-          <Section
-            title="Playlists"
-            link={props.playlists.length === 12 ? "/search/playlists" : null}
-          >
-            <div className="row--start">
-              <List
-                component={Playlist}
-                list={props.playlists}
-                limit={12}
-              ></List>
-            </div>
-          </Section>
-        )}
+        <Section
+          title="Playlists"
+          link={props.playlists.length === 12 ? "/search/playlists" : null}
+        >
+          {this.renderList("playlists", Playlist)}
+        </Section>
 
-        {props.users.length > 0 && (
-          <Section
-            title="Users"
-            link={props.users.length === 12 ? "/search/users" : null}
-          >
-            <div className="row--start">
-              <List component={User} list={props.users} limit={12}></List>
-            </div>
-          </Section>
-        )}
+        <Section
+          title="Users"
+          link={props.users.length === 12 ? "/search/users" : null}
+        >
+          {this.renderList("users", User)}
+        </Section>
       </>
     );
   }
 }
 
+var SearchLoader = props => (
+  <div className="loader">
+    <Loader type="Bars" color="#FF7700" height={36} width={36}></Loader>
+  </div>
+);
+
 var SearchSpecific = props => {
+  if (!props.list.length && props.api.fullfilled && !props.api.fetching) {
+    return (
+      <Section title={props.title}>
+        <SearchNotFound></SearchNotFound>
+      </Section>
+    );
+  }
   if (props.list)
     return (
       <Section title={props.title}>
@@ -110,9 +132,9 @@ class Search extends Component {
 
     return (
       <div className="route">
-        <h4 className="search-result">
-          Search results for: "
-          <span className="color--primary">{props.query}</span>"
+        <h4 className="search__result">
+          Search results for: “
+          <span className="color--primary">{props.query}</span>”
         </h4>
 
         <Switch>
@@ -123,6 +145,7 @@ class Search extends Component {
                 fetchMore={this.findTracks.bind(this)}
                 list={props.tracks}
                 tag={Track}
+                api={props.apiState.tracks}
                 title="Tracks"
               ></SearchSpecific>
             )}
@@ -134,6 +157,7 @@ class Search extends Component {
                 fetchMore={this.findPlaylists.bind(this)}
                 list={props.playlists}
                 tag={Playlist}
+                api={props.apiState.playlists}
                 title="Playlists"
               ></SearchSpecific>
             )}
@@ -145,6 +169,7 @@ class Search extends Component {
                 fetchMore={this.findUsers.bind(this)}
                 list={props.users}
                 tag={User}
+                api={props.apiState.users}
                 title="Users"
               ></SearchSpecific>
             )}
@@ -156,6 +181,7 @@ class Search extends Component {
                 tracks={props.tracks}
                 playlists={props.playlists}
                 users={props.users}
+                api={props.apiState}
               ></SearchHome>
             )}
           ></Route>
@@ -169,7 +195,8 @@ const mapStateToProps = state => ({
   query: state.search.query,
   tracks: state.search.tracks.collection,
   playlists: state.search.playlists.collection,
-  users: state.search.users.collection
+  users: state.search.users.collection,
+  apiState: state.search.apiState
 });
 
 const mapDispatchToProps = dispatch => ({

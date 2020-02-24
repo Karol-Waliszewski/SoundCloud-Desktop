@@ -9,19 +9,31 @@ export const CHANGE_QUERY = query => ({
   payload: query
 });
 
-export const CHANGE_TRACKS = (tracks, href = null) => ({
-  type: "CHANGE_TRACKS",
+export const SEARCH_TRACKS_SUCCESS = (tracks, href = null) => ({
+  type: "SEARCH_TRACKS_SUCCESS",
   payload: { collection: tracks, href }
 });
 
-export const CHANGE_PLAYLISTS = (playlists, href = null) => ({
-  type: "CHANGE_PLAYLISTS",
+export const SEARCH_PLAYLISTS_SUCCESS = (playlists, href = null) => ({
+  type: "SEARCH_PLAYLISTS_SUCCESS",
   payload: { collection: playlists, href }
 });
 
-export const CHANGE_USERS = (followings, href = null) => ({
-  type: "CHANGE_USERS",
+export const SEARCH_USERS_SUCCESS = (followings, href = null) => ({
+  type: "SEARCH_USERS_SUCCESS",
   payload: { collection: followings, href }
+});
+
+export const SEARCH_TRACKS_FETCHING = () => ({
+  type: "SEARCH_TRACKS_FETCHING"
+});
+
+export const SEARCH_PLAYLISTS_FETCHING = () => ({
+  type: "SEARCH_PLAYLISTS_FETCHING"
+});
+
+export const SEARCH_USERS_FETCHING = () => ({
+  type: "SEARCH_USERS_FETCHING"
 });
 
 export const FIND_TRACKS = query => async (dispatch, getState) => {
@@ -29,6 +41,9 @@ export const FIND_TRACKS = query => async (dispatch, getState) => {
     let href = getState().search.tracks.href;
     let preFetchQueryID = getState().search.queryID;
     let tracks;
+
+    dispatch(SEARCH_TRACKS_FETCHING());
+
     // If it is the first fetch for the user, do not use linked partitioning
     if (href == null) {
       tracks = await Soundcloud.get("/tracks", {
@@ -55,7 +70,7 @@ export const FIND_TRACKS = query => async (dispatch, getState) => {
 
     // Send data only if pre and after fetch IDs are the same
     if (preFetchQueryID === afterFetchQueryID) {
-      dispatch(CHANGE_TRACKS(tracks.collection, tracks.next_href));
+      dispatch(SEARCH_TRACKS_SUCCESS(tracks.collection, tracks.next_href));
     }
   } catch (error) {
     console.error(error);
@@ -67,6 +82,9 @@ export const FIND_PLAYLISTS = query => async (dispatch, getState) => {
     let href = getState().search.playlists.href;
     let preFetchQueryID = getState().search.queryID;
     let playlists;
+
+    dispatch(SEARCH_PLAYLISTS_FETCHING());
+
     // If it is the first fetch for the user, do not use linked partitioning
     if (href == null) {
       playlists = await Soundcloud.get("/playlists", {
@@ -94,7 +112,9 @@ export const FIND_PLAYLISTS = query => async (dispatch, getState) => {
 
     // Send data only if pre and after fetch IDs are the same
     if (preFetchQueryID === afterFetchQueryID) {
-      dispatch(CHANGE_PLAYLISTS(playlists.collection, playlists.next_href));
+      dispatch(
+        SEARCH_PLAYLISTS_SUCCESS(playlists.collection, playlists.next_href)
+      );
     }
   } catch (error) {
     console.error(error);
@@ -106,6 +126,9 @@ export const FIND_USERS = query => async (dispatch, getState) => {
     let href = getState().search.users.href;
     let preFetchQueryID = getState().search.queryID;
     let users;
+
+    dispatch(SEARCH_USERS_FETCHING());
+
     // If it is the first fetch for the user, do not use linked partitioning
     if (href == null) {
       users = await Soundcloud.get("/users", {
@@ -133,7 +156,7 @@ export const FIND_USERS = query => async (dispatch, getState) => {
 
     // Send data only if pre and after fetch IDs are the same
     if (preFetchQueryID === afterFetchQueryID) {
-      dispatch(CHANGE_USERS(users.collection, users.next_href));
+      dispatch(SEARCH_USERS_SUCCESS(users.collection, users.next_href));
     }
   } catch (error) {
     console.error(error);

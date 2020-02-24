@@ -1,30 +1,44 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import search from "../assets/search.svg";
 import { CHANGE_QUERY } from "../actions/searchActions";
 
 class Search extends Component {
+  constructor() {
+    super();
+
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
   onInputChange(event) {
-    this.props.changeQuery(event.target.value.toLowerCase());
+    this.props.changeQuery(event.target.value);
+  }
+
+  onSubmit(event) {
+    event.preventDefault();
+    if (this.props.query.length) {
+      // Redirect to Search page (Search.js)
+      this.props.history.push("/search");
+    }
   }
 
   render() {
-   
     return (
-      <form className="search">
+      <form className="searchInput" onSubmit={this.onSubmit}>
         <input
           type="text"
-          className="search__input"
+          className="searchInput__input"
           placeholder="Search"
           value={this.props.query}
-          onChange={this.onInputChange.bind(this)}
+          onChange={this.onInputChange}
         />
-        <Link to="/search" className="search__submit">
+        <button type="submit" className="searchInput__submit">
           <img src={search} alt="search icon" />
-        </Link>
+        </button>
       </form>
     );
   }
@@ -40,4 +54,4 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Search));

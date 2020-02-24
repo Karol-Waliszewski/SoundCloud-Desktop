@@ -5,7 +5,21 @@ const defaultState = {
   queryID: uuid(),
   tracks: { href: null, collection: [], more: true },
   playlists: { href: null, collection: [], more: true },
-  users: { href: null, collection: [], more: true }
+  users: { href: null, collection: [], more: true },
+  apiState: {
+    tracks: {
+      fetching: false,
+      fullfilled: false
+    },
+    playlists: {
+      fetching: false,
+      fullfilled: false
+    },
+    users: {
+      fetching: false,
+      fullfilled: false
+    }
+  }
 };
 
 var reducer = function(state = defaultState, action) {
@@ -19,7 +33,7 @@ var reducer = function(state = defaultState, action) {
         query: action.payload,
         queryID: uuid()
       };
-    case "CHANGE_TRACKS":
+    case "SEARCH_TRACKS_SUCCESS":
       let tracks = [...state.tracks.collection, ...action.payload.collection];
       return {
         ...state,
@@ -29,9 +43,14 @@ var reducer = function(state = defaultState, action) {
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
+        },
+
+        apiState: {
+          ...state.apiState,
+          tracks: { fullfilled: true, fetching: false }
         }
       };
-    case "CHANGE_PLAYLISTS":
+    case "SEARCH_PLAYLISTS_SUCCESS":
       let playlists = [
         ...state.playlists.collection,
         ...action.payload.collection
@@ -44,9 +63,13 @@ var reducer = function(state = defaultState, action) {
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
+        },
+        apiState: {
+          ...state.apiState,
+          playlists: { fullfilled: true, fetching: false }
         }
       };
-    case "CHANGE_USERS":
+    case "SEARCH_USERS_SUCCESS":
       let users = [...state.users.collection, ...action.payload.collection];
       return {
         ...state,
@@ -56,6 +79,34 @@ var reducer = function(state = defaultState, action) {
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
+        },
+        apiState: {
+          ...state.apiState,
+          users: { fullfilled: true, fetching: false }
+        }
+      };
+    case "SEARCH_TRACKS_FETCHING":
+      return {
+        ...state,
+        apiState: {
+          ...state.apiState,
+          tracks: { fullfilled: false, fetching: true }
+        }
+      };
+    case "SEARCH_PLAYLISTS_FETCHING":
+      return {
+        ...state,
+        apiState: {
+          ...state.apiState,
+          playlists: { fullfilled: false, fetching: true }
+        }
+      };
+    case "SEARCH_USERS_FETCHING":
+      return {
+        ...state,
+        apiState: {
+          ...state.apiState,
+          users: { fullfilled: false, fetching: true }
         }
       };
     default:
