@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
-import { withRouter } from "react-router-dom";
+import { push as PUSH } from "connected-react-router";
 
 import search from "../assets/search.svg";
 import { CHANGE_QUERY } from "../actions/searchActions";
@@ -22,7 +21,7 @@ class Search extends Component {
     event.preventDefault();
     if (this.props.query.length) {
       // Redirect to Search page (Search.js)
-      this.props.history.push("/search");
+      this.props.push("/search");
     }
   }
 
@@ -51,7 +50,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   changeQuery: query => {
     dispatch(CHANGE_QUERY(query));
+  },
+  push: path => {
+    dispatch(PUSH(path))
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Search));
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
