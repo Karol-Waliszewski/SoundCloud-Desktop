@@ -6,6 +6,8 @@ import { CHANGE_VOLUME } from "../actions/playerActions";
 
 // Assets
 import sound from "../assets/sound.svg";
+import soundLow from "../assets/sound-low.svg";
+import soundMute from "../assets/sound-mute.svg";
 
 class Volume extends Component {
   constructor() {
@@ -22,11 +24,12 @@ class Volume extends Component {
 
   render() {
     let { props } = this;
+    let icon = props.currentVolume == 0 ? soundMute : props.currentVolume >= 0.50 ? sound : soundLow;
 
     return (
       <div className="volume">
         <button className="volume__button">
-          <img src={sound} alt="volume" className="volume__icon" />
+          <img src={icon} alt="volume" className="volume__icon" />
         </button>
         <div className="volume__wrapper">
           <div

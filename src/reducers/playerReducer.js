@@ -17,11 +17,14 @@ const defaultState = {
 var reducer = function(state = defaultState, action) {
   switch (action.type) {
     case "CHANGE_VOLUME":
-      if (state.player) {
-        state.player.setVolume(state.volume);
+      let player = state.player;
+      if (player) {
+        player = { ...state.player };
+        player.setVolume(action.payload);
       }
       return {
         ...state,
+        player: player,
         volume: action.payload
       };
 

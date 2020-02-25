@@ -8,6 +8,8 @@
 
 .volume__button {
     @extend .player__button;
+    width: 24px;
+    height: 24px;
 
     &:hover {
         &~.volume__wrapper {
