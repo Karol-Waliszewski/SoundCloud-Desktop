@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 // Actions
-import { CHANGE_VOLUME } from "../actions/playerActions";
+import { CHANGE_VOLUME, TOGGLE_VOLUME_MUTE } from "../actions/playerActions";
 
 // Assets
 import sound from "../assets/sound.svg";
@@ -24,11 +24,17 @@ class Volume extends Component {
 
   render() {
     let { props } = this;
-    let icon = props.currentVolume == 0 ? soundMute : props.currentVolume >= 0.50 ? sound : soundLow;
+    let currentVolume = props.muted ? 0 : props.currentVolume;
+    let icon =
+      props.currentVolume == 0 || props.muted
+        ? soundMute
+        : props.currentVolume >= 0.5
+        ? sound
+        : soundLow;
 
     return (
       <div className="volume">
-        <button className="volume__button">
+        <button className="volume__button" onClick={props.toggleMute}>
           <img src={icon} alt="volume" className="volume__icon" />
         </button>
         <div className="volume__wrapper">
@@ -36,7 +42,7 @@ class Volume extends Component {
             className="volume__line--current"
             orient="vertical"
             style={{
-              height: (props.currentVolume / props.maxVolume) * 80 + "px"
+              height: (currentVolume / props.maxVolume) * 80 + "px"
             }}
           ></div>
           <input
@@ -46,7 +52,7 @@ class Volume extends Component {
             max={props.maxVolume}
             min={0}
             step={props.maxVolume / 100}
-            value={props.currentVolume}
+            value={currentVolume}
             onChange={this.handleVolumeChange.bind(this)}
           />
         </div>
@@ -56,12 +62,16 @@ class Volume extends Component {
 }
 const mapStateToProps = state => ({
   currentVolume: state.player.volume,
-  maxVolume: state.player.maxVolume
+  maxVolume: state.player.maxVolume,
+  muted: state.player.mute
 });
 
 const mapDispatchToProps = dispatch => ({
   changeVolume: volume => {
     dispatch(CHANGE_VOLUME(volume));
+  },
+  toggleMute: () => {
+    dispatch(TOGGLE_VOLUME_MUTE());
   }
 });
 

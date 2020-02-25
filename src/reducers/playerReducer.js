@@ -1,6 +1,7 @@
 const defaultState = {
   volume: 0.5,
   maxVolume: 1,
+  mute: false,
   time: 0,
   duration: 0,
   player: null,
@@ -17,15 +18,17 @@ const defaultState = {
 var reducer = function(state = defaultState, action) {
   switch (action.type) {
     case "CHANGE_VOLUME":
-      let player = state.player;
-      if (player) {
-        player = { ...state.player };
-        player.setVolume(action.payload);
-      }
+      
       return {
         ...state,
-        player: player,
-        volume: action.payload
+        volume: action.payload,
+        mute: false
+      };
+
+    case "TOGGLE_VOLUME_MUTE":
+      return {
+        ...state,
+        mute: !state.mute
       };
 
     case "UPDATE_TIME":

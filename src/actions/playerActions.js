@@ -5,10 +5,35 @@ export const TOGGLE_LOOP = () => ({
   type: "TOGGLE_LOOP"
 });
 
-export const CHANGE_VOLUME = volume => ({
-  type: "CHANGE_VOLUME",
-  payload: volume
-});
+export const CHANGE_VOLUME = volume => (dispatch, getState) => {
+  // Updating volume value in player
+  let player = getState().player.player;
+  if (player) {
+    player.setVolume(volume);
+  }
+
+  // Updating volume value in Redux
+  dispatch({
+    type: "CHANGE_VOLUME",
+    payload: volume
+  });
+};
+
+export const TOGGLE_VOLUME_MUTE = () => (dispatch, getState) => {
+  // Updating volume value in player
+  let player = getState().player.player;
+  let mute = getState().player.mute;
+  if (player && !mute) {
+    player.setVolume(0);
+  } else if (player) {
+    player.setVolume(getState().player.volume);
+  }
+
+  // Updating volume mute in Redux
+  dispatch({
+    type: "TOGGLE_VOLUME_MUTE"
+  });
+};
 
 export const UPDATE_TIME = time => ({
   type: "UPDATE_TIME",
