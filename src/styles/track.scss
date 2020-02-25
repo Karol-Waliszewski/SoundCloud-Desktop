@@ -1,5 +1,7 @@
 .track {
-    @extend .col__3;
+    @extend .col__md--3;
+    @extend .col__sm--4;
+    @extend .col__6;
 
     display: flex;
     flex-direction: column;
