@@ -16,6 +16,24 @@
     transition: opacity 300ms ease-in;
 }
 
+.popup-enter {
+    opacity: 0.01;
+}
+
+.popup-enter.fade-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in;
+}
+
+.popup-exit {
+    opacity: 1;
+}
+
+.popup-exit.fade-exit-active {
+    opacity: 0.01;
+    transition: opacity 300ms ease-in;
+}
+
 // TODO: improve expanding
 @keyframes expand {
     0% {

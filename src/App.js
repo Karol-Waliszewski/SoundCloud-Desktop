@@ -5,12 +5,14 @@ import { connect } from "react-redux";
 
 // Actions
 import { ADD_AND_PLAY_TRACK, ADD_TO_QUEUE } from "./actions/playerActions";
+import { ADD_POPUP } from "./actions/layoutActions";
 
 // Layout
 import Topbar from "./layout/topbar";
 import Sidebar from "./layout/sidebar";
 import Player from "./layout/player";
 import Queue from "./layout/queue";
+import Popups from "./layout/popups";
 
 // Routes
 import Home from "./routes/Home";
@@ -23,12 +25,17 @@ class App extends React.Component {
     this.props.playTrack(496922577);
     this.props.addToQueue(204957649);
     this.props.addToQueue(504437034);
+
+    this.props.addPopup("Test popup 1");
+    this.props.addPopup("Test popup 2 Test popup 2");
+    this.props.addPopup("Test popup 3 Test popup 3 Test popup 3 Test popup 3");
   }
 
   render() {
     return (
       <div className="app">
         <Topbar></Topbar>
+        <Popups></Popups>
         <div className="app__row">
           <Sidebar></Sidebar>
           <main className="app__main" id="main">
@@ -56,6 +63,9 @@ const mapDispatchToProps = dispatch => ({
   },
   addToQueue: id => {
     dispatch(ADD_TO_QUEUE(id));
+  },
+  addPopup: msg => {
+    dispatch(ADD_POPUP(msg));
   }
 });
 
