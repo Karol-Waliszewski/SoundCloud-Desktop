@@ -5,9 +5,12 @@
 
     max-width: 40%;
     padding: 1% 2%;
+
+    z-index: 30;
 }
 
 .popup {
+    position: relative;
     background: white;
     box-shadow: 0 0 4px rgba($darkGray, 0.3);
     color: $darkGray;
@@ -24,4 +27,25 @@
     word-wrap: normal;
     text-overflow: ellipsis;
 
+}
+
+.popup__close {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+
+    width: 16px;
+    height: 16px;
+
+    background: none;
+    border: none;
+
+    cursor: pointer;
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }

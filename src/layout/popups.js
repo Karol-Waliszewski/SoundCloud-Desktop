@@ -4,8 +4,14 @@ import { connect } from "react-redux";
 // Actions
 import { REMOVE_POPUP } from "../actions/layoutActions";
 
+// Assets
+import close from "../assets/close.svg";
+
 var Popup = props => (
-  <div className="popup" onClick={props.remove}>
+  <div className="popup">
+    <button className="popup__close" onClick={props.remove}>
+      <img src={close} alt="X, closing the popup" />
+    </button>
     <p className="popup__message">{props.message}</p>
   </div>
 );
