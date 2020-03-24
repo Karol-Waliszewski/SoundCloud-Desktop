@@ -58,9 +58,16 @@ class Playlist extends Component {
     }
   }
 
-  toggleOptions() {
+  toggleOptions(e) {
+    e.stopPropagation();
     setTimeout(() => {
       this.setState({ options: !this.state.options });
+    }, 100);
+  }
+
+  closeOptions() {
+    setTimeout(() => {
+      this.setState({ options: false });
     }, 100);
   }
 
@@ -89,7 +96,7 @@ class Playlist extends Component {
 
     return (
       <div className="track">
-        <div className="track__image" onClick={this.playPlaylist.bind(this)}>
+        <div className="track__image" onClick={this.playPlaylist.bind(this)}  onMouseLeave={this.closeOptions.bind(this)}>
           <img className="track__thumbnail" src={image} alt="" />
           <div className="track__hover">
             <button className="track__play">
@@ -101,9 +108,8 @@ class Playlist extends Component {
                 type="button"
                 className="track__dots"
                 title="More"
-                onClick={this.stopPropagation}
-                onFocus={this.toggleOptions.bind(this)}
-                onBlur={this.toggleOptions.bind(this)}
+                onClick={this.toggleOptions.bind(this)}
+                onBlur={this.closeOptions.bind(this)}
               >
                 <img src={dots} alt="3 dots" />
               </button>

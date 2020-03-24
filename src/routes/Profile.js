@@ -169,8 +169,8 @@ class Profile extends Component {
       // Fetch user
       fetchUser(Number(this.props.match.params.username));
     }
-
-    if (this.props.location.pathname !== prevProps.location.pathname) {
+    
+    if (this.props.location.pathname !== prevProps.location.pathname && this.props.match.params.username === prevProps.match.params.username) {
       this.scrollTo("#profile__route");
     }
   }

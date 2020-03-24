@@ -38,14 +38,17 @@ class Track extends Component {
     alert("TODO: add notification");
   }
 
-  toggleOptions() {
+  toggleOptions(e) {
+    e.stopPropagation();
     setTimeout(() => {
       this.setState({ options: !this.state.options });
     }, 100);
   }
 
-  stopPropagation(e) {
-    e.stopPropagation();
+  closeOptions() {
+    setTimeout(() => {
+      this.setState({ options: false });
+    }, 100);
   }
 
   render() {
@@ -91,8 +94,8 @@ class Track extends Component {
     }
 
     return (
-      <div className="track">
-        <div className="track__image">
+      <div className="track" >
+        <div className="track__image" onMouseLeave={this.closeOptions.bind(this)}>
           <img className="track__thumbnail" src={image} alt="" />
           <div className="track__hover">
             {playButton}
@@ -102,9 +105,8 @@ class Track extends Component {
                 type="button"
                 className="track__dots"
                 title="More"
-                onClick={this.stopPropagation}
-                onFocus={this.toggleOptions.bind(this)}
-                onBlur={this.toggleOptions.bind(this)}
+                onClick={this.toggleOptions.bind(this)}
+                onBlur={this.closeOptions.bind(this)}
               >
                 <img src={dots} alt="3 dots" />
               </button>
