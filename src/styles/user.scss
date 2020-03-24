@@ -1,18 +1,28 @@
 .user {
-    @extend .col__3;
+    @extend .col__md--3;
+    @extend .col__sm--4;
+    @extend .col__6;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    margin-top: 6px;
+    margin-top: 8px;
     margin-bottom: 12px;
 
+    &:hover {
 
+        .user__follow,
+        .user__following {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
 }
 
 .user__image {
+    position: relative;
     display: block;
     width: 130px;
     height: 130px;
@@ -25,19 +35,77 @@
     background-position: center;
     background-size: cover;
 
+
+
     img {
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: cover;
         border-radius: inherit;
     }
+
+    &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        box-shadow: inset 0 0 2px rgba($darkGray, 0.2);
+    }
+}
+
+.user__link {
+    width: 130px;
+    text-align: center;
+
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .user__name {
-    width: 130px;
-    text-align: center;
     font-size: 14px;
     color: $darkGray;
+}
+
+.user__follow {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    min-width: 64px;
+    height: 20px;
+
+    padding: 3px 6px;
+    margin-top: 4px;
+
+    background: transparent;
+    border: 1px solid $gray;
+    border-radius: 4px;
+    color: $darkGray;
+
+    visibility: hidden;
+    opacity: 0;
+
     cursor: pointer;
-    text-decoration: none;
+
+    span {
+        font-size: 12px;
+    }
+
+    img {
+        height: 90%;
+
+        object-fit: contain;
+        margin-right: 2px;
+    }
+}
+
+.user__following {
+    @extend .user__follow;
+    border: 1px solid $primaryColor;
+    color: $primaryColor;
 }

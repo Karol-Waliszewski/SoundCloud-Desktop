@@ -74,11 +74,19 @@ class ProfileHome extends Component {
                 </div>
 
                 {user.website_title ? (
-                  <a href={user.website} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={user.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {user.website_title}
                   </a>
                 ) : (
-                  <a href={user.website} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={user.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {user.website}
                   </a>
                 )}
@@ -145,10 +153,25 @@ class ProfileHome extends Component {
 }
 
 class Profile extends Component {
+  scrollTo(selector) {
+    let $wrapper = document.querySelector("#main");
+    let $element = document.querySelector(selector);
+    if ($wrapper.scrollTop > $element.scrollTop) {
+      $wrapper.scrollTo({
+        top: $element.offsetTop - 46,
+        behavior: "smooth"
+      });
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.match.params.username !== prevProps.match.params.username) {
       // Fetch user
       fetchUser(Number(this.props.match.params.username));
+    }
+    
+    if (this.props.location.pathname !== prevProps.location.pathname && this.props.match.params.username === prevProps.match.params.username) {
+      this.scrollTo("#profile__route");
     }
   }
 
@@ -170,7 +193,7 @@ class Profile extends Component {
             name={user.full_name}
             country={user.country}
           ></Baner>
-          <div className="route">
+          <div className="route" id="profile__route">
             <ProfileNav match={match}></ProfileNav>
             <hr className="profile__line" />
             <Switch>

@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { HashRouter as Router } from "react-router-dom";
+import { ConnectedRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 
 // Store
-import Store from "./store";
+import store, { history } from "./store";
 
 // App
 import App from "./App";
@@ -16,10 +16,10 @@ import "./styles/App.scss";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-  <Provider store={Store}>
-    <Router>
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
       <App />
-    </Router>
+    </ConnectedRouter>
   </Provider>,
   document.getElementById("root")
 );

@@ -1,5 +1,6 @@
 const defaultState = {
-  queueActive: false
+  queueActive: false,
+  popups: new Map()
 };
 
 var reducer = function(state = defaultState, action) {
@@ -14,6 +15,12 @@ var reducer = function(state = defaultState, action) {
       return {
         ...state,
         queueActive: !state.queueActive
+      };
+
+    case "UPDATE_POPUPS":
+      return {
+        ...state,
+        popups: new Map([...action.payload])
       };
 
     default:
