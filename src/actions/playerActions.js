@@ -249,6 +249,68 @@ export const ADD_TO_QUEUE = id => (dispatch, getState) => {
 
 var fetching = false;
 
+const GENERATE_PLAYER = (id, play = false) => async (dispatch, getState) => {
+  try {
+    let player = await Soundcloud.stream(`/tracks/${id}`);
+    let oldPlayer = getState().player.player;
+
+    // Killing previous player
+    if (oldPlayer && !oldPlayer.isDead()) {
+      dispatch(CHANGE_TIME(0));
+      oldPlayer.off("state-change");
+      oldPlayer.kill();
+    }
+
+    player.autoplay = play;
+    return player;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const APPLY_PLAYER_EVENTS = player => async dispatch => {
+  // Loading initials for player
+  player.on("play-start", () => {
+    // Updating player state
+    if (player.autoplay === false) {
+      player.pause();
+      player.seek(0);
+      dispatch(CHANGE_STATE("paused"));
+    } else {
+      dispatch(CHANGE_STATE("playing"));
+    }
+
+    dispatch(CHANGE_DURATION(player.getDuration()));
+  });
+
+  // Triggering 'play-start' event
+  await player.play();
+
+  // Controlling state changes and music finishing
+  player.on("state-change", state => {
+    // Simply updates state
+    dispatch(CHANGE_STATE(state));
+
+    // When the track is finished
+    if (state === "ended") {
+      dispatch(NEXT_TRACK(true));
+    }
+  });
+
+  // Time change event handler with debouncing
+  let applyOnTimeEvent = function() {
+    player.on("time", time => {
+      dispatch(UPDATE_TIME(time));
+      // Debounce
+      player.off("time");
+      setTimeout(applyOnTimeEvent, 500);
+    });
+  };
+
+  applyOnTimeEvent();
+};
+
 export const PLAY_TRACK = (id, play = false) => async (dispatch, getState) => {
   // Prevent multiple calls at once
   if (!fetching && id) {
@@ -256,106 +318,19 @@ export const PLAY_TRACK = (id, play = false) => async (dispatch, getState) => {
 
     // Getting new track
     try {
-      let player = await Soundcloud.stream(`/tracks/${id}`);
+      let player = await dispatch(GENERATE_PLAYER(id, play));
 
-      // Loading initials for player
-      player.on("play-start", () => {
-        // Killing previous player
-        if (getState().player.player) {
-          if (!getState().player.player.isDead()) {
-            dispatch(CHANGE_TIME(0));
-          }
-          getState().player.player.kill();
-        }
-
-        // Updating player state
-        if (play === false) {
-          player.pause();
-          player.seek(0);
-          dispatch(CHANGE_STATE("paused"));
-        } else {
-          dispatch(CHANGE_STATE("playing"));
-        }
-
-        dispatch(CHANGE_DURATION(player.getDuration()));
-      });
-
-      // Triggering 'play-start' event
-      await player.play();
-
-      // Controlling state changes and music finishing
-      player.on("state-change", state => {
-        // Simply updates state
-        dispatch(CHANGE_STATE(state));
-
-        // When the track is finished
-        if (
-          state === "ended" &&
-          getState().player.queue.length - 1 >
-            getState().player.currentTrackIndex.active
-        ) {
-          dispatch(NEXT_TRACK(true));
-        } else if (
-          state === "ended" &&
-          getState().player.queue.length > 0 &&
-          getState().player.loop
-        ) {
-          dispatch(PLAY_TRACK(getState().player.queue[0], true));
-        }
-      });
-
-      // Time change event handler
-      let applyOnTimeEvent = function() {
-        player.on("time", time => {
-          updateTime(time);
-        });
-      };
-
-      let updateTime = function(time) {
-        dispatch(UPDATE_TIME(time));
-        player.off("time");
-        setTimeout(applyOnTimeEvent, 500);
-      };
-
-      applyOnTimeEvent();
-
-      // Audio error event
-      player.on("audio_error", err => {
-        console.error(err);
-      });
+      await dispatch(APPLY_PLAYER_EVENTS(player));
 
       // Updating player
       dispatch(UPDATE_PLAYER(player));
 
       // Updating track info
       dispatch(UPDATE_TRACK(id));
-
-      fetching = false;
-    } catch (err) {
-      console.error(err);
-      console.error("Selected track is probably unstreamable.");
-
-      fetching = false;
-
-      // Choosing next track to stream
-      let queue = [...getState().player.activeQueue];
-      if (queue.length > 0) {
-        // Deleting faulty track
-        let index = queue.indexOf(id);
-        if (index >= 0) {
-          queue.splice(index, 1);
-        }
-
-        // Updating queues
-        dispatch(UPDATE_QUEUE(queue));
-        dispatch(UPDATE_SHUFFLED_QUEUE({ queue }));
-        dispatch(UPDATE_ACTIVE_QUEUE());
-        index = index < queue.length - 1 ? index : queue.length - 1;
-        // Playing another tracks
-        dispatch(PLAY_TRACK(queue[index], play));
-      }
+    } catch (e) {
+      dispatch(DELETE_FROM_QUEUE(id));
+      //throw new Error("Track is unstreamable.");
     }
-
     fetching = false;
   }
 };
