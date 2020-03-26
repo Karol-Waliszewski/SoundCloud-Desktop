@@ -17,72 +17,55 @@ var reducer = function(state = defaultState, action) {
         user: action.payload
       };
     case "CHANGE_TRACKS":
-      let tracks = [...state.tracks.collection, ...action.payload.collection];
       return {
         ...state,
         tracks: {
           href: action.payload.href,
-          collection: tracks,
+          collection: [...action.payload.collection],
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_PLAYLISTS":
-      let playlists = [
-        ...state.playlists.collection,
-        ...action.payload.collection
-      ];
       return {
         ...state,
         playlists: {
           href: action.payload.href,
-          collection: playlists,
+          collection: [...action.payload.collection],
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_FOLLOWINGS":
-      let followings = [
-        ...state.followings.collection,
-        ...action.payload.collection
-      ];
       return {
         ...state,
         followings: {
           href: action.payload.href,
-          collection: followings,
+          collection: [...action.payload.collection],
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_FOLLOWERS":
-      let followers = [
-        ...state.followers.collection,
-        ...action.payload.collection
-      ];
       return {
         ...state,
         followers: {
           href: action.payload.href,
-          collection: followers,
+          collection: [...action.payload.collection],
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)
         }
       };
     case "CHANGE_FAVOURITES":
-      let favourites = [
-        ...state.favourites.collection,
-        ...action.payload.collection
-      ];
       return {
         ...state,
         favourites: {
           href: action.payload.href,
-          collection: favourites,
+          collection: [...action.payload.collection],
           more:
             Boolean(action.payload.href) &&
             Boolean(action.payload.collection.length)

@@ -20,3 +20,15 @@ export const shuffleArray = (array, from = 0) => {
 
   return array;
 };
+
+export const deleteCopies = array => {
+  let ids = [...new Set(array.map(el => el.id))];
+  return array.filter(el => {
+    let index = ids.indexOf(el.id);
+    if (index >= 0) {
+      ids.splice(index, 1);
+      return true;
+    }
+    return false;
+  });
+};
