@@ -252,16 +252,18 @@ var fetching = false;
 const GENERATE_PLAYER = (id, play = false) => async (dispatch, getState) => {
   try {
     let player = await Soundcloud.stream(`/tracks/${id}`);
-    let oldPlayer = getState().player.player;
+    player.autoplay = play;
+
+    await dispatch(APPLY_PLAYER_EVENTS(player));
 
     // Killing previous player
+    let oldPlayer = getState().player.player;
     if (oldPlayer && !oldPlayer.isDead()) {
       dispatch(CHANGE_TIME(0));
       oldPlayer.off("state-change");
       oldPlayer.kill();
     }
 
-    player.autoplay = play;
     return player;
   } catch (error) {
     console.error(error);
@@ -319,8 +321,6 @@ export const PLAY_TRACK = (id, play = false) => async (dispatch, getState) => {
     // Getting new track
     try {
       let player = await dispatch(GENERATE_PLAYER(id, play));
-
-      await dispatch(APPLY_PLAYER_EVENTS(player));
 
       // Updating player
       dispatch(UPDATE_PLAYER(player));
