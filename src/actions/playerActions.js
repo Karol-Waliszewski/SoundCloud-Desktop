@@ -364,12 +364,9 @@ export const NEXT_TRACK = playing => async (dispatch, getState) => {
         state.player.activeQueue.length - 1 >
         state.player.currentTrackIndex.active
       ) {
-        await dispatch(
-          LAUNCH_TRACK(
-            state.player.activeQueue[state.player.currentTrackIndex.active + 1],
-            play
-          )
-        );
+        let nextTrackID =
+          state.player.activeQueue[state.player.currentTrackIndex.active + 1];
+        await dispatch(LAUNCH_TRACK(nextTrackID, play));
       }
       // If it was the last track, but looping is active, play first track
       else if (state.player.loop) {
@@ -388,12 +385,9 @@ export const PREVIOUS_TRACK = playing => async (dispatch, getState) => {
     try {
       // If there is previous track, play it
       if (0 < state.player.currentTrackIndex.active) {
-        await dispatch(
-          LAUNCH_TRACK(
-            state.player.activeQueue[state.player.currentTrackIndex.active - 1],
-            play
-          )
-        );
+        let previousTrackID =
+          state.player.activeQueue[state.player.currentTrackIndex.active - 1];
+        await dispatch(LAUNCH_TRACK(previousTrackID, play));
       }
       // If it is the first track, but looping is active, play the last one
       else if (state.player.loop) {
