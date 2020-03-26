@@ -27,11 +27,20 @@ import ProfileNav from "../components/profileNav";
 import LinkIcon from "../assets/link.svg";
 import FollowIcon from "../assets/follow.svg";
 
-var ProfileList = props => {
-  if (props.list)
-    return <InfiniteList {...props} component={props.tag}></InfiniteList>;
-  return null;
-};
+// var ProfileList = props => {
+//   if (props.list)
+//     return <InfiniteList {...props} component={props.tag}></InfiniteList>;
+//   return null;
+// };
+
+class ProfileList extends Component {
+  render() {
+    let { props } = this;
+    if (props.list)
+      return <InfiniteList {...props} component={props.tag}></InfiniteList>;
+    return null;
+  }
+}
 
 class ProfileHome extends Component {
   render() {

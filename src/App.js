@@ -25,10 +25,6 @@ class App extends React.Component {
     this.props.playTrack(496922577);
     this.props.addToQueue(204957649);
     this.props.addToQueue(504437034);
-
-    this.props.addPopup("Test popup 1");
-    this.props.addPopup("Test popup 2 Test popup 2");
-    this.props.addPopup("Test popup 3 Test popup 3 Test popup 3 Test popup 3");
   }
 
   render() {
