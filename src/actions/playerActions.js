@@ -1,5 +1,6 @@
 import Soundcloud from "../soundcloud";
 import { shuffleArray } from "../utils";
+import { ADD_POPUP } from "./layoutActions";
 
 export const TOGGLE_LOOP = () => ({
   type: "TOGGLE_LOOP"
@@ -185,7 +186,10 @@ export const DELETE_FROM_QUEUE = ids => (dispatch, getState) => {
   }
 };
 
-export const START_QUEUE = (queue, play = false) => (dispatch, getState) => {
+export const START_QUEUE = (queue, play = false) => async (
+  dispatch,
+  getState
+) => {
   // Updating queues
   dispatch(UPDATE_QUEUE(queue));
   dispatch(UPDATE_SHUFFLED_QUEUE({ queue, i: 0 }));
@@ -196,11 +200,13 @@ export const START_QUEUE = (queue, play = false) => (dispatch, getState) => {
   // Playing 1st track of the queue TODO: shuffle first track in shuffled queue.
   if (queue.length > 0) {
     let shuffle = getState().player.shuffle;
-    if (shuffle) {
-      dispatch(PLAY_TRACK(shuffledQueue[0], play));
-    } else {
-      dispatch(PLAY_TRACK(queue[0], play));
-    }
+    try {
+      if (shuffle) {
+        await dispatch(LAUNCH_TRACK(shuffledQueue[0], play));
+      } else {
+        await dispatch(LAUNCH_TRACK(queue[0], play));
+      }
+    } catch (error) {}
   }
 
   // Updating active queue
@@ -250,24 +256,30 @@ export const ADD_TO_QUEUE = id => (dispatch, getState) => {
 var fetching = false;
 
 const GENERATE_PLAYER = (id, play = false) => async (dispatch, getState) => {
-  try {
-    let player = await Soundcloud.stream(`/tracks/${id}`);
-    player.autoplay = play;
+  // Prevent multiple calls at once
+  if (!fetching && id) {
+    fetching = true;
+    try {
+      let player = await Soundcloud.stream(`/tracks/${id}`);
+      player.autoplay = play;
 
-    await dispatch(APPLY_PLAYER_EVENTS(player));
+      await dispatch(APPLY_PLAYER_EVENTS(player));
 
-    // Killing previous player
-    let oldPlayer = getState().player.player;
-    if (oldPlayer && !oldPlayer.isDead()) {
-      dispatch(CHANGE_TIME(0));
-      oldPlayer.off("state-change");
-      oldPlayer.kill();
+      // Killing previous player
+      let oldPlayer = getState().player.player;
+      if (oldPlayer && !oldPlayer.isDead()) {
+        dispatch(CHANGE_TIME(0));
+        oldPlayer.off("state-change");
+        oldPlayer.kill();
+      }
+
+      return player;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      fetching = false;
     }
-
-    return player;
-  } catch (error) {
-    console.error(error);
-    throw error;
   }
 };
 
@@ -313,11 +325,8 @@ const APPLY_PLAYER_EVENTS = player => async dispatch => {
   applyOnTimeEvent();
 };
 
-export const PLAY_TRACK = (id, play = false) => async (dispatch, getState) => {
-  // Prevent multiple calls at once
-  if (!fetching && id) {
-    fetching = true;
-
+const LAUNCH_TRACK = (id, play = false) => async (dispatch, getState) => {
+  if (id) {
     // Getting new track
     try {
       let player = await dispatch(GENERATE_PLAYER(id, play));
@@ -329,56 +338,74 @@ export const PLAY_TRACK = (id, play = false) => async (dispatch, getState) => {
       dispatch(UPDATE_TRACK(id));
     } catch (e) {
       dispatch(DELETE_FROM_QUEUE(id));
-      //throw new Error("Track is unstreamable.");
-    }
-    fetching = false;
-  }
-};
-
-export const NEXT_TRACK = playing => (dispatch, getState) => {
-  if (!fetching) {
-    let state = getState();
-    let play = state.player.playerState === "playing" || playing ? true : false;
-    // If there is next track, play it
-    if (
-      state.player.activeQueue.length - 1 >
-      state.player.currentTrackIndex.active
-    ) {
       dispatch(
-        PLAY_TRACK(
-          state.player.activeQueue[state.player.currentTrackIndex.active + 1],
-          play
+        ADD_POPUP(
+          "Selected track is unstreamable due to Soundcloud restrictions."
         )
       );
-    }
-    // If it was the last track, but looping is active, play first track
-    else if (state.player.loop) {
-      dispatch(PLAY_TRACK(state.player.activeQueue[0], play));
+      throw new Error("Track is unstreamable.");
     }
   }
 };
 
-export const PREVIOUS_TRACK = playing => (dispatch, getState) => {
+export const PLAY_TRACK = (id, play = false) => async dispatch => {
+  try {
+    await dispatch(LAUNCH_TRACK(id, play));
+  } catch (error) {}
+};
+
+export const NEXT_TRACK = playing => async (dispatch, getState) => {
   if (!fetching) {
     let state = getState();
     let play = state.player.playerState === "playing" || playing ? true : false;
-    // If there is previous track, play it
-    if (0 < state.player.currentTrackIndex.active) {
-      dispatch(
-        PLAY_TRACK(
-          state.player.activeQueue[state.player.currentTrackIndex.active - 1],
-          play
-        )
-      );
+    try {
+      // If there is next track, play it
+      if (
+        state.player.activeQueue.length - 1 >
+        state.player.currentTrackIndex.active
+      ) {
+        await dispatch(
+          LAUNCH_TRACK(
+            state.player.activeQueue[state.player.currentTrackIndex.active + 1],
+            play
+          )
+        );
+      }
+      // If it was the last track, but looping is active, play first track
+      else if (state.player.loop) {
+        await dispatch(LAUNCH_TRACK(state.player.activeQueue[0], play));
+      }
+    } catch (error) {
+      dispatch(NEXT_TRACK(play));
     }
-    // If it is the first track, but looping is active, play the last one
-    else if (state.player.loop) {
-      dispatch(
-        PLAY_TRACK(
-          state.player.activeQueue[state.player.activeQueue.length - 1],
-          play
-        )
-      );
+  }
+};
+
+export const PREVIOUS_TRACK = playing => async (dispatch, getState) => {
+  if (!fetching) {
+    let state = getState();
+    let play = state.player.playerState === "playing" || playing ? true : false;
+    try {
+      // If there is previous track, play it
+      if (0 < state.player.currentTrackIndex.active) {
+        await dispatch(
+          LAUNCH_TRACK(
+            state.player.activeQueue[state.player.currentTrackIndex.active - 1],
+            play
+          )
+        );
+      }
+      // If it is the first track, but looping is active, play the last one
+      else if (state.player.loop) {
+        await dispatch(
+          LAUNCH_TRACK(
+            state.player.activeQueue[state.player.activeQueue.length - 1],
+            play
+          )
+        );
+      }
+    } catch (error) {
+      dispatch(PREVIOUS_TRACK(play));
     }
   }
 };
