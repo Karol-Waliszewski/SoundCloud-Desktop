@@ -19,6 +19,7 @@ import Home from "./routes/Home";
 import Profile from "./routes/Profile";
 import Likes from "./routes/Likes";
 import Search from "./routes/Search";
+import About from "./routes/About";
 import NotImplemented from "./routes/NotImplemented";
 
 class App extends React.Component {
@@ -40,6 +41,7 @@ class App extends React.Component {
               <Route path="/profile/:username" component={Profile} />
               {/* <Route path="/likes" component={Likes} /> */}
               <Route path="/search" component={Search} />
+              <Route path="/about" component={About} />
               <Route path="/" exact={true} component={Home} />
               <Route path="/" component={NotImplemented} />
             </Switch>

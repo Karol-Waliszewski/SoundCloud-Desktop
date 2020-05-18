@@ -61,10 +61,10 @@ class Sidebar extends Component {
               Followings
             </NavLink>
           </li>
-          <li className="sidebar__item">
+          <li className="sidebar__item ">
             <NavLink
               to="/history"
-              className="sidebar__link"
+              className="sidebar__link disabled"
               activeClassName="active"
             >
               History
@@ -79,17 +79,12 @@ class Sidebar extends Component {
             </NavLink>
           </li>
           <li className="sidebar__item">
-            <NavLink to="/support" className="sidebar__link">
-              Support
-            </NavLink>
-          </li>
-          <li className="sidebar__item">
             <NavLink to="/settings" className="sidebar__link disabled">
               Settings
             </NavLink>
           </li>
           <li className="sidebar__item">
-            <NavLink to="/singout" className="sidebar__link">
+            <NavLink to="/singout" className="sidebar__link disabled">
               Sign out
             </NavLink>
           </li>

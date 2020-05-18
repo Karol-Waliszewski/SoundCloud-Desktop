@@ -19,7 +19,7 @@ class Home extends Component {
           </p>
 
           <p>
-            If you found a bug, you can report it <a href="#">here</a>
+            If you found a bug, you can report it <a href="https://github.com/Karol-Waliszewski/SoundCloud-Desktop">here</a>
           </p>
         </div>
       </div>
