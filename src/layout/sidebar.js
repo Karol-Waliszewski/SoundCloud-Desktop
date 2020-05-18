@@ -19,7 +19,7 @@ class Sidebar extends Component {
           <li className="sidebar__item">
             <NavLink
               to="/likes"
-              className="sidebar__link"
+              className="sidebar__link disabled"
               activeClassName="active"
             >
               Likes
@@ -28,7 +28,7 @@ class Sidebar extends Component {
           <li className="sidebar__item">
             <NavLink
               to="/playlists"
-              className="sidebar__link"
+              className="sidebar__link disabled"
               activeClassName="active"
             >
               Playlists
@@ -37,7 +37,7 @@ class Sidebar extends Component {
           <li className="sidebar__item">
             <NavLink
               to="/stations"
-              className="sidebar__link"
+              className="sidebar__link disabled"
               activeClassName="active"
             >
               Stations
@@ -46,7 +46,7 @@ class Sidebar extends Component {
           <li className="sidebar__item">
             <NavLink
               to="/albums"
-              className="sidebar__link"
+              className="sidebar__link disabled"
               activeClassName="active"
             >
               Albums
@@ -55,7 +55,7 @@ class Sidebar extends Component {
           <li className="sidebar__item">
             <NavLink
               to="/followings"
-              className="sidebar__link"
+              className="sidebar__link disabled"
               activeClassName="active"
             >
               Followings
@@ -84,7 +84,7 @@ class Sidebar extends Component {
             </NavLink>
           </li>
           <li className="sidebar__item">
-            <NavLink to="/settings" className="sidebar__link">
+            <NavLink to="/settings" className="sidebar__link disabled">
               Settings
             </NavLink>
           </li>

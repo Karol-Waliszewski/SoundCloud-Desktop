@@ -69,6 +69,7 @@
 .user__name {
     font-size: 14px;
     color: $darkGray;
+    word-break: break-all;
 }
 
 .user__follow {

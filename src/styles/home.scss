@@ -1,0 +1,27 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+}
+
+.home__heading {
+    font-size: 5vw;
+    margin-bottom: 2%;
+}
+
+.home__content {
+    padding: {
+        left: 5%;
+        right: 5%;
+        bottom: 10%;
+    }
+
+    p {
+        font-size: 1rem;
+        color: $mediumGray;
+        margin: 1rem;
+    }
+}

@@ -19,6 +19,7 @@ import Home from "./routes/Home";
 import Profile from "./routes/Profile";
 import Likes from "./routes/Likes";
 import Search from "./routes/Search";
+import NotImplemented from "./routes/NotImplemented";
 
 class App extends React.Component {
   componentDidMount() {
@@ -37,10 +38,10 @@ class App extends React.Component {
           <main className="app__main" id="main">
             <Switch>
               <Route path="/profile/:username" component={Profile} />
-              <Route path="/likes" component={Likes} />
+              {/* <Route path="/likes" component={Likes} /> */}
               <Route path="/search" component={Search} />
-              {/* Home has to be last path in switch */}
-              <Route path="/" component={Home} />
+              <Route path="/" exact={true} component={Home} />
+              <Route path="/" component={NotImplemented} />
             </Switch>
           </main>
         </div>
@@ -51,18 +52,18 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   playTrack: (id, play) => {
     dispatch(ADD_AND_PLAY_TRACK(id, play));
   },
-  addToQueue: id => {
+  addToQueue: (id) => {
     dispatch(ADD_TO_QUEUE(id));
   },
-  addPopup: msg => {
+  addPopup: (msg) => {
     dispatch(ADD_POPUP(msg));
-  }
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

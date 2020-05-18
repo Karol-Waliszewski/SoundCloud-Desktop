@@ -82,7 +82,7 @@ export const FETCH_TRACKS = () => async (dispatch, getState) => {
 
       // Because API do not return equal 20 favs if they exist, use recursive call until it is necessary
       if (
-        concatCollection.length < 12 &&
+        concatCollection.length <= 12 &&
         tracks.collection.length > 0 &&
         tracks.next_href
       ) {
@@ -133,7 +133,7 @@ export const FETCH_PLAYLISTS = () => async (dispatch, getState) => {
 
       // Because API do not return equal 20 favs if they exist, use recursive call until it is necessary
       if (
-        concatCollection.length < 12 &&
+        concatCollection.length <= 12 &&
         playlists.collection.length > 0 &&
         playlists.next_href
       ) {
@@ -184,7 +184,7 @@ export const FETCH_FOLLOWINGS = () => async (dispatch, getState) => {
 
       // Because API do not return equal 20 favs if they exist, use recursive call until it is necessary
       if (
-        concatCollection.length < 12 &&
+        concatCollection.length <= 12 &&
         followings.collection.length > 0 &&
         followings.next_href
       ) {
@@ -235,7 +235,7 @@ export const FETCH_FOLLOWERS = () => async (dispatch, getState) => {
 
       // Because API do not return equal 20 favs if they exist, use recursive call until it is necessary
       if (
-        concatCollection.length < 12 &&
+        concatCollection.length <= 12 &&
         followers.collection.length > 0 &&
         followers.next_href
       ) {
@@ -286,7 +286,7 @@ export const FETCH_FAVOURITES = () => async (dispatch, getState) => {
 
       // Because API do not return equal 20 favs if they exist, use recursive call until it is necessary
       if (
-        concatCollection.length < 12 &&
+        concatCollection.length <= 12 &&
         favourites.collection.length > 0 &&
         favourites.next_href
       ) {
