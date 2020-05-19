@@ -1,3 +1,1 @@
-<svg>
-    <path class="queueIcon" d="M6 11h12v2H6zM6 7h8v2H6zM6 15h12v2H6zM16 3v6l4-3z" style="transform:translate(-2px,-2px)"></path>
-</svg>
+<svg><path d="M6 11h12v2H6zM6 7h8v2H6zM6 15h12v2H6zM16 3v6l4-3z" class="queueIcon" style="transform:translate(-2px,-2px)"/></svg>
