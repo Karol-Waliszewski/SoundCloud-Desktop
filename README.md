@@ -20,6 +20,8 @@ User informations on profile page
 
 + As a front-end framework I choose [React](https://reactjs.org/).
 
++ [Redux](https://redux.js.org/) helped to manage entire application states.
+
 + Entire music streaming and fetching is available thanks to open [SoundCloud API](https://developers.soundcloud.com/).
 
 ## Difficulties :nut_and_bolt:
