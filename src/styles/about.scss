@@ -1,3 +1,27 @@
-.about__text {
-    margin: 1rem;
+.about {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+}
+
+.about__heading {
+    font-size: 5vw;
+    margin-bottom: 2%;
+}
+
+.about__content {
+    padding: {
+        left: 2%;
+        right: 2%;
+        bottom: 10%;
+    }
+
+    p {
+        font-size: 1rem;
+        color: $mediumGray;
+        margin: 1rem;
+    }
 }

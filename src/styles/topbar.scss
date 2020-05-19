@@ -40,13 +40,18 @@
 }
 
 .topbar__search {
-    @extend .offset__1;
-    @extend .col__3;
 
+    @extend .col__3;
+    padding-left: 20px;
     height: 25px;
 }
 
 .topbar__account {
-    @extend .offset__5;
+    @extend .offset__6;
     @extend .col__1;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 20px;
 }
